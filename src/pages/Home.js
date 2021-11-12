@@ -5,6 +5,7 @@ import { makeStyles } from '@mui/styles';
 import Axios from 'axios';
 
 import TopBanner from 'components/TopBanner'
+import MarketPrice from 'components/MarketPrice'
 import TradePlatform from 'components/TradePlatform'
 import AwardCarousel from 'components/AwardCarousel'
 
@@ -33,11 +34,6 @@ import article_mover from 'assets/images/home/article_mover.png'
 
 import payment_icon from 'assets/images/home/payment_icon.png'
 
-import { Box, Paper } from '@mui/material';
-
-import AOS from 'aos';
-import 'aos/dist/aos.css';
-
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import 'swiper/swiper-bundle.min.css'
@@ -50,7 +46,6 @@ import SwiperCore, {
 // install Swiper modules
 SwiperCore.use([Navigation, Pagination, Autoplay]);
 
-AOS.init();
 
 const useStyles = makeStyles({
     featureCard: {
@@ -192,15 +187,16 @@ const context = {
 const HomepageBanner = () => {
     const { i18n } = useTranslation()
     const [adList, setAdList] = useState([])
-
     useEffect(() => {
         const params = { companyId: "23", terminal: 'pc_website', code: 'global_index_pc', type: 'V' }
-        const getAbroList = async () => {
-            const result = await (await Axios.get('/topapi/hx/?service=Ad.getAbroList', { params: { ...params } })).data
-            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-            setAdList(result.data[0].list)
-        }
-        getAbroList()
+        try {
+            const getAbroList = async () => {
+                const result = await (await Axios.get(`${process.env.REACT_APP_TOP_OPENAPI_HOST}/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
+                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+                setAdList(result.data[0].list)
+            }
+            getAbroList()
+        } catch (error) { }
     }, [])
 
     return (
@@ -254,10 +250,17 @@ const Section1 = () => {
         </section>
     )
 }
+
 // Section2
-// TODO: search box
 const Section2 = () => {
+    const tabs = [
+        // { label: 'Popular' },
+        { label: 'Fores' },
+        { label: 'Commodities' },
+        { label: 'Indices' },
+    ]
     const { t } = useTranslation();
+    const [activeTab, setActiveTab] = useState('Fores')
     return (
         <section className="container-fluid" style={{ background: '#F1F1F1' }}>
             <div className="container py-5">
@@ -269,35 +272,17 @@ const Section2 = () => {
                             {context.Section2.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}><span>{t(feature)}</span></li>)}
                         </ul>
                     </div>
+
                     <div className="col col-12 col-lg-6 text-center">
-                        <div className="" width="568px" height="606px">
-                            {/* <ul className="nav nav-pills nav-justified">
-                                <li className="nav-item">
-                                    <a className="nav-link active" aria-current="page" href="/">Active</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/">Much longer nav link</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/">Link</a>
-                                </li>
-                                <li className="nav-item">
-                                    <a className="nav-link disabled" href="/">Disabled</a>
-                                </li>
-                            </ul> */}
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexWrap: 'wrap',
-                                    '& > :not(style)': {
-                                        m: 1,
-                                        width: 547,
-                                        height: 605,
-                                    },
-                                }}
-                            >
-                                <Paper elevation={3} />
-                            </Box>
+                        <div className="bg-white shadow-sm" data-aos="zoom-out">
+                            <ul className="nav nav-pills nav-justified">
+                                {tabs.map(tab =>
+                                    <li className="nav-item" key={tab.label}>
+                                        <button className={`nav-link ${activeTab === tab.label ? 'active' : ''}`} onClick={() => setActiveTab(tab.label)}>{t(tab.label)}</button>
+                                    </li>
+                                )}
+                            </ul>
+                            <MarketPrice id={activeTab} />
                         </div>
                     </div>
                 </div>
@@ -324,7 +309,7 @@ const Section3 = () => {
                     <h2 className="fw-bold text-dark mb-3 pt-4">{`${t(context.Section3.title)}`}</h2>
                     <h5 className="fw-bold mb-3 text-primary">{`${t(context.Section3.subtitle)}`}</h5>
                     {/* list */}
-                    <ol className="list-group mb-3 list-number">
+                    <ol className="list-group mb-3 list-number-primary">
                         {context.Section3.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}>{t(feature)}</li>)}
                     </ol>
                     {/* input field */}
@@ -346,7 +331,7 @@ const Section3 = () => {
                             <input type="tel" className="form-control border-0" aria-label="Text input with dropdown button" placeholder={t('Enter your mobile')} style={{ backgroundColor: 'transparent' }} />
                         </div>
                         {/* get sms */}
-                        <button type="button" className="btn btn-primary text-white px-4 py-2">{t('Get HXFX Global APP By SMS')}</button>
+                        <button type="button" className="btn btn-primary px-4 py-2">{t('Get HXFX Global APP By SMS')}</button>
                     </form>
                 </div>
             </div>
@@ -359,7 +344,7 @@ const Section3 = () => {
     )
 }
 
-// Section5
+// open account
 const Section5 = () => {
     const { t } = useTranslation();
     return (
@@ -381,8 +366,8 @@ const Section5 = () => {
                             )}
                         </div>
                         <div className="d-flex justify-content-evenly">
-                            <Link type="button" to="/" className="btn btn-secondary text-white px-4 py-2">{t('Open Demo Account')}</Link>
-                            <Link type="button" to="/" className="btn btn-warning text-white px-4 py-2">{t('Open Real Account')}</Link>
+                            <Link type="button" to="/" className="btn btn-secondary px-4 py-2">{t('Open Demo Account')}</Link>
+                            <Link type="button" to="/" className="btn btn-warning px-4 py-2">{t('Open Real Account')}</Link>
                         </div>
                     </div>
                     <div data-aos="zoom-in" className="col col-12 col-lg-5 text-center">

@@ -1,43 +1,27 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
-import Axios from 'axios';
-
-import { isPrice } from 'utilities'
 
 import Calculate from './Calculate'
 import TopBanner from 'components/TopBanner'
 import MightBeInterested from 'components/MightBeInterested'
+import MarketPrice from 'components/MarketPrice'
 // import FeatureCard from 'components/FeatureCard'
+import TradePlatform from 'components/TradePlatform'
 import OpenAccount from 'components/OpenAccount'
 import AwardCarousel from 'components/AwardCarousel'
-
-import {
-    TableContainer,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-    Typography,
-    Collapse,
-    IconButton,
-    Box,
-    Paper
-} from '@mui/material';
-
-import arrow_down from 'assets/images/arrow_down.svg'
-import arrow_up from 'assets/images/arrow_up.svg'
 
 import Forextopbanner from 'assets/images/products/Forextopbanner.jpg'
 import commodity_topbanner from 'assets/images/products/commodity_topbanner.jpg'
 import Stockindexitopbanner from 'assets/images/products/Stockindexitopbanner.jpg'
+import lowest_commission_topbanner from 'assets/images/products/lowest_commission_topbanner.png'
 
 import rate_decrease_1 from 'assets/images/icons/rate_decrease_1.png'
 import coins_decrease_1 from 'assets/images/icons/coins_decrease_1.png'
 import balance_1 from 'assets/images/icons/balance_1.png'
 import certificate_1 from 'assets/images/icons/certificate_1.png'
+import mutiplatform_1 from 'assets/images/icons/mutiplatform_1.png'
 import cs_1 from 'assets/images/icons/cs_1.png'
 
 
@@ -57,139 +41,163 @@ const FeatureCard = () => {
                 <div className="card-body">
                     <img src={rate_decrease_1} alt="" />
                     <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Lowest Commission Up to USD 0')}</h5>
-                    <button type="button" className="btn btn-outline-primary">Details</button>
+                    <Link to='/Lowest-Commission' type="button" className="btn btn-outline-primary">{t('Details')}</Link>
                 </div>
             </div>
             <div className="feature-card card col-12 col-lg-3 m-3">
                 <div className="card-body">
                     <img src={coins_decrease_1} alt="" />
                     <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Low Spreads Starting from 1.4 pips')}</h5>
-                    <button type="button" className="btn btn-outline-secondary">Open Demo Account</button>
+                    <button type="button" className="btn btn-outline-secondary">{t('Open Demo Account')}</button>
                 </div>
             </div>
             <div className="feature-card card col-12 col-lg-3 m-3">
                 <div className="card-body">
                     <img src={balance_1} alt="" />
                     <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Small Capital Profit Leverage 1 :200')}</h5>
-                    <button type="button" className={`${useStyles.outlineBtn} btn btn-outline-primary`}>Details</button>
+                    <a href={`${window.location.pathname}/Detail`} type="button" className={`${useStyles.outlineBtn} btn btn-outline-primary`}>{t('Details')}</a>
                 </div>
             </div>
         </section>
     )
 }
 
-// TODO: not finished
-const CurrencyPair = ({ title }) => {
+const ProductTable = ({ title, id }) => {
     const { t } = useTranslation();
-    const [ForexList, setForexList] = React.useState([])
-    const [CommoditiesList, setCommoditiesList] = React.useState([])
-    const [IndicesList, setIndicesList] = React.useState([])
-    React.useEffect(() => {
-        const params = {
-            companyId: 23,
-            waihui_zone: 'EURUSD,GBPUSD,USDJPY,USDCAD,AUDUSD,GBPUSD', // Forex
-            futurespetroleum_zone: "XAUUSD,XAGUSD,USOil,UKOil,SOYBEAN", // Commodities
-            futuresindex_zone: 'SP500,TECH100,DJ30,GER30,JPN225' // Indices
-        }
-        const marketprice = async () => {
-            // const result = await (await Axios.post('http://192.168.75.53:5101/tools/?service=MarketNew.marketprice', { ...params })).data
-            const result = await (await Axios.post('/api/tools/?service=MarketNew.marketprice', { ...params })).data
-            console.log(result.data);
-            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-            setForexList(result.data.waihui_zone);
-            setCommoditiesList(result.data.futurespetroleum_zone);
-            setIndicesList(result.data.futuresindex_zone);
-        }
-        marketprice()
-    }, [])
     return (
         <section className="container-fluid text-center py-5" style={{ background: '#F1F1F1' }}>
             <h2 className="fw-bold text-dark mb-5">{t(title)}</h2>
 
-            <TableContainer component={Paper}>
-                <Table aria-label="collapsible table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell />
-                            <TableCell>{t('Name')}</TableCell>
-                            <TableCell>{t('Buy')}</TableCell>
-                            <TableCell>{t('Sell')}</TableCell>
-                            <TableCell>{t('Quote Change')}</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {ForexList.map((row, index) => (
-                            <Row key={index} row={row} />
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <MarketPrice id={id} />
 
-            <button className="btn btn-primary text-white m-2">{t('Contract details')}</button>
+            <a href={`${window.location.pathname}/Detail`} className="btn btn-primary text-white mt-5">
+                {t('Contract details')}
+            </a>
         </section>
     )
 }
 
-function Row(props) {
-    const { row } = props;
-    const [open, setOpen] = React.useState(false);
+const Forex = () => (
+    <>
+        <TopBanner
+            background={Forextopbanner}
+            titles={["Forex Trading"]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+        <FeatureCard />
+        <ProductTable title="Currency Pair" id="Forex" />
+        <WhyChoose />
+        <MightBeInterested />
+    </>
+)
+const Commodities = () => (
+    <>
+        <TopBanner
+            background={commodity_topbanner}
+            titles={["Commodity Trading"]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+        <FeatureCard />
+        <ProductTable title="Commodity" id="Commodity" />
+        <WhyChoose />
+        <MightBeInterested />
+    </>
+)
+const Indices = () => (
+    <>
+        <TopBanner
+            background={Stockindexitopbanner}
+            titles={["Stock Index"]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+        <FeatureCard />
+        <ProductTable title="Index" id="Index" />
+        <WhyChoose />
+        <MightBeInterested />
+    </>
+)
 
+const LowestCommission = () => {
+    const { t } = useTranslation();
+    const useStyles = makeStyles({
+        featureCard: {
+            border: 0,
+            background: '#F7F7F7',
+            boxShadow: '0px 1px 3px #0000001A',
+            minHeight: '240px',
+            borderRadius: '20px',
+            '&:hover': {
+                background: '#ffffff',
+                boxShadow: '0px 4px 12px #00000033',
+                transition: 'all .15s linear',
+                transform: 'scale(1.05)',
+                borderBottom: '4px solid #60A720'
+            }
+        }
+    })()
     return (
-        <React.Fragment>
-            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-                <TableCell>
-                    <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => setOpen(!open)}
-                    >
-                        {open ? <img src={arrow_up} alt="" /> : <img src={arrow_down} alt="" />}
-                    </IconButton>
-                </TableCell>
-                <TableCell component="th" scope="row">
-                    {row.prd}
-                </TableCell>
-                <TableCell>{isPrice(row.marketprice.ask, row.marketprice.preclose) + '>' + row.marketprice.ask}</TableCell>
-                <TableCell>{isPrice(row.marketprice.bid, row.marketprice.preclose) + '>' + row.marketprice.bid}</TableCell>
-                <TableCell>{isPrice(row.marketprice.ask, 0) + '>' + row.marketprice.ratio + '%'}</TableCell>
-            </TableRow>
-            <TableRow>
-                <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-                    <Collapse in={open} timeout="auto" unmountOnExit>
-                        <Box sx={{ margin: 1 }}>
-                            <Typography variant="h6" gutterBottom component="div">
-                                History
-                            </Typography>
-                            <Table size="small" aria-label="purchases">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell>Amount</TableCell>
-                                        <TableCell>Total price ($)</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                {/* <TableBody>
-                                    {row.marketprice.map((historyRow) => (
-                                        <TableRow key={historyRow.date}>
-                                            <TableCell component="th" scope="row">
-                                                {historyRow.date}
-                                            </TableCell>
-                                            <TableCell>{historyRow.customerId}</TableCell>
-                                            <TableCell align="right">{historyRow.amount}</TableCell>
-                                            <TableCell align="right">
-                                                {Math.round(historyRow.amount * row.price * 100) / 100}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody> */}
-                            </Table>
-                        </Box>
-                    </Collapse>
-                </TableCell>
-            </TableRow>
-        </React.Fragment>
-    );
+        <>
+            <TopBanner
+                background={lowest_commission_topbanner}
+                titles={["Lowest Commission Forex Broker"]}
+                subtitles={["Create and account today and enjoy trading with 0 commission"]}
+                buttons={[{ color: 'btn-secondary', text: "Open Demo Account" }, { color: 'btn-warning', text: "Open Real Account" }]} />
+
+            <section className="container my-5">
+                <div className="row justify-content-center align-item-stretch">
+                    <div className="col col-11 col-md-6 col-lg-4">
+                        <div className={`${useStyles.featureCard} card mb-3`}>
+                            <div className="row g-0">
+                                <div className="col col-12 col-md-3">
+                                    <img src={rate_decrease_1} className="img-fluid rounded-start" alt={t('No Intermediaries')} />
+                                </div>
+                                <div className="col col-12 col-md-9">
+                                    <div className="card-body">
+                                        <h5 className="card-title">{t('No Intermediaries')}</h5>
+                                        <p className="card-text text-secondary">{t('Trading on the HXFX Platform, without an IB (Introducing Broker) intermediary, so that customers can enjoy the lowest price offers with the best service.')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col col-11 col-md-6 col-lg-4">
+                        <div className={`${useStyles.featureCard} card mb-3`}>
+                            <div className="row g-0">
+                                <div className="col col-12 col-md-3">
+                                    <img src={certificate_1} className="img-fluid rounded-start" alt={t('Regulated')} />
+                                </div>
+                                <div className="col col-12 col-md-9">
+                                    <div className="card-body">
+                                        <h5 className="card-title">{t('Regulated')}</h5>
+                                        <p className="card-text text-secondary">{t('HXFX is regulated by Authorities such as Vanuatu Financial Services Commission.')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col col-11 col-md-6 col-lg-4">
+                        <div className={`${useStyles.featureCard} card mb-3`}>
+                            <div className="row g-0">
+                                <div className="col col-12 col-md-3">
+                                    <img src={mutiplatform_1} className="img-fluid rounded-start" alt={t('Platform Independent')} />
+                                </div>
+                                <div className="col col-12 col-md-9">
+                                    <div className="card-body">
+                                        <h5 className="card-title">{t('Platform Independent')}</h5>
+                                        <p className="card-text text-secondary">{t('HXFX Trade was developed by HXFX itself by adjusting the needs and trading patterns of customers.')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <TradePlatform />
+        </>
+    )
 }
 
 const WhyChoose = () => {
@@ -217,74 +225,27 @@ const WhyChoose = () => {
     )
 }
 
-const Forex = () => {
-    return (
-        <>
-            <TopBanner
-                background={Forextopbanner}
-                titles={["Forex Trading"]}
-                subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-                buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
-            <FeatureCard />
-            <CurrencyPair title="Currency Pair" />
-            <WhyChoose />
-        </>
-    )
-}
-const Commodities = () => {
-    return (
-        <>
-            <TopBanner
-                background={commodity_topbanner}
-                titles={["Commodity Trading"]}
-                subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-                buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
-            <FeatureCard />
-            <CurrencyPair title="Commodity" />
-            <WhyChoose />
-        </>
-    )
-}
-const Indices = () => {
-    return (
-        <>
-            <TopBanner
-                background={Stockindexitopbanner}
-                titles={["Stock Index"]}
-                subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-                buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
-            <FeatureCard />
-            <CurrencyPair title="Index" />
-            <WhyChoose />
-        </>
-    )
-}
+const Products = () => (
+    <>
+        <Router basename={'/Products'}>
+            <Switch>
+                <Route exact path="/Forex">
+                    <Forex />
+                </Route>
+                <Route exact path="/Commodities">
+                    <Commodities />
+                </Route>
+                <Route exact path="/Indices">
+                    <Indices />
+                </Route>
+                <Route exact path="/Calculate" component={Calculate} />
+                <Route exact path="/Lowest-Commission" component={LowestCommission} />
+            </Switch>
 
-const Products = (props) => {
-    // console.log(props);
-    // console.log('props.match.params.id', props.match.params.id);
-    return (
-        <>
-            <Router basename={'/Products'}>
-                <Switch>
-                    <Route exact path="/Forex">
-                        <Forex />
-                    </Route>
-                    <Route exact path="/Commodities">
-                        <Commodities />
-                    </Route>
-                    <Route exact path="/Indices">
-                        <Indices />
-                    </Route>
-                    <Route exact path="/Calculate" component={Calculate} />
-                </Switch>
-
-                <MightBeInterested />
-                <OpenAccount />
-                <AwardCarousel />
-            </Router>
-        </>
-    )
-}
+            <OpenAccount />
+            <AwardCarousel />
+        </Router>
+    </>
+)
 
 export default Products

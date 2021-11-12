@@ -43,13 +43,16 @@ h6 {
   // outline button
   &-outline {
     &-primary,
-    &-secondary {
+    &-secondary,
+    &-warning {
       &:hover {
         color: #fff !important;
       }
     }
   }
+  // default button
   &-warning {
+    color: #fff !important;
     &:hover {
       color: $warning !important;
       border-color: #ffeede !important;
@@ -57,6 +60,7 @@ h6 {
     }
   }
   &-primary {
+    color: #fff !important;
     &:hover {
       color: $primary !important;
       border-color: #e9f5de !important;
@@ -64,6 +68,7 @@ h6 {
     }
   }
   &-secondary {
+    color: #fff !important;
     &:hover {
       color: #000000 !important;
       border-color: #e0e0e0 !important;
@@ -189,11 +194,12 @@ h6 {
   }
 }
 
-.list-number {
+@mixin list-number($circleColor) {
   list-style: none;
   counter-reset: circle-counter;
   li {
     counter-increment: circle-counter;
+    margin-bottom: 0.5rem;
     &:before {
       margin-right: 10px;
       content: counter(circle-counter);
@@ -206,11 +212,19 @@ h6 {
 
       width: 20px;
       height: 20px;
-      background-color: $primary;
+      background-color: $circleColor;
 
       -moz-border-radius: 50%;
       border-radius: 50%;
     }
+  }
+}
+.list-number {
+  &-primary {
+    @include list-number($primary);
+  }
+  &-black {
+    @include list-number(#000);
   }
 }
 
@@ -223,7 +237,7 @@ h6 {
   justify-content: center;
   z-index: 0;
   &:hover {
-    z-index: 1;
+    z-index: 2;
     box-shadow: 0px 4px 12px #00000033;
     transition: all 0.15s linear;
     transform: scale(1.05);
@@ -262,4 +276,5 @@ html {
     }
   }
 }
+
 @import "node_modules/bootstrap/scss/bootstrap";

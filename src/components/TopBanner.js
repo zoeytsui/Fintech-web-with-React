@@ -25,7 +25,7 @@ const TopBanner = ({ background = '', titles = [], subtitles = [], buttons = [] 
 
                 <div className="d-flex flex-wrap">
                     {buttons.map(button =>
-                        <Link className={`btn btn-lg ${button.color} text-white m-1`} to='/' role="button" key={button.text}>{t(button.text)}</Link>
+                        <Link className={`btn btn-lg ${button.color} m-1`} to='/' role="button" key={button.text}>{t(button.text)}</Link>
                     )}
                 </div>
 

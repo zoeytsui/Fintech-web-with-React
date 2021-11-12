@@ -22,6 +22,7 @@ import Forex_icon from '../assets/images/navbar/Forex_icon.png';
 import Indices_icon from '../assets/images/navbar/Indices_icon.png';
 import news_icon from '../assets/images/navbar/news_icon.png';
 import Promotions_icon from '../assets/images/navbar/Promotions_icon.png';
+import Strategy_icon from '../assets/images/navbar/Strategy_icon.png';
 
 const useStyles = makeStyles({
     langList: {
@@ -94,6 +95,7 @@ const navList = [
         link: [
             { item: 'News', link: '/Resources/News', src: news_icon },
             { item: 'Blog', link: '/Resources/Blog', src: Blog_icon },
+            { item: 'Strategy', link: '/Resources/Strategy', src: Strategy_icon },
         ]
     },
     { item: 'Help', link: '/Help' }
@@ -144,7 +146,7 @@ export default function NavBar() {
                         <div className="d-flex">
                             <a className="nav-link text-primary" href="/">{t('Log In')}</a>
 
-                            <Link className="btn btn-warning text-white" to='/' role="button">{t('Create Account')}</Link>
+                            <Link className="btn btn-warning" to='/' role="button">{t('Create Account')}</Link>
                         </div>
 
                         <div className="dropdown">

@@ -156,7 +156,7 @@ const OperationalData = () => {
 
     React.useEffect(() => {
         const getOperational = async () => {
-            const result = await (await Axios.get('/api/tools/?service=Operationaldata.getOperational')).data
+            const result = await (await Axios.get(`${process.env.REACT_APP_OPENAPI_HOST}/tools/?service=Operationaldata.getOperational`)).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setDataObj(result.data[0])
         }

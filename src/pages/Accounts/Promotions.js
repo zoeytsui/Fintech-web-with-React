@@ -19,14 +19,18 @@ const PromoCard = () => {
             terminal: 'wap_website',
             lang: i18n.language // cn, tw, en, vi, ms
         }
+        try {
+            const getActivity = async () => {
+                const result = await Axios.get(`${process.env.REACT_APP_TOP_OPENAPI_HOST}/hx/?service=ActivitySet.getActivity`, { params: { ...params } })
+                if (result.data.ret !== 200) return console.error(result.data)
+                cardsSet(result.data.data.list)
+            }
 
-        const getActivity = async () => {
-            const result = await Axios.get('/topapi/hx/?service=ActivitySet.getActivity', { params: { ...params } })
-            if (result.data.ret !== 200) return console.error(result.data)
-            cardsSet(result.data.data.list)
-        }
-
-        getActivity()
+            const timer = setTimeout(() => {
+                getActivity()
+            }, 1000);
+            return () => clearTimeout(timer);
+        } catch (error) { }
     })
 
 
