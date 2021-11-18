@@ -18,6 +18,10 @@
   font-family: "Exo2-Light";
   src: local("Exo2-Light"), url(./assets/fonts/Exo2-Light.ttf) format("opentype");
 }
+@font-face {
+  font-family: "Exo2-Italic";
+  src: local("Exo2-Italic"), url(./assets/fonts/Exo2-Italic.ttf) format("opentype");
+}
 $primary: #83bf4b;
 $secondary: #858585;
 $warning: #fd841a;
@@ -29,7 +33,7 @@ $theme-colors: (
   "dark": $dark,
 );
 
-$font-family-sans-serif: "Exo2-Medium", "Exo2-Bold", "Exo2-SemiBold", "Exo2-ExtraBold", "Exo2-Light" !default;
+$font-family-sans-serif: "Exo2-Medium", "Exo2-Bold", "Exo2-SemiBold", "Exo2-ExtraBold", "Exo2-Light", "Exo2-Italic" !default;
 
 h1,
 h2,

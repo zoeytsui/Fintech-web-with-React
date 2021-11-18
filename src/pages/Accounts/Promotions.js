@@ -1,31 +1,31 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from "react-i18next";
-// import { makeStyles } from '@mui/styles';
 import { timeFormatter } from 'utilities'
 import TopBanner from 'components/TopBanner'
 import OpenAccount from 'components/OpenAccount'
 import AwardCarousel from 'components/AwardCarousel'
 
 import promotionsTopbanner from 'assets/images/accounts/promotionsTopbanner.jpg'
-import Axios from 'axios';
+import { TOP_OPENAPI } from 'api';
 
 const PromoCard = () => {
     const { t, i18n } = useTranslation();
     const [cards, cardsSet] = useState([]);
 
-    useEffect(() => {
-        const params = {
-            companyId: 23,
-            terminal: 'wap_website',
-            lang: i18n.language // cn, tw, en, vi, ms
-        }
-        try {
-            const getActivity = async () => {
-                const result = await Axios.get(`${process.env.REACT_APP_TOP_OPENAPI_HOST}/hx/?service=ActivitySet.getActivity`, { params: { ...params } })
-                if (result.data.ret !== 200) return console.error(result.data)
-                cardsSet(result.data.data.list)
-            }
+    const params = {
+        companyId: 23,
+        terminal: 'wap_website',
+        lang: i18n.language // cn, tw, en, vi, ms
+    }
+    const getActivity = async () => {
+        const result = await TOP_OPENAPI.get(`/hx/?service=ActivitySet.getActivity`, { params: { ...params } })
+        if (result.data.ret !== 200) return console.error(result.data)
+        cardsSet(result.data.data.list)
+    }
+    getActivity()
 
+    useEffect(() => {
+        try {
             const timer = setTimeout(() => {
                 getActivity()
             }, 1000);

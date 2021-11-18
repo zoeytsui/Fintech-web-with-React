@@ -46,6 +46,7 @@ const App = () => {
             <Route exact path='/Accounts/Promotions' component={Promotions} />
 
             <Route exact path='/Resources/:id' component={Resources} />
+            <Route exact path='/Resources/:id/:product' component={Resources} />
 
             <Route exact path='/Help' component={Help} />
 

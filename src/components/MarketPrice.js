@@ -1,5 +1,5 @@
 import React from 'react'
-import Axios from 'axios';
+import { OPENAPI } from 'api'
 import PropTypes from 'prop-types'
 import { useTranslation } from "react-i18next";
 
@@ -47,9 +47,7 @@ const MarketPrice = ({ id = '' }) => {
         }
         try {
             const marketprice = async () => {
-                // const result = await (await Axios.post(`/${process.env.REACT_APP_OPENAPI_HOST}/tools/?service=MarketNew.marketprice`, { ...params })).data
-                const result = await (await Axios.post(`/api/tools/?service=MarketNew.marketprice`, { ...params })).data
-                console.log('result', await Axios.post(`/api/tools/?service=MarketNew.marketprice`, { ...params }));
+                const result = await (await OPENAPI.post(`/tools/?service=MarketNew.marketprice`, { ...params })).data
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
                 switch (id) {
                     case 'Forex':
@@ -67,10 +65,6 @@ const MarketPrice = ({ id = '' }) => {
                 }
             }
             marketprice()
-            // const timer = setTimeout(() => {
-            //     marketprice()
-            // }, 3000);
-            // return () => clearTimeout(timer);
         } catch (error) { }
     }, [id])
     return (

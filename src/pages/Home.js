@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
-import Axios from 'axios';
+import { TOP_OPENAPI } from 'api';
 
 import TopBanner from 'components/TopBanner'
 import MarketPrice from 'components/MarketPrice'
@@ -191,7 +191,7 @@ const HomepageBanner = () => {
         const params = { companyId: "23", terminal: 'pc_website', code: 'global_index_pc', type: 'V' }
         try {
             const getAbroList = async () => {
-                const result = await (await Axios.get(`${process.env.REACT_APP_TOP_OPENAPI_HOST}/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
+                const result = await (await TOP_OPENAPI.get(`/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
                 setAdList(result.data[0].list)
             }

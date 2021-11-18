@@ -1,8 +1,9 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 module.exports = (app) => {
-    const topapi = createProxyMiddleware('/topapi', {
-        target: process.env.REACT_APP_TOP_OPENAPI_HOST,
+    const TOP_OPENAPI = createProxyMiddleware('/topapi', {
+        // target: 'http://192.168.75.53:3032' || 'https://restful.pubhx.com:3032' || 'https://openapi.topopenapi.com' || process.env.REACT_APP_TOP_OPENAPI_HOST,
+        target: process.env.REACT_APP_TOP_OPENAPI_HOST || 'https://restful.pubhx.com:3032' || 'https://openapi.topopenapi.com' || 'http://192.168.75.53:3032',
         changeOrigin: true,
         ws: true,
         pathRewrite: {
@@ -10,22 +11,16 @@ module.exports = (app) => {
         },
         toProxy: true
     })
-    // const api = createProxyMiddleware(`/${process.env.REACT_APP_OPENAPI_HOST}`, {
-    const api = createProxyMiddleware('/api', {
+    const OPENAPI = createProxyMiddleware('/api', {
         target: process.env.REACT_APP_OPENAPI_HOST,
         changeOrigin: true,
         ws: true,
         pathRewrite: {
             '^/api': '/'
         },
-        // toProxy: false
     })
 
-    if (process.env.NODE_ENV !== 'production') {
-        app.use(topapi)
-        app.use(api)
-    } else {
-        console.log('production mode:', topapi);
-    }
-
+    app.use(TOP_OPENAPI)
+    app.use(OPENAPI)
 };
+
