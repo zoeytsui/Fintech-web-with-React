@@ -28,25 +28,25 @@ const Calculate = () => {
 
             <div className="container col-9 p-4" style={{ minHeight: '630px' }}>
                 <div className={`${classes.calculateCard} card p-4`}>
-                    <ul className="nav nav-pills nav-fill">
-                        <li className="nav-item">
+                    <ul className="nav nav-fill">
+                        <li className="nav-item mx-2">
                             <button className="nav-link btn btn-warning active" aria-current="page" href="#">{t('Point Value')}</button>
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-item mx-2">
                             <button className="nav-link btn btn-warning" href="#">{t('Deposit')}</button>
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-item mx-2">
                             <button className="nav-link btn btn-warning" href="#">{t('Profit')}</button>
                         </li>
-                        <li className="nav-item">
+                        <li className="nav-item mx-2">
                             <button className="nav-link btn btn-warning">{t('Interest')}</button>
                         </li>
                     </ul>
-                    <div className="row align-items-end">
+                    <div className="row align-items-end my-4">
 
                         <div className="col">
-                            <label for="Trading Type" className="form-label">Trading Type</label>
-                            <select class="form-select" value="Commodity" aria-label="Trading Type" id="Trading Type">
+                            <label htmlFor="Trading Type" className="form-label">Trading Type</label>
+                            <select className="form-select" value="Commodity" aria-label="Trading Type" id="Trading Type">
                                 <option selected>Commodity</option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -55,8 +55,8 @@ const Calculate = () => {
                         </div>
 
                         <div className="col">
-                            <label for="Trading Product" className="form-label">Trading Type</label>
-                            <select class="form-select" value="Gold" aria-label="Trading Product" id="Trading Product">
+                            <label htmlFor="Trading Product" className="form-label">Trading Product</label>
+                            <select className="form-select" value="Gold" aria-label="Trading Product" id="Trading Product">
                                 <option selected>Gold</option>
                                 <option value="1">One</option>
                                 <option value="2">Two</option>
@@ -65,7 +65,7 @@ const Calculate = () => {
                         </div>
 
                         <div className="col">
-                            <label for="Trading Amount" value="0.01" className="form-label">Trading Type</label>
+                            <label htmlFor="Trading Amount" value="0.01" className="form-label">{t('Trading Amount')}</label>
                             <input type="number" id="Trading Amount" className="form-control"></input>
                         </div>
 

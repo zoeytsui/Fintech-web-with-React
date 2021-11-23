@@ -26,52 +26,14 @@ const Help = () => {
             // position: 'relative', left: '-63px', zIndex: '4'
         }
     }
-    const features = [
-        { icon: cs_1, title: 'Real time response from our elite customer service.' },
-        { icon: twentyFour_1, title: '24/5 exclusive customer service, available anytime on trading days.' },
-        { icon: pc_1, title: 'Professional team to help you succeed.' }
-    ]
-    return (
-        <>
-            <div className="d-flex align-items-center" style={useStyles.topBackground}>
-                <div className="container text-white">
-                    <h1 className="fw-bold text-white text-center mb-5">{t('How may we help?')}</h1>
 
-                    <div className="input-group mx-auto" style={{ width: '60%' }}>
-                        <input type="text" className="form-control" placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-addon2" />
-                        <button style={useStyles.searchBtn} className="btn btn-primary" type="button" id="button-addon2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
-                                <g transform="translate(-1514 -1528)">
-                                    <circle fill="#83bf4b" cx="13" cy="13" r="13" transform="translate(1514 1528)" />
-                                    <path fill="#fff" d="M7.272,3a4.274,4.274,0,0,1,3.247,7.052l.177.177h.519L14.5,13.515l-.986.986-3.286-3.286V10.7l-.177-.177A4.273,4.273,0,1,1,7.272,3m0,1.314a2.957,2.957,0,1,0,2.957,2.957A2.945,2.945,0,0,0,7.272,4.314Z" transform="translate(1518.25 1532.25)" />
-                                </g>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <div className="row mx-auto flex-wrap justify-content-center py-5" style={{ background: "#F1F1F1" }}>
-                {features.map(card =>
-                    <div className="feature-card card d-flex align-items-center text-center col-6 col-lg-3 m-3 p-2" key={t(card.title)}>
-                        <img src={card.icon} align="center" width="138px" alt={card.title} />
-                        <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title text-dark mx-2">{`${t(card.title)}`}</h5>
-                    </div>
-                )}
-            </div>
-
-            <FAQ />
-        </>
-    )
-}
-
-const FAQ = () => {
-    const { t } = useTranslation();
-    const [QuestionType, setQuestionType] = React.useState([])
+    // response from Question.getList
     const [QuestionList, setQuestionList] = React.useState([])
+    // set active tabs
     const [QuestionDetail, setQuestionDetail] = React.useState({})
-    const [QuestionID, setQuestionID] = React.useState()
     const answerRef = React.useRef(<div />)
+
     const styled = makeStyles({
         quesNav: {
             "& :hover,:focus,:target": {
@@ -93,124 +55,216 @@ const FAQ = () => {
 
     React.useEffect(() => {
         try {
-            const getQuestionType = async (params) => {
+
+            const getQuestionType = async (lang) => {
+
+                switch (lang) {
+                    case 'vi':
+                        lang = 'vn'
+                        break;
+                    case 'ms':
+                        lang = 'my'
+                        break;
+                    case 'cn':
+                        lang = 'ch'
+                        break;
+                    case 'en':
+                        lang = 'en'
+                        break;
+
+                    default:
+                        lang = 'en'
+                        break;
+                }
+
+                const params = {
+                    companyId: 23,
+                    terminal: 'app',
+                    url: 'help_' + lang
+                }
+
                 const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getQuestionType`, { params: params })).data
-                console.log((await TOP_OPENAPI.get(`/hx/?service=Question.getQuestionType`, { params: params })));
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                setQuestionType(result.data)
                 if (result.data[0] !== undefined) {
-                    setQuestionID(result.data[0].id)
+
+                    Promise.resolve()
+                        .then(() => {
+                            result.data.map(item =>
+                                getList(item.id, function (data) {
+                                    if (item.id === data.list[0].type_id) {
+                                        item.list = data.list
+                                    }
+                                }))
+                        })
+                        .then(() => {
+                            setTimeout(() => {
+                                if (result.data[0] !== undefined || result.data[0].list[0] !== undefined) {
+                                    toggleTabs({
+                                        id: result.data[0].id,
+                                        question: result.data[0].list[0].question,
+                                        answer: result.data[0].list[0].answer
+                                    })
+                                }
+                                setQuestionList(result.data)
+                            }, 800);
+                        })
+
                 }
             }
-            switch (i18n.language) {
-                case 'vi':
-                    getQuestionType({
-                        companyId: 23,
-                        terminal: 'app',
-                        url: 'help_vn'
-                    })
-                    break;
-                case 'ms':
-                    getQuestionType({
-                        companyId: 23,
-                        terminal: 'app',
-                        url: 'help_my'
-                    })
-                    break;
-                case 'cn':
-                    getQuestionType({
-                        companyId: 23,
-                        terminal: 'app',
-                        url: 'help_ch'
-                    })
-                    break;
-                case 'en':
-                    getQuestionType({
-                        companyId: 23,
-                        terminal: 'app',
-                        url: 'help_' + i18n.language
-                    })
-                    break;
 
-                default:
-                    getQuestionType({
-                        companyId: 23,
-                        terminal: 'app',
-                        url: 'help_' + i18n.language
-                    })
-                    break;
+            const getList = async (id, callback) => {
+
+                const params = {
+                    companyId: 23,
+                    terminal: 'app',
+                    appId: 'com.mt4.hwsc',
+                    typeId: id,
+                    pageSize: 100
+                }
+
+                const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getList`, { params: params })).data
+                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+                callback(result.data)
             }
-        } catch (error) { }
+
+            getQuestionType(i18n.language)
+        } catch (error) { console.error(error) }
         // eslint-disable-next-line
     }, [i18n.language])
 
-    React.useEffect(() => {
-        try {
-            const getList = async (params) => {
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getList`, { params: params })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                setQuestionList(result.data.list)
-                if (QuestionID !== undefined) {
-                    let res = result.data.list.filter(q => q.type_id === QuestionID)[0]
-                    console.log('result.data.list', result.data.list);
-                    console.log('QuestionID', QuestionID);
-                    console.log('res.id', res);
-                    if (res !== undefined) {
-                        setQuestionDetail({ id: res.id, question: res.question, answer: res.answer })
-                        answerRef.current.innerHTML = res.answer
-                    }
-                }
-
-            }
-            getList({
-                companyId: 23,
-                terminal: 'app',
-                appId: 'com.mt4.hwsc',
-                pageSize: 100
-            })
-
-        } catch (error) { }
-        // eslint-disable-next-line
-    }, [QuestionID])
-
     return (
-        <div className="container my-5">
-            <h1 className="fw-bold text-dark text-center mb-5">{t('FAQ')}</h1>
-            <div className="d-flex justify-content-center">
+        <>
+            <div className="d-flex align-items-center" style={useStyles.topBackground}>
+                <div className="container text-white">
+                    <h1 className="fw-bold text-white text-center mb-5">{t('How may we help?')}</h1>
 
-                <div className="accordion accordion-flush col-4" id="FAQList">
-                    {QuestionType.map((list, index) =>
-                        <div key={list.id} className="accordion-item">
-                            <div className="accordion-item">
-                                <h2 className="accordion-header" id={list.id}>
-                                    <button className={`accordion-button ${index === 0 ? '' : 'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target={'#' + (list.title).replaceAll(' ', '-')} aria-expanded="false" aria-controls={list.title.replaceAll(' ', '-')}>
-                                        {list.title}
-                                    </button>
-                                </h2>
-                                <div id={list.title.replaceAll(' ', '-')} className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`} aria-labelledby={list.id} data-bs-parent="#FAQList">
-                                    <ul className="accordion-body list-unstyled" style={{ background: "#F5F5F5" }}>
-                                        {QuestionList.filter(q => q.type_id === list.id).map(ques =>
-                                            <li key={ques.id} className={`${styled.quesNav} my-3`}>
-                                                <button onClick={() => toggleTabs({ id: ques.di, question: ques.question, answer: ques.answer })} className="link-secondary">
-                                                    {ques.question}
-                                                </button>
-                                            </li>
-                                        )}
-                                    </ul>
+                    <SearchBar styled={useStyles.searchBtn} results={QuestionList} />
+
+                </div>
+            </div>
+
+            <FeatureCard />
+
+            {/* FAQ */}
+            <div className="container my-5">
+                <h1 className="fw-bold text-dark text-center mb-5">{t('FAQ')}</h1>
+                <div className="d-flex justify-content-center">
+                    <div className="accordion accordion-flush col-4" id="FAQList">
+                        {QuestionList.map((list, index) =>
+                            <div key={list.id} className="accordion-item">
+                                <div className="accordion-item">
+                                    <h2 className="accordion-header" id={list.id}>
+                                        <button className={`accordion-button ${index === 0 ? '' : 'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target={'#' + (list.title).replaceAll(' ', '-')} aria-expanded="false" aria-controls={list.title.replaceAll(' ', '-')}>
+                                            {list.title}
+                                        </button>
+                                    </h2>
+                                    <div id={list.title.replaceAll(' ', '-')} className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`} aria-labelledby={list.id} data-bs-parent="#FAQList">
+                                        <ul className="accordion-body list-unstyled" style={{ background: "#F5F5F5" }}>
+
+                                            {list.list
+                                                ? list.list.map(ques =>
+                                                    <li key={ques.id} className={`${styled.quesNav} my-3`}>
+                                                        <button onClick={() => toggleTabs({ id: ques.id, question: ques.question, answer: ques.answer })} className="link-secondary">
+                                                            {ques.question}
+                                                        </button>
+                                                    </li>
+                                                )
+                                                : console.warn('no list', list)
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
 
-                <div className="container col-7" id="FAQList">
-                    <h4 className="text-dark">{QuestionDetail.question}</h4>
-                    <div className="text-secondary" ref={answerRef} />
-                </div>
+                    <div className="container col-7">
+                        <h4 className="text-dark">{QuestionDetail.question}</h4>
+                        <div className="text-secondary" ref={answerRef} />
+                    </div>
 
+                </div>
             </div>
+
+            <VideoTutorial />
+        </>
+    )
+}
+
+const SearchBar = (styled, results) => {
+    const { t } = useTranslation();
+    const [searchInput, setSearchInput] = React.useState('');
+    const searchItems = (searchValue) => {
+        setSearchInput(searchValue)
+        console.log('searchValue', searchValue);
+        console.log('results', results);
+        // results.filter((item) => {
+        //     return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
+        // })
+    }
+    return (
+        <div className="input-group mx-auto" style={{ width: '60%' }}>
+            <input type="text" className="form-control" onChange={(e) => searchItems(e.target.value)} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-addon2" />
+            <button style={styled} className="btn btn-primary" type="button" id="button-addon2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+                    <g transform="translate(-1514 -1528)">
+                        <circle fill="#83bf4b" cx="13" cy="13" r="13" transform="translate(1514 1528)" />
+                        <path fill="#fff" d="M7.272,3a4.274,4.274,0,0,1,3.247,7.052l.177.177h.519L14.5,13.515l-.986.986-3.286-3.286V10.7l-.177-.177A4.273,4.273,0,1,1,7.272,3m0,1.314a2.957,2.957,0,1,0,2.957,2.957A2.945,2.945,0,0,0,7.272,4.314Z" transform="translate(1518.25 1532.25)" />
+                    </g>
+                </svg>
+            </button>
         </div>
     )
 }
+
+const FeatureCard = () => {
+    const { t } = useTranslation();
+    const features = [
+        { icon: cs_1, title: 'Real time response from our elite customer service.' },
+        { icon: twentyFour_1, title: '24/5 exclusive customer service, available anytime on trading days.' },
+        { icon: pc_1, title: 'Professional team to help you succeed.' }
+    ]
+    return (
+        <div className="row mx-auto flex-wrap justify-content-center py-5" style={{ background: "#F1F1F1" }}>
+            {features.map(card =>
+                <div className="feature-card card d-flex align-items-center text-center col-6 col-lg-3 m-3 p-2" key={t(card.title)}>
+                    <img src={card.icon} align="center" width="138px" alt={card.title} />
+                    <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title text-dark mx-2">{`${t(card.title)}`}</h5>
+                </div>
+            )}
+        </div>
+    )
+}
+
+// TODO: not finished
+const VideoTutorial = () => {
+    // const { t } = useTranslation();
+    // const video_list=[{
+    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/open_account_'+this.lang+'.png',
+    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/open_account_'+this.ch_lang(this.lang)+'.mp4',
+    //     'des':'Tìm hiểu về đầu tư forex trong 1 phút'
+    // },{
+    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/deposit_'+this.lang+'.png',
+    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/deposit_'+this.ch_lang(this.lang)+'.mp4',
+    //     'des':'Hướng dẫn nạp tiền nhanh chóng'
+    // },{
+    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/how_order_'+this.lang+'.png',
+    //     'video_url':'https://comfile.osboyo.com/2020-05-22/Trade_'+this.lang+'.mp4',
+    //     'des':'Làm sao xuống lệnh giao dịch ?'
+    // },{
+    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/account_leave_'+this.lang+'.jpg',
+    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/account_type_'+this.ch_lang(this.lang)+'.mp4',
+    //     'des':'Các loại tại khoản tại HXFX?Cách chọn tài khoản phù hợp cho bạn?'
+    // },{
+    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/withdraw_'+this.lang+'.png',
+    //     'video_url':'https://comfile.osboyo.com/2020-04-30/Withdraw_'+this.lang+'.mp4',
+    //     'des':'Hướng dẫn cách rút tiền dễ dàng từ tài khoản'
+    // }]
+    return (
+        <>
+        </>
+    )
+}
+
 
 export default Help

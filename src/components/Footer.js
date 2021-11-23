@@ -24,33 +24,33 @@ const useStyles = makeStyles({
 })
 
 const navList = [
-    { item: 'Home', link: '/' },
-    { item: 'About Us', link: '/' },
-    { item: 'Platforms', link: '/platforms' },
+    { item: 'About Us', link: '/About-us' },
+    { item: 'Platforms', link: '/Platforms' },
     {
         item: 'Products',
         link: [
-            { item: 'Forex', link: '/' },
-            { item: 'Commodities', link: '/' },
-            { item: 'Indices', link: '/' },
-            { item: 'Calculate', link: '/' }
+            { item: 'Forex', link: '/Products/Forex' },
+            { item: 'Commodities', link: '/Products/Commodities' },
+            { item: 'Indices', link: '/Products/Indices' },
+            { item: 'Calculate', link: '/Products/Calculate' }
         ]
     },
     {
         item: 'Accounts',
         link: [
-            { item: 'Account Types', link: '/' },
-            { item: 'Promotions', link: '/' },
+            { item: 'Account Types', link: '/Accounts/Account-Types' },
+            { item: 'Promotions', link: '/Accounts/Promotions' },
         ]
     },
     {
         item: 'Resources',
         link: [
-            { item: 'News', link: '/' },
-            { item: 'Blog', link: '/' },
+            { item: 'News', link: '/Resources/News' },
+            { item: 'Blog', link: '/Resources/Blog' },
+            { item: 'Strategy', link: '/Resources/Strategy' },
         ]
     },
-    { item: 'Help', link: '/' }
+    { item: 'Help', link: '/Help' }
 ]
 
 export default function Footer() {

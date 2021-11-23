@@ -17,20 +17,21 @@ const Index = () => {
         try {
             switch (i18n.language) {
                 case 'vi':
-                    params.current = { companyId: "23", languageName: '越南文', utmTerminal: 'all', url: "news-vn" }
+                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-vn" }
                     break;
+                // no ms data
                 case 'ms':
-                    params.current = { companyId: "23", languageName: '马来文', utmTerminal: 'all', url: "news-my" }
+                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
                     break;
                 case 'cn':
-                    params.current = { companyId: "23", languageName: '中文', utmTerminal: 'all', url: "news-cn" }
+                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-cn" }
                     break;
                 case 'en':
-                    params.current = { companyId: "23", languageName: '英文', utmTerminal: 'all', url: "news-en" }
+                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
                     break;
 
                 default:
-                    params.current = { companyId: "23", languageName: '英文', utmTerminal: 'all', url: "news-en" }
+                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
                     break;
             }
             const getList = async () => {
@@ -43,9 +44,26 @@ const Index = () => {
         // eslint-disable-next-line
     }, [i18n.language])
     return (
-        <section className="container d-flex flex-wrap justify-content-center col-9">
-            {adList.map(list =>
-                <div className="card col-3 m-2 shadow-sm" style={{ borderRadius: '20px' }} key={list.title}>
+        <section className="container d-flex flex-wrap justify-content-center col-9 py-4">
+            {adList.map((list, index) =>
+                // index === 0
+                //     ? <div className="card row mb-3 shadow-sm" style={{ borderRadius: '20px' }} key={list.title}>
+                //         <div className="row g-0">
+                //             <div className="col-md-4">
+                //                 <img src={list.cover_img} className="img-fluid rounded" alt={list.title} />
+                //             </div>
+                //             <div className="col-md-8">
+                //                 <div className="card-body">
+                //                     <h5 className="card-title">{t(list.title)}</h5>
+                //                     <p className="card-text">{t(list.remark)}</p>
+                //                     <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
+                //                     <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
+                //                 </div>
+                //             </div>
+                //         </div>
+                //     </div>
+                //     : 
+                <div className="card col-12 col-lg-3 m-2 shadow-sm" style={{ borderRadius: '20px' }} key={list.title}>
                     <img src={list.cover_img} className="card-img-top" style={{ borderRadius: '20px 20px 0 0' }} alt={list.title} />
                     <div className="card-body">
                         <h5 className="card-title">{t(list.title)}</h5>
@@ -133,6 +151,7 @@ const EventCalendar = () => {
     const { t } = useTranslation();
     const now = new Intl.DateTimeFormat(i18n.language).format(new Date()).replaceAll('/', '-')
     const release_time = new Intl.DateTimeFormat('zh').format(new Date()).replaceAll('/', '-')
+    // eslint-disable-next-line
     const [FinanceData, setFinanceData] = React.useState([])
 
     // for ch
@@ -140,15 +159,15 @@ const EventCalendar = () => {
         const result = await (await TOP_OPENAPI.get(`/tools/?service=news.getFinanceData`, { params: params })).data
         if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
         console.log('getFinanceData', result.data.list);
-        setFinanceData(result.data.list.financeEvent)
+        // setFinanceData(result.data.list.financeEvent)
     }
 
     // for en, vi
     const getMultFinanceData = async (params) => {
         const result = await (await TOP_OPENAPI.get(`/tools/?service=news.getMultFinanceData`, { params: params })).data
         if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-        console.log('getFinanceData', result.data.list);
-        setFinanceData(result.data.list.financeEvent)
+        console.log('getMultFinanceData', result.data.list);
+        // setFinanceData(result.data.list.financeEvent)
     }
 
     React.useEffect(() => {
@@ -214,20 +233,21 @@ const News = () => {
                 titles={["Low Cost | High Reward"]}
                 subtitles={["Start your trading journey"]} />
 
-            {/* <div className="d-flex col-11 my-4"> */}
-            <Router basename={'/Resources'}>
-                <Switch>
-                    <Route exact path="/News">
-                        <Index />
-                    </Route>
-                    <Route exact path="/News/:id">
-                        <Detail />
-                    </Route>
-                </Switch>
-            </Router>
+            <div className="d-flex col-11 my-4">
+                <Router basename={'/Resources'}>
+                    <Switch>
+                        <Route exact path="/News">
+                            <Index />
+                        </Route>
+                        <Route exact path="/News/:id">
+                            <Detail />
+                        </Route>
+                    </Switch>
+                </Router>
 
-            {/* <EventCalendar />
-            </div> */}
+                {/* TODO: upated data */}
+                <EventCalendar />
+            </div>
         </>
     )
 }
