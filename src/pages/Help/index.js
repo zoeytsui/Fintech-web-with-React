@@ -11,7 +11,21 @@ import twentyFour_1 from 'assets/images/icons/twentyFour_1.png'
 
 const Help = () => {
     const { t } = useTranslation();
-    const useStyles = {
+
+    // response from Question.getList
+    const [QuestionList, setQuestionList] = React.useState([])
+    // set active tabs
+    const [QuestionDetail, setQuestionDetail] = React.useState({})
+    // string to html element
+    const answerRef = React.useRef(<div />)
+
+    const [disabled, setDisabled] = React.useState(true)
+
+    const searchInput = React.useRef(null);
+
+    const [filterList, setFilterList] = React.useState([])
+
+    const styled = makeStyles({
         topBackground: {
             backgroundImage: `url(${topbanner})`,
             backgroundRepeat: 'no-repeat',
@@ -19,22 +33,6 @@ const Help = () => {
             backgroundSize: 'cover',
             height: '638px'
         },
-        searchBtn: {
-            background: '#fff',
-            border: '1px solid #ced4da',
-            borderLeft: 0,
-            // position: 'relative', left: '-63px', zIndex: '4'
-        }
-    }
-
-
-    // response from Question.getList
-    const [QuestionList, setQuestionList] = React.useState([])
-    // set active tabs
-    const [QuestionDetail, setQuestionDetail] = React.useState({})
-    const answerRef = React.useRef(<div />)
-
-    const styled = makeStyles({
         quesNav: {
             "& :hover,:focus,:target": {
                 color: '#23383A'
@@ -45,100 +43,213 @@ const Help = () => {
                 textAlign: 'left',
                 background: 'transparent'
             }
+        },
+        SearchBar: {
+            position: 'absolute',
+            left: '12.5%'
+        },
+        searchBtn: {
+            background: '#fff',
+            border: '1px solid #ced4da',
+            borderLeft: 0,
+            // position: 'relative', left: '-63px', zIndex: '4'
+        },
+        filterList: {
+            "& .btn": {
+                color: '#858585',
+                border: '0 !important',
+                textDecoration: 'none',
+                "&:hover,:focus,:target": {
+                    border: '0 !important',
+                    color: '#83bf4b'
+                },
+            }
         }
     })()
+
+    React.useEffect(() => {
+        getQuestionType(i18n.language)
+        // eslint-disable-next-line
+    }, [i18n.language])
+
+    React.useEffect(() => {
+        // Enable input when FAQuestions are ready
+        QuestionList.length > 0 ? setDisabled(false) : setDisabled(true)
+        getTopList(i18n.language)
+        // eslint-disable-next-line
+    }, [QuestionList, i18n.language])
 
     const toggleTabs = ({ id, question, answer }) => {
         answerRef.current.innerHTML = answer
         setQuestionDetail({ id: id, question: question, answer: answer })
     }
 
-    React.useEffect(() => {
+    const onButtonClick = () => {
+        searchInput.current.focus();
+        console.log('searchInput.current.focus()', searchInput.current);
+        document.getElementById('filterList').classList.add('show')
+    };
+
+    // TODO: not finished
+    const searchItems = (searchValue) => {
+        const FAQList = document.getElementById('FAQList')
+        const questionList = FAQList.getElementsByTagName('li')
+
+        console.log('searchValue', searchValue);
+
+        Array.from(questionList).filter(item => {
+            const element = item.children[0]
+            let txtValue = element.textContent || element.innerHTML
+            // if (txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1) {
+            //     return setFilterList(element)
+            // }
+            return txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1 ? setFilterList(element) : ''
+            // return Object.values(item).join('').toLowerCase().includes(searchInput.current.toLowerCase())
+        })
+    }
+
+    const getQuestionType = async (lang) => {
         try {
+            switch (lang) {
+                case 'vi':
+                    lang = 'vn'
+                    break;
+                case 'ms':
+                    lang = 'my'
+                    break;
+                case 'cn':
+                    lang = 'ch'
+                    break;
+                case 'en':
+                    lang = 'en'
+                    break;
 
-            const getQuestionType = async (lang) => {
-
-                switch (lang) {
-                    case 'vi':
-                        lang = 'vn'
-                        break;
-                    case 'ms':
-                        lang = 'my'
-                        break;
-                    case 'cn':
-                        lang = 'ch'
-                        break;
-                    case 'en':
-                        lang = 'en'
-                        break;
-
-                    default:
-                        lang = 'en'
-                        break;
-                }
-
-                const params = {
-                    companyId: 23,
-                    terminal: 'app',
-                    url: 'help_' + lang
-                }
-
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getQuestionType`, { params: params })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                if (result.data[0] !== undefined) {
-
-                    Promise.resolve()
-                        .then(() => {
-                            result.data.map(item =>
-                                getList(item.id, function (data) {
-                                    if (item.id === data.list[0].type_id) {
-                                        item.list = data.list
-                                    }
-                                }))
-                        })
-                        .then(() => {
-                            setTimeout(() => {
-                                if (result.data[0] !== undefined || result.data[0].list[0] !== undefined) {
-                                    toggleTabs({
-                                        id: result.data[0].id,
-                                        question: result.data[0].list[0].question,
-                                        answer: result.data[0].list[0].answer
-                                    })
-                                }
-                                setQuestionList(result.data)
-                            }, 800);
-                        })
-
-                }
+                default:
+                    lang = 'en'
+                    break;
             }
 
-            const getList = async (id, callback) => {
-
-                const params = {
-                    companyId: 23,
-                    terminal: 'app',
-                    appId: 'com.mt4.hwsc',
-                    typeId: id,
-                    pageSize: 100
-                }
-
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getList`, { params: params })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                callback(result.data)
+            const params = {
+                companyId: 23,
+                terminal: 'app',
+                url: 'help_' + lang
             }
 
-            getQuestionType(i18n.language)
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getQuestionType`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            if (result.data[0] !== undefined) {
+
+                await result.data.map(item =>
+                    getList(item.id, (data) => {
+                        if (item.id === data.list[0].type_id) {
+                            item.list = data.list
+                        }
+                    }))
+
+                await new Promise(res => {
+                    let checkInterval = setInterval(() => {
+                        if (result.data.every(item => item.list !== undefined)) {
+                            res(clearInterval(checkInterval))
+                        }
+                    }, 100);
+                })
+
+                toggleTabs({
+                    id: result.data[0].id,
+                    question: result.data[0].list[0].question,
+                    answer: result.data[0].list[0].answer
+                })
+                setQuestionList(result.data)
+
+            }
         } catch (error) { console.error(error) }
-        // eslint-disable-next-line
-    }, [i18n.language])
+    }
+
+    const getList = async (id, callback) => {
+        try {
+            const params = {
+                companyId: 23,
+                terminal: 'app',
+                appId: 'com.mt4.hwsc',
+                typeId: id,
+                pageSize: 100
+            }
+
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getList`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            callback(result.data)
+        } catch (error) { console.error(error) }
+    }
+
+    const getTopList = async (lang) => {
+        try {
+            switch (lang) {
+                case 'vi':
+                    lang = 'vn'
+                    break;
+                case 'ms':
+                    lang = 'my'
+                    break;
+                case 'cn':
+                    lang = 'ch'
+                    break;
+                case 'en':
+                    lang = 'en'
+                    break;
+
+                default:
+                    lang = 'en'
+                    break;
+            }
+            const params = {
+                companyId: 23,
+                terminal: 'app',
+                appId: 'com.mt4.hwsc',
+                url: 'help_' + lang
+            }
+
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getTopList`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            // if (result.data[0] !== undefined) { }
+
+            setFilterList(result.data)
+            console.log(result);
+        } catch (error) { }
+    }
+
 
     return (
         <>
-            <div className="d-flex align-items-center" style={useStyles.topBackground}>
+            <div className={`d-flex align-items-center ${styled.topBackground}`}>
                 <div className="container text-white">
                     <h1 className="fw-bold text-white text-center mb-5">{t('How may we help?')}</h1>
 
-                    <SearchBar styled={useStyles.searchBtn} results={QuestionList} />
+                    {/* Search bar */}
+                    <div className={`container col-9 ${styled.SearchBar}`}>
+
+                        <div className="input-group" id="searchInput">
+
+                            <input type="text" className="form-control" ref={searchInput} onClick={onButtonClick} onChange={(e) => searchItems(e.target.value)} disabled={disabled} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-search" />
+
+                            <button className={`btn btn-primary ${styled.searchBtn}`} type="button" id="button-search">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
+                                    <g transform="translate(-1514 -1528)">
+                                        <circle fill="#83bf4b" cx="13" cy="13" r="13" transform="translate(1514 1528)" />
+                                        <path fill="#fff" d="M7.272,3a4.274,4.274,0,0,1,3.247,7.052l.177.177h.519L14.5,13.515l-.986.986-3.286-3.286V10.7l-.177-.177A4.273,4.273,0,1,1,7.272,3m0,1.314a2.957,2.957,0,1,0,2.957,2.957A2.945,2.945,0,0,0,7.272,4.314Z" transform="translate(1518.25 1532.25)" />
+                                    </g>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <ul style={{ zIndex: '100000000000000000000' }} id="filterList" className="collapse bg-white list-unstyled rounded p-3" aria-labelledby="searchInput">
+                            <h6 className="text-dark">{t("Everyone's asking:")}</h6>
+                            <li><hr className="dropdown-divider" /></li>
+                            {filterList.map(list =>
+                                <li key={list.id} className={styled.filterList}><button onClick={() => toggleTabs({ id: list.id, question: list.question, answer: list.answer })} className="btn btn-link">{list.question}</button></li>
+                            )}
+                        </ul>
+
+                    </div >
 
                 </div>
             </div>
@@ -188,32 +299,6 @@ const Help = () => {
 
             <VideoTutorial />
         </>
-    )
-}
-
-const SearchBar = (styled, results) => {
-    const { t } = useTranslation();
-    const [searchInput, setSearchInput] = React.useState('');
-    const searchItems = (searchValue) => {
-        setSearchInput(searchValue)
-        console.log('searchValue', searchValue);
-        console.log('results', results);
-        // results.filter((item) => {
-        //     return Object.values(item).join('').toLowerCase().includes(searchInput.toLowerCase())
-        // })
-    }
-    return (
-        <div className="input-group mx-auto" style={{ width: '60%' }}>
-            <input type="text" className="form-control" onChange={(e) => searchItems(e.target.value)} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-addon2" />
-            <button style={styled} className="btn btn-primary" type="button" id="button-addon2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
-                    <g transform="translate(-1514 -1528)">
-                        <circle fill="#83bf4b" cx="13" cy="13" r="13" transform="translate(1514 1528)" />
-                        <path fill="#fff" d="M7.272,3a4.274,4.274,0,0,1,3.247,7.052l.177.177h.519L14.5,13.515l-.986.986-3.286-3.286V10.7l-.177-.177A4.273,4.273,0,1,1,7.272,3m0,1.314a2.957,2.957,0,1,0,2.957,2.957A2.945,2.945,0,0,0,7.272,4.314Z" transform="translate(1518.25 1532.25)" />
-                    </g>
-                </svg>
-            </button>
-        </div>
     )
 }
 

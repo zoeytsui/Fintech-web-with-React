@@ -6,7 +6,7 @@ import step1 from 'assets/images/home/step1.png'
 import step2 from 'assets/images/home/step2.png'
 import step3 from 'assets/images/home/step3.png'
 
-import phone_3 from 'assets/images/home/phone_3.png'
+import phone_3 from 'assets/images/home/phone_3.gif'
 import payment_icon from 'assets/images/paymenticon_white.png'
 
 const OpenAccount = () => {

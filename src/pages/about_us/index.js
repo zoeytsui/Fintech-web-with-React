@@ -62,13 +62,41 @@ const Section2 = () => {
 }
 
 const history_context = [
-    { name: "2010 - 2014", content: [''] },
-    { name: "2015 - 2017", content: ['The number of user exceeded 300K', 'Partnership with ACB bank and DONGA Bank', 'Launched the internal Testing Edition Mobile App', 'Officially launched the natural gas and European share index contract notice', 'Won the best innovation silver industry Asia Pacific Stevie Silver Award'] },
-    { name: "2018", content: [''] },
-    { name: "2019 - 2020", content: [''] },
+    {
+        name: "2010 - 2014", content: [
+            'Online trading terminals were launched',
+            'A professional customer service team was set up to provide professional investment Q&A services',
+            'The platform launched a news function to keep abreast of market dynamics',
+            'Official Web 2.0 was upgraded'
+        ]
+    },
+    {
+        name: "2015 - 2017", content: [
+            'The number of user exceeded 300K', 'Partnership with ACB bank and DONGA Bank',
+            'Launched the internal Testing Edition Mobile App',
+            'Officially launched the natural gas and European share index contract notice',
+            'Won the best innovation silver industry Asia Pacific Stevie Silver Award']
+    },
+    {
+        name: "2018", content: [
+            'The mobile app was officially launched',
+            'Won the "Hong Kong Most Valuable Enterprise Award"',
+            'Won the title of "ERB Talent Enterprise"',
+            'Won the "Golden Bridge Award"',
+            'Won the 2018 financial growth company in the United States'
+        ]
+    },
+    {
+        name: "2019 - 2020", content: [
+            'The number of users exceeded 300W',
+            'Increased 24 Share (Hong Kong stocks / US stocks) product contracts',
+            'Officially launched an upgraded mobile trading APP——HXFX Trade',
+            'Brand new upgrade',
+            'Our glory will be continued'
+        ]
+    },
 ]
-// Section3
-// TODO: not finished
+
 const History = () => {
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = React.useState("2015 - 2017");

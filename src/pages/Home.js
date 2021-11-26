@@ -12,7 +12,7 @@ import AwardCarousel from 'components/AwardCarousel'
 // import banner_img1 from 'assets/images/home/topbanner.png';
 
 import phone_1 from 'assets/images/home/phone_1.png'
-import phone_3 from 'assets/images/home/phone_3.png'
+import phone_3 from 'assets/images/home/phone_3.gif'
 
 import section1_img1 from 'assets/images/icons/currency_2.png'
 import section1_img2 from 'assets/images/icons/mutiplatform_2.png'
@@ -21,7 +21,10 @@ import section1_img4 from 'assets/images/icons/secure_2.png'
 import section1_img5 from 'assets/images/icons/balance_2.png'
 import section1_img6 from 'assets/images/icons/prize_2.png'
 
-import flag_img1 from 'assets/images/home/HK.png'
+import flag_MY from 'assets/images/home/flag_MY.png'
+import flag_VN from 'assets/images/home/flag_VN.png'
+import flag_CN from 'assets/images/home/flag_CN.png'
+import flag_EN from 'assets/images/home/flag_EN.png'
 
 import step1 from 'assets/images/home/step1.png'
 import step2 from 'assets/images/home/step2.png'
@@ -139,38 +142,6 @@ const context = {
             'International general trading platform',
             'Lightning fast order execution',
             'Advanced chart analysis'
-        ]
-    },
-    Section3: {
-        title: 'HXFX Global Direct App',
-        subtitle: 'Simple, Clear, Impressive Available for iOS and Android devices.',
-        features: [
-            'Trade World Markets',
-            'Manage Trading Accounts',
-            'Variety of payment methods',
-            'Latest economic events'
-        ],
-        codeOptions: [
-            {
-                value: 'en',
-                code: '+852',
-                src: flag_img1
-            },
-            {
-                value: 'ms',
-                code: '+60',
-                src: flag_img1
-            },
-            {
-                value: 'vi',
-                code: '+84',
-                src: flag_img1
-            },
-            {
-                value: 'cn',
-                code: '+86',
-                src: flag_img1
-            },
         ]
     },
     Section5: {
@@ -294,8 +265,39 @@ const Section2 = () => {
 // Section3
 const Section3 = () => {
     const { t, i18n } = useTranslation();
+
+    const Section3 = {
+        features: [
+            'Trade World Markets',
+            'Manage Trading Accounts',
+            'Variety of payment methods',
+            'Latest economic events'
+        ],
+        codeOptions: [
+            {
+                value: 'en',
+                code: '+60',
+                src: flag_EN
+            },
+            {
+                value: 'ms',
+                code: '+60',
+                src: flag_MY
+            },
+            {
+                value: 'vi',
+                code: '+84',
+                src: flag_VN
+            },
+            {
+                value: 'cn',
+                code: '+86',
+                src: flag_CN
+            },
+        ]
+    }
     // eslint-disable-next-line
-    const [code, setCode] = useState(context.Section3.codeOptions.find(cur => cur.value === i18n.language).code);
+    const [code, setCode] = useState(Section3.codeOptions.find(cur => cur.value === i18n.language).code);
     const changeCode = (code) => setCode(code);
 
     return (
@@ -303,25 +305,25 @@ const Section3 = () => {
             <div className="row justify-content-center align-items-center">
 
                 <div data-aos="fade-right" data-aos-offset="300" className="col col-12 col-lg-6 text-center">
-                    <img src={phone_1} width="100%" height="100%" alt={`${t(context.Section3.title)}`} />
+                    <img src={phone_1} width="100%" height="100%" alt={t('HXFX Global Direct App')} />
                 </div>
                 <div data-aos="fade-left" data-aos-offset="300" className="col col-12 col-lg-6">
-                    <h2 className="fw-bold text-dark mb-3 pt-4">{`${t(context.Section3.title)}`}</h2>
-                    <h5 className="fw-bold mb-3 text-primary">{`${t(context.Section3.subtitle)}`}</h5>
+                    <h2 className="fw-bold text-dark mb-3 pt-4">{t('HXFX Global Direct App')}</h2>
+                    <h5 className="fw-bold mb-3 text-primary">{t('Simple, Clear, Impressive Available for iOS and Android devices.')}</h5>
                     {/* list */}
                     <ol className="list-group mb-3 list-number-primary">
-                        {context.Section3.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}>{t(feature)}</li>)}
+                        {Section3.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}>{t(feature)}</li>)}
                     </ol>
                     {/* input field */}
                     <form action="/" method="post" target="_blank">
                         <div className="input-group mb-4 p-2" style={{ background: '#F3F6FA', borderRadius: '10px' }}>
                             <button className="dropdown-toggle" style={{ border: 0, background: 'transparent' }} id="code" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img className="px-2" src={context.Section3.codeOptions.find(cur => cur.value === i18n.language).src} alt="" />
-                                {t(`${context.Section3.codeOptions.find(cur => cur.value === i18n.language).code}`)}
+                                <img className="px-2" src={Section3.codeOptions.find(cur => cur.value === i18n.language).src} alt="" />
+                                {t(`${Section3.codeOptions.find(cur => cur.value === i18n.language).code}`)}
                             </button>
 
                             <ul className={`dropdown-menu`} aria-labelledby="code">
-                                {context.Section3.codeOptions.map((option) =>
+                                {Section3.codeOptions.map((option) =>
                                     <li key={option.value} className="dropdown-item text-dark" onClick={() => changeCode(option.code)}>
                                         <img className="p-2" src={option.src} alt="" />
                                         {t(option.code)}

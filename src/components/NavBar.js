@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from 'react-router-dom';
 // import { Link, Switch, Route, Router } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
-import i18next from 'i18next'
+import i18n from 'i18next'
 // import cookies from 'js-cookie'
 import { makeStyles } from '@mui/styles';
 
@@ -105,6 +105,24 @@ export default function NavBar() {
     const { t } = useTranslation();
     const classes = useStyles();
 
+
+    const redirectLink = (lang) => {
+        switch (lang) {
+            case 'my':
+                lang = 'ms'
+                break;
+
+            default:
+                lang = 'vn'
+                break;
+        }
+    }
+
+    React.useEffect(() => {
+        redirectLink(i18n.language)
+        // eslint-disable-next-line
+    }, [i18n.language])
+
     return (
         <React.Fragment>
             {/* <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} /> */}
@@ -151,14 +169,14 @@ export default function NavBar() {
 
                         <div className="dropdown">
                             <button className={`btn dropdown-toggle ${classes.langList}`} id="langList" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img className="navbar-brand" src={langList.find(cur => cur.code === i18next.language).src} alt="" />
-                                {t(`${langList.find(cur => cur.code === i18next.language).name}`)}
+                                <img className="navbar-brand" src={langList.find(cur => cur.code === i18n.language).src} alt="" />
+                                {t(`${langList.find(cur => cur.code === i18n.language).name}`)}
                             </button>
 
                             <ul className={`dropdown-menu dropdown-menu-lg-end ${classes.dropdownList}`} aria-labelledby="langList">
                                 {langList.map((lang) =>
                                     <li key={lang.code}>
-                                        <button className="dropdown-item" onClick={() => i18next.changeLanguage(lang.code)}>
+                                        <button className="dropdown-item" onClick={() => i18n.changeLanguage(lang.code)}>
                                             <img className="navbar-brand" src={lang.src} alt="" />
                                             {t(`${lang.name}`)}
                                         </button>

@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
+import { useTranslation } from "react-i18next";
 import hxfxglobal_logo from '../assets/images/hxfxglobal_logo.png';
 
 import applestore from 'assets/images/home/applestore.png'
@@ -64,25 +63,19 @@ export default function Footer() {
                     {navList.map(li =>
                         !Array.isArray(li.link)
                             ? <div className="col" key={li.item}>
-                                <p>
-                                    <Link className={classes.aLink} to={li.link} id={li.item}>
-                                        {t(li.item)}
-                                    </Link>
-                                </p>
+                                <a className={classes.aLink} href={li.link} id={li.item}>{t(li.item)}</a>
                             </div>
                             : <div className="col" key={li.item}>
-                                <p>
-                                    <a className={classes.aLink} href='/' id={li.item}>
-                                        {t(li.item)}
-                                    </a>
-                                </p>
-                                <div className='row flex-column' aria-labelledby={li.item}>
+                                <a className={classes.aLink} href='/' id={li.item}>
+                                    {t(li.item)}
+                                </a>
+                                <div className='row flex-column my-2' aria-labelledby={li.item}>
                                     {li.link.map(drop_li =>
                                         <div className="col" key={drop_li.item}>
                                             <small>
-                                                <Link className={classes.aLink} to={drop_li.link}>
+                                                <a className={classes.aLink} href={drop_li.link}>
                                                     {t(drop_li.item)}
-                                                </Link>
+                                                </a>
                                             </small>
                                         </div>
                                     )}

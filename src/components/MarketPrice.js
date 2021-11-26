@@ -47,7 +47,7 @@ const MarketPrice = ({ id = '' }) => {
         }
         try {
             const marketprice = async () => {
-                const result = await (await OPENAPI.post(`/tools/?service=MarketNew.marketprice`, { ...params })).data
+                const result = await (await OPENAPI.post(`tools/?service=MarketNew.marketprice`, { ...params })).data
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
                 switch (id) {
                     case 'Forex':
@@ -66,7 +66,7 @@ const MarketPrice = ({ id = '' }) => {
             }
             marketprice()
         } catch (error) { }
-    }, [id])
+    })
     return (
 
         <TableContainer

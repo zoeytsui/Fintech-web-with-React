@@ -156,7 +156,7 @@ const EventCalendar = () => {
 
     // for ch
     const getFinanceData = async (params) => {
-        const result = await (await TOP_OPENAPI.get(`/tools/?service=news.getFinanceData`, { params: params })).data
+        const result = await (await TOP_OPENAPI.get(`tools/?service=news.getFinanceData`, { params: params })).data
         if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
         console.log('getFinanceData', result.data.list);
         // setFinanceData(result.data.list.financeEvent)
@@ -164,7 +164,7 @@ const EventCalendar = () => {
 
     // for en, vi
     const getMultFinanceData = async (params) => {
-        const result = await (await TOP_OPENAPI.get(`/tools/?service=news.getMultFinanceData`, { params: params })).data
+        const result = await (await TOP_OPENAPI.get(`tools/?service=news.getMultFinanceData`, { params: params })).data
         if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
         console.log('getMultFinanceData', result.data.list);
         // setFinanceData(result.data.list.financeEvent)

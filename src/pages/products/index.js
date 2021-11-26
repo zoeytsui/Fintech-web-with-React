@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
 
@@ -41,7 +41,7 @@ const FeatureCard = () => {
                 <div className="card-body">
                     <img src={rate_decrease_1} alt="" />
                     <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Lowest Commission Up to USD 0')}</h5>
-                    <Link to='/Lowest-Commission' type="button" className="btn btn-outline-primary">{t('Details')}</Link>
+                    <a href='/Products/Lowest-Commission' type="button" className="btn btn-outline-primary">{t('Details')}</a>
                 </div>
             </div>
             <div className="feature-card card col-12 col-lg-3 m-3">
