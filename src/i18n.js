@@ -16,7 +16,7 @@ i18n
          loadPath: "/locales/{{lng}}.json", // resource path
       },
       fallbackLng: "en",
-      supportedLngs: ["en", "ms", "vi", "cn"], // Allowed languages
+      supportedLngs: ["en", "my", "vn", "ch"], // Allowed languages
       detection: {
          order: ['cookie', 'localStorage', 'htmlTag', 'querystring', 'path', 'subdomain'],
          caches: ['cookie', 'localStorage']

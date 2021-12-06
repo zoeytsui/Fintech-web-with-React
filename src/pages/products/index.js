@@ -2,6 +2,11 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
+import {
+    RedirectToDemoAccount,
+    RedirectToRealAccount,
+    RedirectToUcenter
+} from 'utilities'
 
 import Calculate from './Calculate'
 import TopBanner from 'components/TopBanner'
@@ -48,7 +53,7 @@ const FeatureCard = () => {
                 <div className="card-body">
                     <img src={coins_decrease_1} alt="" />
                     <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Low Spreads Starting from 1.4 pips')}</h5>
-                    <button type="button" className="btn btn-outline-secondary">{t('Open Demo Account')}</button>
+                    <button type="button" onClick={() => RedirectToRealAccount()} className="btn btn-outline-secondary">{t('Open Demo Account')}</button>
                 </div>
             </div>
             <div className="feature-card card col-12 col-lg-3 m-3">
@@ -83,7 +88,7 @@ const Forex = () => (
             background={Forextopbanner}
             titles={["Forex Trading"]}
             subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+            buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
         <ProductTable title="Currency Pair" id="Forex" />
         <WhyChoose />
@@ -96,7 +101,7 @@ const Commodities = () => (
             background={commodity_topbanner}
             titles={["Commodity Trading"]}
             subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+            buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
         <ProductTable title="Commodity" id="Commodity" />
         <WhyChoose />
@@ -109,7 +114,7 @@ const Indices = () => (
             background={Stockindexitopbanner}
             titles={["Stock Index"]}
             subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-            buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+            buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
         <ProductTable title="Index" id="Index" />
         <WhyChoose />
@@ -141,7 +146,9 @@ const LowestCommission = () => {
                 background={lowest_commission_topbanner}
                 titles={["Lowest Commission Forex Broker"]}
                 subtitles={["Create and account today and enjoy trading with 0 commission"]}
-                buttons={[{ color: 'btn-secondary', text: "Open Demo Account" }, { color: 'btn-warning', text: "Open Real Account" }]} />
+                buttons={[
+                    { color: 'btn-secondary', text: "Open Demo Account", callback: RedirectToDemoAccount },
+                    { color: 'btn-warning', text: "Open Real Account", callback: RedirectToRealAccount }]} />
 
             <section className="container my-5">
                 <div className="row justify-content-center align-item-stretch">
@@ -186,7 +193,7 @@ const LowestCommission = () => {
                                 <div className="col col-12 col-md-9">
                                     <div className="card-body">
                                         <h5 className="card-title">{t('Platform Independent')}</h5>
-                                        <p className="card-text text-secondary">{t('HXFX Trade was developed by HXFX itself by adjusting the needs and trading patterns of customers.')}</p>
+                                        <p className="card-text text-secondary">{t('FX Trade was developed by HXFX itself by adjusting the needs and trading patterns of customers.')}</p>
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +217,7 @@ const WhyChoose = () => {
     const { t } = useTranslation();
     return (
         <section className="container text-center py-5">
-            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HFXF')}</h2>
+            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HXFX')}</h2>
 
             <div className="container col-12 d-flex flex-wrap justify-content-evenly">
                 {why_context.map(card =>
@@ -220,7 +227,7 @@ const WhyChoose = () => {
                     </div>
                 )}
             </div>
-            <button className="btn btn-warning my-4 text-white">{t('Trade Now')}</button>
+            <button className="btn btn-warning my-4 text-white" onClick={() => RedirectToUcenter()}>{t('Trade Now')}</button>
         </section>
     )
 }

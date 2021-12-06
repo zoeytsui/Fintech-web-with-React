@@ -2,13 +2,13 @@
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
 
-import stevie_winner_2017 from 'assets/images/home/stevie_winner_2017.png'
-import best_financial from 'assets/images/home/best_financial.png'
-import best_foreign from 'assets/images/home/best_foreign.png'
-import best_mobile from 'assets/images/home/best_mobile.png'
-import Best_the_golden from 'assets/images/home/Best_the_golden.png'
-import Most_foreign from 'assets/images/home/Most_foreign.png'
-import Most_growth_brokers from 'assets/images/home/Most_growth_brokers.png'
+import stevie_winner_2017 from 'assets/images/stevie_winner_2017.png'
+import best_financial from 'assets/images/best_financial.png'
+import best_foreign from 'assets/images/best_foreign.png'
+import best_mobile from 'assets/images/best_mobile.png'
+import Best_the_golden from 'assets/images/Best_the_golden.png'
+import Most_foreign from 'assets/images/Most_foreign.png'
+import Most_growth_brokers from 'assets/images/Most_growth_brokers.png'
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";

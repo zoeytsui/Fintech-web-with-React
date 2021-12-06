@@ -53,10 +53,10 @@ const MarketPrice = ({ id = '' }) => {
                     case 'Forex':
                         setQueryList(result.data.waihui_zone)
                         break;
-                    case 'Commodities':
+                    case 'Commodity':
                         setQueryList(result.data.futurespetroleum_zone)
                         break;
-                    case 'Indices':
+                    case 'Index':
                         setQueryList(result.data.futuresindex_zone)
                         break;
                     default:

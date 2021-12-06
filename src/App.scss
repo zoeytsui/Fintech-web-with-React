@@ -198,6 +198,44 @@ h6 {
   }
 }
 
+.feature-card {
+  border: 0 !important;
+  background: #f7f7f7;
+  box-shadow: 0px 1px 3px #0000001a;
+  border-radius: 20px !important;
+  text-align: center;
+  justify-content: center;
+  z-index: 0;
+  &:hover {
+    z-index: 2;
+    box-shadow: 0px 4px 12px #00000033;
+    transition: all 0.15s linear;
+    transform: scale(1.05);
+    border-bottom: 4px solid #60a720 !important;
+  }
+}
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #f0f2f4;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #cad3e0;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-corner {
+    background-color: transparent;
+    border-color: transparent;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+// list-number
 @mixin list-number($circleColor) {
   list-style: none;
   counter-reset: circle-counter;
@@ -232,20 +270,25 @@ h6 {
   }
 }
 
-.feature-card {
-  border: 0 !important;
-  background: #f7f7f7;
-  box-shadow: 0px 1px 3px #0000001a;
-  border-radius: 20px !important;
-  text-align: center;
-  justify-content: center;
-  z-index: 0;
-  &:hover {
-    z-index: 2;
-    box-shadow: 0px 4px 12px #00000033;
-    transition: all 0.15s linear;
-    transform: scale(1.05);
-    border-bottom: 4px solid #60a720 !important;
+// QR code mouseover
+@mixin qrcode($img) {
+  &:hover::before {
+    transform: translate(21px, -135px);
+    position: absolute;
+    content: "";
+    width: 150px;
+    height: 150px;
+    margin: auto;
+    background: $img no-repeat center #fff;
+    background-size: contain;
+  }
+}
+.qrcode {
+  &-hxfx {
+    @include qrcode(url(./assets/images/qrcode_hxfx.png));
+  }
+  &-mt4 {
+    @include qrcode(url(./assets/images/qrcode_mt4.png));
   }
 }
 

@@ -1,10 +1,8 @@
 import React from "react";
-import { Link } from 'react-router-dom';
-// import { Link, Switch, Route, Router } from 'react-router-dom';
-import { useTranslation } from "react-i18next";
 import i18n from 'i18next'
-// import cookies from 'js-cookie'
 import { makeStyles } from '@mui/styles';
+import { useTranslation } from "react-i18next";
+import { RedirectToUcenter, RedirectToRealAccount } from 'utilities'
 
 import hxfxglobal_logo from '../assets/images/hxfxglobal_logo.png';
 import English_logo from '../assets/images/English.png';
@@ -46,13 +44,13 @@ const langList = [
         country_code: 'gb'
     },
     {
-        code: 'ms',
+        code: 'my',
         name: 'Malay',
         src: Malay_logo,
         country_code: 'my'
     },
     {
-        code: 'vi',
+        code: 'vn',
         name: 'Tiếng Việt',
         src: vn_logo,
         country_code: 'vn'
@@ -64,7 +62,7 @@ const langList = [
     // country_code: 'tw'
     // },
     {
-        code: 'cn',
+        code: 'ch',
         name: '简体中文',
         src: china_icon,
         country_code: 'cn'
@@ -80,7 +78,8 @@ const navList = [
             { item: 'Forex', link: '/Products/Forex', src: Forex_icon },
             { item: 'Commodities', link: '/Products/Commodities', src: Commodities_icon },
             { item: 'Indices', link: '/Products/Indices', src: Indices_icon },
-            { item: 'Calculate', link: '/Products/Calculate', src: Calculate_icon }
+            // TODO: not finished
+            // { item: 'Calculate', link: '/Products/Calculate', src: Calculate_icon }
         ]
     },
     {
@@ -94,7 +93,7 @@ const navList = [
         item: 'Resources',
         link: [
             { item: 'News', link: '/Resources/News', src: news_icon },
-            { item: 'Blog', link: '/Resources/Blog', src: Blog_icon },
+            { item: 'Blog', link: 'https://forexclusive.info/', src: Blog_icon },
             { item: 'Strategy', link: '/Resources/Strategy', src: Strategy_icon },
         ]
     },
@@ -105,38 +104,21 @@ export default function NavBar() {
     const { t } = useTranslation();
     const classes = useStyles();
 
-
-    const redirectLink = (lang) => {
-        switch (lang) {
-            case 'my':
-                lang = 'ms'
-                break;
-
-            default:
-                lang = 'vn'
-                break;
-        }
-    }
-
-    React.useEffect(() => {
-        redirectLink(i18n.language)
-        // eslint-disable-next-line
-    }, [i18n.language])
-
     return (
         <React.Fragment>
             {/* <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} /> */}
             {/* <CssBaseline /> */}
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <Link to="/">
+                    <a href="/">
                         <img className="navbar-brand" src={hxfxglobal_logo} alt="" />
-                    </Link>
+                    </a>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
 
+                        {/* navigation */}
                         <ul className={`navbar-nav me-auto mb-2 mb-lg-0`}>
                             {navList.map(li =>
                                 Array.isArray(li.link)
@@ -156,17 +138,18 @@ export default function NavBar() {
                                         </ul>
                                     </li>
                                     : <li className={` nav-item`} key={li.item}>
-                                        <Link className="nav-link text-primary" aria-current="page" to={li.link}>{t(li.item)}</Link>
+                                        <a className="nav-link text-primary" aria-current="page" href={li.link}>{t(li.item)}</a>
                                     </li>
                             )}
                         </ul>
 
+                        {/* ucenter and new account */}
                         <div className="d-flex">
-                            <a className="nav-link text-primary" href="/">{t('Log In')}</a>
-
-                            <Link className="btn btn-warning" to='/' role="button">{t('Create Account')}</Link>
+                            <button className="btn text-primary" onClick={() => RedirectToUcenter()}>{t('Log In')}</button>
+                            <button className="btn btn-warning" onClick={() => RedirectToRealAccount()}>{t('Create Account')}</button>
                         </div>
 
+                        {/* switch language */}
                         <div className="dropdown">
                             <button className={`btn dropdown-toggle ${classes.langList}`} id="langList" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img className="navbar-brand" src={langList.find(cur => cur.code === i18n.language).src} alt="" />
@@ -178,7 +161,7 @@ export default function NavBar() {
                                     <li key={lang.code}>
                                         <button className="dropdown-item" onClick={() => i18n.changeLanguage(lang.code)}>
                                             <img className="navbar-brand" src={lang.src} alt="" />
-                                            {t(`${lang.name}`)}
+                                            {t(lang.name)}
                                         </button>
                                     </li>
                                 )}

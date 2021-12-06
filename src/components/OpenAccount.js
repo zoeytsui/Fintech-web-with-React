@@ -1,6 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
+import { RedirectToDemoAccount, RedirectToRealAccount } from 'utilities'
 
 import step1 from 'assets/images/home/step1.png'
 import step2 from 'assets/images/home/step2.png'
@@ -8,6 +8,7 @@ import step3 from 'assets/images/home/step3.png'
 
 import phone_3 from 'assets/images/home/phone_3.gif'
 import payment_icon from 'assets/images/paymenticon_white.png'
+
 
 const OpenAccount = () => {
     const { t } = useTranslation();
@@ -33,8 +34,8 @@ const OpenAccount = () => {
                             </div>
                         </div>
                         <div className="d-flex justify-content-evenly">
-                            <Link type="button" to="/" className="btn btn-secondary text-white px-4 py-2">{t('Open Demo Account')}</Link>
-                            <Link type="button" to="/" className="btn btn-warning text-white px-4 py-2">{t('Open Real Account')}</Link>
+                            <button type="button" onClick={() => RedirectToDemoAccount()} className="btn btn-secondary text-white px-4 py-2">{t('Open Demo Account')}</button>
+                            <button type="button" onClick={() => RedirectToRealAccount()} className="btn btn-warning text-white px-4 py-2">{t('Open Real Account')}</button>
                         </div>
                     </div>
                     <div data-aos="zoom-in" className="col col-12 col-lg-5 text-center">
@@ -43,10 +44,11 @@ const OpenAccount = () => {
                 </div>
                 <div className='row'>
                     <span className="col-3 col-lg-5 col-md-4" style={{ borderBottom: '2px solid #fff', position: 'relative', bottom: '10px' }} />
-                    <span className="col-6 col-lg-2 col-md-4 text-white text-center">{t('WE ACCEPT')}</span>
+                    <span className="col-6 col-lg-2 col-md-4 text-white text-center">{t('We Welcome')}</span>
                     <span className="col-3 col-lg-5 col-md-4" style={{ borderBottom: '2px solid #fff', position: 'relative', bottom: '10px' }} />
                 </div>
                 <img className="my-3" src={payment_icon} width="100%" alt=""></img>
+                <p className="text-white text-center">{t('Is Coming…')}</p>
             </div>
         </section>
     )

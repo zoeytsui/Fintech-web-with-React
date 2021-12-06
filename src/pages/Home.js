@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
 import { TOP_OPENAPI } from 'api';
@@ -8,11 +7,9 @@ import TopBanner from 'components/TopBanner'
 import MarketPrice from 'components/MarketPrice'
 import TradePlatform from 'components/TradePlatform'
 import AwardCarousel from 'components/AwardCarousel'
-
-// import banner_img1 from 'assets/images/home/topbanner.png';
+import OpenAccount from 'components/OpenAccount'
 
 import phone_1 from 'assets/images/home/phone_1.png'
-import phone_3 from 'assets/images/home/phone_3.gif'
 
 import section1_img1 from 'assets/images/icons/currency_2.png'
 import section1_img2 from 'assets/images/icons/mutiplatform_2.png'
@@ -34,8 +31,6 @@ import article_img1 from 'assets/images/home/image1.png'
 import article_img2 from 'assets/images/home/image2.png'
 import article_img3 from 'assets/images/home/image3.png'
 import article_mover from 'assets/images/home/article_mover.png'
-
-import payment_icon from 'assets/images/home/payment_icon.png'
 
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -158,17 +153,34 @@ const context = {
 const HomepageBanner = () => {
     const { i18n } = useTranslation()
     const [adList, setAdList] = useState([])
-    useEffect(() => {
-        const params = { companyId: "23", terminal: 'pc_website', code: 'global_index_pc', type: 'V' }
+
+    const getAbroList = async () => {
         try {
-            const getAbroList = async () => {
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                setAdList(result.data[0].list)
-            }
-            getAbroList()
+            const params = { companyId: "23", terminal: 'pc_website', code: 'global_index_pc', type: 'V' }
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            setAdList(result.data[0].list)
         } catch (error) { }
-    }, [])
+    }
+
+    const trans_lang = (lang) => {
+        // cn,en,ms,tw,vi
+        switch (lang) {
+            case 'ch':
+                return 'cn'
+            case 'my':
+                return 'ms'
+            case 'vn':
+                return 'vi'
+
+            default:
+                return 'en'
+        }
+    }
+
+    useEffect(() => {
+        getAbroList()
+    }, [i18n])
 
     return (
         <Swiper
@@ -183,8 +195,8 @@ const HomepageBanner = () => {
             }}>
             {adList.map(list =>
                 <SwiperSlide key={list.id}>
-                    <a href={list.adv_content[`${i18n.language}`].jump_url}>
-                        <TopBanner background={list.adv_content[`${i18n.language}`].pic_url} />
+                    <a href={list.adv_content[`${trans_lang(i18n.language)}`].jump_url}>
+                        <TopBanner background={list.adv_content[`${trans_lang(i18n.language)}`].pic_url} />
                     </a>
                 </SwiperSlide>
             )}
@@ -280,17 +292,17 @@ const Section3 = () => {
                 src: flag_EN
             },
             {
-                value: 'ms',
+                value: 'my',
                 code: '+60',
                 src: flag_MY
             },
             {
-                value: 'vi',
+                value: 'vn',
                 code: '+84',
                 src: flag_VN
             },
             {
-                value: 'cn',
+                value: 'ch',
                 code: '+86',
                 src: flag_CN
             },
@@ -301,7 +313,7 @@ const Section3 = () => {
     const changeCode = (code) => setCode(code);
 
     return (
-        <section id="section3" className="container my-5">
+        <section id="section3" className="container">
             <div className="row justify-content-center align-items-center">
 
                 <div data-aos="fade-right" data-aos-offset="300" className="col col-12 col-lg-6 text-center">
@@ -335,46 +347,6 @@ const Section3 = () => {
                         {/* get sms */}
                         <button type="button" className="btn btn-primary px-4 py-2">{t('Get HXFX Global APP By SMS')}</button>
                     </form>
-                </div>
-            </div>
-            <div className='hr-divider'>
-                <hr />
-                <span className="text-secondary">{t('WE ACCEPT')}</span>
-            </div>
-            <img className="mt-3" src={payment_icon} width="100%" alt=""></img>
-        </section>
-    )
-}
-
-// open account
-const Section5 = () => {
-    const { t } = useTranslation();
-    return (
-        <section id="section5" className="container-fluid" style={{ background: 'linear-gradient(90deg, #60A720 0%, #83BF4B 35%, #A6E26E 100%)' }}>
-            <div className={`container`}>
-                <div className="row text-white justify-content-center align-items-center">
-                    <div className="col col-12 col-lg-7">
-                        <h3 className="fw-bold my-3 text-center">{`${t(context.Section5.title)}`}</h3>
-                        <h5 className="fw-bold my-3 text-center">{`${t(context.Section5.subtitle)}`}</h5>
-                        <div className="d-flex justify-content-center flex-wrap text-center my-4">
-                            {context.Section5.steps.map(step =>
-                                <div className="mx-2 col-12 col-md-3" key={`${t(step.capture)}`}>
-                                    <div>
-                                        <img src={step.icon} width="142px" height="140px" alt={`${t(step.capture)}`} />
-                                        <p>{`${t(step.capture)}`}</p>
-                                    </div>
-                                    {/* <div style={{ borderTop: '1px solid white', width: '100%', height: '1px' }}></div> */}
-                                </div>
-                            )}
-                        </div>
-                        <div className="d-flex justify-content-evenly">
-                            <Link type="button" to="/" className="btn btn-secondary px-4 py-2">{t('Open Demo Account')}</Link>
-                            <Link type="button" to="/" className="btn btn-warning px-4 py-2">{t('Open Real Account')}</Link>
-                        </div>
-                    </div>
-                    <div data-aos="zoom-in" className="col col-12 col-lg-5 text-center">
-                        <img src={phone_3} style={{ maxWidth: '338px' }} width="100%" height="100%" alt={`${t(context.Section5.title)}`}></img>
-                    </div>
                 </div>
             </div>
         </section>
@@ -460,7 +432,7 @@ export default function Home() {
             <Section2 />
             <Section3 />
             <TradePlatform />
-            <Section5 />
+            <OpenAccount />
             <AwardCarousel />
             <ArticleCarousel />
         </>

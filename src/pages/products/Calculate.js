@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
+import { RedirectToUcenter } from 'utilities'
 import TopBanner from 'components/TopBanner'
 
 import calculatetopbanner from 'assets/images/products/calculatetopbanner.jpg'
@@ -24,7 +25,7 @@ const Calculate = () => {
                 background={calculatetopbanner}
                 titles={["Forex Trading"]}
                 subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
-                buttons={[{ color: 'btn-warning', text: "Trade Now" }]} />
+                buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
 
             <div className="container col-9 p-4" style={{ minHeight: '630px' }}>
                 <div className={`${classes.calculateCard} card p-4`}>
@@ -45,7 +46,7 @@ const Calculate = () => {
                     <div className="row align-items-end my-4">
 
                         <div className="col">
-                            <label htmlFor="Trading Type" className="form-label">Trading Type</label>
+                            <label htmlFor="Trading Type" className="form-label">{t('Trading Type')}</label>
                             <select className="form-select" value="Commodity" aria-label="Trading Type" id="Trading Type">
                                 <option selected>Commodity</option>
                                 <option value="1">One</option>

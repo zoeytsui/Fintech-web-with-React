@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import PropTypes from 'prop-types'
 
@@ -12,6 +11,7 @@ const TopBanner = ({ background = '', titles = [], subtitles = [], buttons = [] 
         backgroundSize: 'cover',
         height: '638px'
     }
+
     return (
         <div className="d-flex align-items-center" style={useStyles}>
             <div className="container text-white">
@@ -25,7 +25,7 @@ const TopBanner = ({ background = '', titles = [], subtitles = [], buttons = [] 
 
                 <div className="d-flex flex-wrap">
                     {buttons.map(button =>
-                        <Link className={`btn btn-lg ${button.color} m-1`} to='/' role="button" key={button.text}>{t(button.text)}</Link>
+                        <button className={`btn btn-lg ${button.color} m-1`} onClick={() => button.callback()} key={button.text}>{t(button.text)}</button>
                     )}
                 </div>
 

@@ -9,7 +9,55 @@ import pc_1 from 'assets/images/icons/pc_1.png'
 import cs_1 from 'assets/images/icons/cs_1.png'
 import twentyFour_1 from 'assets/images/icons/twentyFour_1.png'
 
+const useStyle = makeStyles({
+    topBackground: {
+        backgroundImage: `url(${topbanner})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        height: '638px'
+    },
+    quesNav: {
+        "& :hover,:focus,:target": {
+            color: '#23383A'
+        },
+        "& button": {
+            border: 0,
+            textDecoration: 'none',
+            textAlign: 'left',
+            background: 'transparent'
+        }
+    },
+    SearchBar: {
+        position: 'absolute',
+        left: '12.5%'
+    },
+    searchBtn: {
+        background: '#fff',
+        border: '1px solid #ced4da',
+        borderLeft: 0,
+        // position: 'relative', left: '-63px', zIndex: '4'
+    },
+    filterList: {
+        background: '#fff',
+        maxHeight: '300px',
+        overflow: 'auto',
+        "& li": {
+            "& a": {
+                textAlign: 'left',
+                color: '#858585',
+                border: '0 !important',
+                "&:hover,:focus,:target": {
+                    color: '#83bf4b',
+                    border: '0 !important'
+                },
+            }
+        }
+    }
+})
+
 const Help = () => {
+    const styled = useStyle()
     const { t } = useTranslation();
 
     // response from Question.getList
@@ -25,110 +73,15 @@ const Help = () => {
 
     const [filterList, setFilterList] = React.useState([])
 
-    const styled = makeStyles({
-        topBackground: {
-            backgroundImage: `url(${topbanner})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover',
-            height: '638px'
-        },
-        quesNav: {
-            "& :hover,:focus,:target": {
-                color: '#23383A'
-            },
-            "& button": {
-                border: 0,
-                textDecoration: 'none',
-                textAlign: 'left',
-                background: 'transparent'
-            }
-        },
-        SearchBar: {
-            position: 'absolute',
-            left: '12.5%'
-        },
-        searchBtn: {
-            background: '#fff',
-            border: '1px solid #ced4da',
-            borderLeft: 0,
-            // position: 'relative', left: '-63px', zIndex: '4'
-        },
-        filterList: {
-            "& .btn": {
-                color: '#858585',
-                border: '0 !important',
-                textDecoration: 'none',
-                "&:hover,:focus,:target": {
-                    border: '0 !important',
-                    color: '#83bf4b'
-                },
-            }
-        }
-    })()
-
-    React.useEffect(() => {
-        getQuestionType(i18n.language)
-        // eslint-disable-next-line
-    }, [i18n.language])
-
-    React.useEffect(() => {
-        // Enable input when FAQuestions are ready
-        QuestionList.length > 0 ? setDisabled(false) : setDisabled(true)
-        getTopList(i18n.language)
-        // eslint-disable-next-line
-    }, [QuestionList, i18n.language])
 
     const toggleTabs = ({ id, question, answer }) => {
         answerRef.current.innerHTML = answer
         setQuestionDetail({ id: id, question: question, answer: answer })
     }
 
-    const onButtonClick = () => {
-        searchInput.current.focus();
-        console.log('searchInput.current.focus()', searchInput.current);
-        document.getElementById('filterList').classList.add('show')
-    };
-
-    // TODO: not finished
-    const searchItems = (searchValue) => {
-        const FAQList = document.getElementById('FAQList')
-        const questionList = FAQList.getElementsByTagName('li')
-
-        console.log('searchValue', searchValue);
-
-        Array.from(questionList).filter(item => {
-            const element = item.children[0]
-            let txtValue = element.textContent || element.innerHTML
-            // if (txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1) {
-            //     return setFilterList(element)
-            // }
-            return txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1 ? setFilterList(element) : ''
-            // return Object.values(item).join('').toLowerCase().includes(searchInput.current.toLowerCase())
-        })
-    }
-
+    // 获取问题分类
     const getQuestionType = async (lang) => {
         try {
-            switch (lang) {
-                case 'vi':
-                    lang = 'vn'
-                    break;
-                case 'ms':
-                    lang = 'my'
-                    break;
-                case 'cn':
-                    lang = 'ch'
-                    break;
-                case 'en':
-                    lang = 'en'
-                    break;
-
-                default:
-                    lang = 'en'
-                    break;
-            }
-
             const params = {
                 companyId: 23,
                 terminal: 'app',
@@ -165,6 +118,7 @@ const Help = () => {
         } catch (error) { console.error(error) }
     }
 
+    // 获取问题列表
     const getList = async (id, callback) => {
         try {
             const params = {
@@ -181,26 +135,9 @@ const Help = () => {
         } catch (error) { console.error(error) }
     }
 
+    // 获取TOP问题列表
     const getTopList = async (lang) => {
         try {
-            switch (lang) {
-                case 'vi':
-                    lang = 'vn'
-                    break;
-                case 'ms':
-                    lang = 'my'
-                    break;
-                case 'cn':
-                    lang = 'ch'
-                    break;
-                case 'en':
-                    lang = 'en'
-                    break;
-
-                default:
-                    lang = 'en'
-                    break;
-            }
             const params = {
                 companyId: 23,
                 terminal: 'app',
@@ -210,13 +147,77 @@ const Help = () => {
 
             const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getTopList`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-            // if (result.data[0] !== undefined) { }
-
             setFilterList(result.data)
-            console.log(result);
         } catch (error) { }
     }
 
+    // 常见问题搜索
+    const getSearchList = async (lang) => {
+        try {
+            if (searchInput.current.value === '') return;
+            switch (lang) {
+                case 'vn':
+                    lang = '越南文'
+                    break;
+                case 'my':
+                    lang = '马来文'
+                    break;
+                case 'ch':
+                    lang = '中文'
+                    break;
+
+                default:
+                    lang = '英文'
+                    break;
+            }
+            const params = {
+                companyId: 23,
+                terminal: 'app',
+                appId: 'com.mt4.hwsc',
+                question: searchInput.current.value,
+                languageName: lang
+            }
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getSearchList`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            setFilterList(result.data.list)
+            toggleSearchField()
+        } catch (error) { }
+    }
+
+    const toggleSearchField = () => {
+        let element = document.getElementById('filterList');
+        element.className.includes('show') ? element.classList.remove('show') : element.classList.add('show')
+    };
+
+    // TODO: not finished for filter in letter by letter
+    const searchItems = (searchValue) => {
+        // const FAQList = document.getElementById('FAQList')
+        // const questionList = FAQList.getElementsByTagName('li')
+
+        // console.log('searchValue', searchValue);
+
+        // Array.from(questionList).filter(item => {
+        //     const element = item.children[0]
+        //     let txtValue = element.textContent || element.innerHTML
+        //     // if (txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1) {
+        //     //     return setFilterList(element)
+        //     // }
+        //     return txtValue.toUpperCase().indexOf(searchValue.toUpperCase()) > -1 ? setFilterList(element) : ''
+        //     // return Object.values(item).join('').toLowerCase().includes(searchInput.current.toLowerCase())
+        // })
+    }
+
+    React.useEffect(() => {
+        getQuestionType(i18n.language)
+        // eslint-disable-next-line
+    }, [i18n.language])
+
+    React.useEffect(() => {
+        // Enable input when FAQuestions and DOM are ready
+        QuestionList.length > 0 && filterList.length > 0 ? setDisabled(false) : setDisabled(true)
+        getTopList(i18n.language)
+        // eslint-disable-next-line
+    }, [QuestionList, i18n.language])
 
     return (
         <>
@@ -227,11 +228,11 @@ const Help = () => {
                     {/* Search bar */}
                     <div className={`container col-9 ${styled.SearchBar}`}>
 
-                        <div className="input-group" id="searchInput">
+                        <div className="input-group">
 
-                            <input type="text" className="form-control" ref={searchInput} onClick={onButtonClick} onChange={(e) => searchItems(e.target.value)} disabled={disabled} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-search" />
+                            <input autoFocus type="text" className="form-control" ref={searchInput} onClick={toggleSearchField} onChange={(e) => searchItems(e.target.value)} disabled={disabled} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-search" />
 
-                            <button className={`btn btn-primary ${styled.searchBtn}`} type="button" id="button-search">
+                            <button className={`btn btn-primary ${styled.searchBtn}`} type="button" onClick={() => getSearchList(i18n.language)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
                                     <g transform="translate(-1514 -1528)">
                                         <circle fill="#83bf4b" cx="13" cy="13" r="13" transform="translate(1514 1528)" />
@@ -241,11 +242,18 @@ const Help = () => {
                             </button>
                         </div>
 
-                        <ul style={{ zIndex: '100000000000000000000' }} id="filterList" className="collapse bg-white list-unstyled rounded p-3" aria-labelledby="searchInput">
-                            <h6 className="text-dark">{t("Everyone's asking:")}</h6>
+                        <ul id="filterList" className={`${styled.filterList} collapse bg-white list-unstyled p-3 rounded dropdown-menu scrollbar`}>
+
+                            {searchInput.current !== null && searchInput.current.value !== ''
+                                ? <h6 className="text-dark">{filterList.length + t(" results found for ") + searchInput.current.value}</h6>
+                                : <h6 className="text-dark">{t("Everyone's asking:")}</h6>}
+
                             <li><hr className="dropdown-divider" /></li>
+
                             {filterList.map(list =>
-                                <li key={list.id} className={styled.filterList}><button onClick={() => toggleTabs({ id: list.id, question: list.question, answer: list.answer })} className="btn btn-link">{list.question}</button></li>
+                                <li key={list.id}>
+                                    <a className="btn" onClick={() => toggleTabs({ id: list.id, question: list.question, answer: list.answer })} href="#FAQ">{list.question}</a>
+                                </li>
                             )}
                         </ul>
 
@@ -257,7 +265,7 @@ const Help = () => {
             <FeatureCard />
 
             {/* FAQ */}
-            <div className="container my-5">
+            <div className="container my-5" id="FAQ">
                 <h1 className="fw-bold text-dark text-center mb-5">{t('FAQ')}</h1>
                 <div className="d-flex justify-content-center">
                     <div className="accordion accordion-flush col-4" id="FAQList">
@@ -321,33 +329,56 @@ const FeatureCard = () => {
     )
 }
 
-// TODO: not finished
 const VideoTutorial = () => {
-    // const { t } = useTranslation();
-    // const video_list=[{
-    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/open_account_'+this.lang+'.png',
-    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/open_account_'+this.ch_lang(this.lang)+'.mp4',
-    //     'des':'Tìm hiểu về đầu tư forex trong 1 phút'
-    // },{
-    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/deposit_'+this.lang+'.png',
-    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/deposit_'+this.ch_lang(this.lang)+'.mp4',
-    //     'des':'Hướng dẫn nạp tiền nhanh chóng'
-    // },{
-    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/how_order_'+this.lang+'.png',
-    //     'video_url':'https://comfile.osboyo.com/2020-05-22/Trade_'+this.lang+'.mp4',
-    //     'des':'Làm sao xuống lệnh giao dịch ?'
-    // },{
-    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/account_leave_'+this.lang+'.jpg',
-    //     'video_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/video/account_type_'+this.ch_lang(this.lang)+'.mp4',
-    //     'des':'Các loại tại khoản tại HXFX?Cách chọn tài khoản phù hợp cho bạn?'
-    // },{
-    //     'post_url':'<!--#echo var='HXFXGLOBAL_IMG_HOST'-->/public/www/help/withdraw_'+this.lang+'.png',
-    //     'video_url':'https://comfile.osboyo.com/2020-04-30/Withdraw_'+this.lang+'.mp4',
-    //     'des':'Hướng dẫn cách rút tiền dễ dàng từ tài khoản'
-    // }]
+    const { t } = useTranslation();
+    const [videoSrc, setVideoSrc] = React.useState(null)
+
+    const videoList = [{
+        post_url: 'https://images.hxfxglobal.com/public/www/help/open_account_' + i18n.language + '.png',
+        video_url: `https://images.hxfxglobal.com/video/open_account_${i18n.language === 'ch' ? 'cn' : i18n.language}.mp4`,
+        des: 'Tìm hiểu về đầu tư forex trong 1 phút'
+    }, {
+        post_url: 'https://images.hxfxglobal.com/public/www/help/deposit_' + i18n.language + '.png',
+        video_url: `https://images.hxfxglobal.com/video/deposit_${i18n.language === 'ch' ? 'cn' : i18n.language}.mp4`,
+        des: 'Hướng dẫn nạp tiền nhanh chóng'
+    }, {
+        post_url: 'https://images.hxfxglobal.com/public/www/help/how_order_' + i18n.language + '.png',
+        video_url: 'https://comfile.osboyo.com/2020-05-22/Trade_' + i18n.language + '.mp4',
+        des: 'Làm sao xuống lệnh giao dịch ?'
+    }, {
+        post_url: 'https://images.hxfxglobal.com/public/www/help/account_leave_' + i18n.language + '.jpg',
+        video_url: `https://images.hxfxglobal.com/video/account_type_${i18n.language === 'ch' ? 'cn' : i18n.language}.mp4`,
+        des: 'Các loại tại khoản tại HXFX?Cách chọn tài khoản phù hợp cho bạn?'
+    }, {
+        post_url: 'https://images.hxfxglobal.com/public/www/help/withdraw_' + i18n.language + '.png',
+        video_url: 'https://comfile.osboyo.com/2020-04-30/Withdraw_' + i18n.language + '.mp4',
+        des: 'Hướng dẫn cách rút tiền dễ dàng từ tài khoản'
+    }]
+
     return (
-        <>
-        </>
+        <div className="row mx-auto flex-wrap justify-content-center text-center py-5" style={{ background: "#F1F1F1" }}>
+            <h2 className="fw-bold text-dark">{t('Video Tutorials')}</h2>
+            <p className="card-text text-secondary">{t('How to open a HXFX Global account?')}</p>
+
+            {/* video list */}
+            {videoList.map(list =>
+                <React.Fragment key={t(list.des)}>
+                    <button className="btn col-12 col-md-6 col-lg-3 m-3" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => setVideoSrc(list.video_url)}>
+                        <img className="img-fluid" src={list.post_url} width="100%" alt={list.des} />
+                    </button>
+                </React.Fragment>
+            )}
+
+            {/* video modal */}
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered modal-xl">
+                    <div className="modal-content ratio ratio-16x9">
+                        <video src={videoSrc} controls="controls"></video>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     )
 }
 

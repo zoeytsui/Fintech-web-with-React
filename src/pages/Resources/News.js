@@ -1,6 +1,7 @@
 import React from 'react'
 import i18n from "i18next";
 import { TOP_OPENAPI } from 'api';
+import { makeStyles } from '@mui/styles';
 import { BrowserRouter as Router, Route, Switch, Link, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
@@ -8,74 +9,102 @@ import TopBanner from 'components/TopBanner'
 
 import news_topbanner from 'assets/images/resources/news_topbanner.jpg'
 
-const Index = () => {
-    const { t } = useTranslation();
-    const [adList, setAdList] = React.useState([])
-    const params = React.useRef()
+const useStyles = makeStyles({
+    calendarList: {
+        "& li:nth-of-type(3n+1) .tag": {
+            width: '8px',
+            background: '#FEC390'
+        },
+        "& li:nth-of-type(3n+2) .tag": {
+            width: '8px',
+            background: '#189efc'
+        },
+        "& li:nth-of-type(3n+3) .tag": {
+            width: '8px',
+            background: '#83bf4b'
+        }
+    }
+})
 
-    React.useEffect(() => {
+const News = () => {
+    const { t } = useTranslation();
+    const [newsList, setNewsList] = React.useState([])
+    const [pageReducer, setPageReducer] = React.useState(1)
+    const [disabled, setDisabled] = React.useState(true)
+
+    const getList = async (lang, page) => {
         try {
-            switch (i18n.language) {
-                case 'vi':
-                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-vn" }
+            const params = {
+                companyId: "23",
+                utmTerminal: 'app',
+                url: "news-en",
+                page: page,
+                pageSize: 9,
+            }
+
+            switch (lang) {
+                case 'vn':
+                    params.url = "news-vn"
                     break;
-                // no ms data
-                case 'ms':
-                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
-                    break;
-                case 'cn':
-                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-cn" }
-                    break;
-                case 'en':
-                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
+                case 'ch':
+                    params.url = "news-cn"
                     break;
 
                 default:
-                    params.current = { companyId: "23", utmTerminal: 'app', url: "news-en" }
+                    params.url = "news-en" // no my data
                     break;
             }
-            const getList = async () => {
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.getList`, { params: { ...params.current } })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                setAdList(result.data.list)
-            }
-            getList()
-        } catch (error) { }
+
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.getList`, { params: { ...params } })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+
+            setNewsList(list => [...list, ...result.data.list])
+        }
+        catch (error) { }
+    }
+    React.useEffect(() => {
+        getList(i18n.language, pageReducer)
+        // eslint-disable-next-line
+    }, [i18n.language, pageReducer])
+
+    // clear cache
+    React.useEffect(() => {
+        setNewsList([])
         // eslint-disable-next-line
     }, [i18n.language])
+
+    // prevent frequent click event
+    React.useEffect(() => {
+        setDisabled(true)
+        setTimeout(() => {
+            setDisabled(false)
+        }, 2000);
+    }, [newsList, pageReducer])
+
     return (
-        <section className="container d-flex flex-wrap justify-content-center col-9 py-4">
-            {adList.map((list, index) =>
-                // index === 0
-                //     ? <div className="card row mb-3 shadow-sm" style={{ borderRadius: '20px' }} key={list.title}>
-                //         <div className="row g-0">
-                //             <div className="col-md-4">
-                //                 <img src={list.cover_img} className="img-fluid rounded" alt={list.title} />
-                //             </div>
-                //             <div className="col-md-8">
-                //                 <div className="card-body">
-                //                     <h5 className="card-title">{t(list.title)}</h5>
-                //                     <p className="card-text">{t(list.remark)}</p>
-                //                     <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
-                //                     <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
-                //                 </div>
-                //             </div>
-                //         </div>
-                //     </div>
-                //     : 
-                <div className="card col-12 col-lg-3 m-2 shadow-sm" style={{ borderRadius: '20px' }} key={list.title}>
-                    <img src={list.cover_img} className="card-img-top" style={{ borderRadius: '20px 20px 0 0' }} alt={list.title} />
-                    <div className="card-body">
-                        <h5 className="card-title">{t(list.title)}</h5>
-                        <p className="card-text">{t(list.remark)}</p>
-                        <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
-                        {/* <div className="d-flex justify-content-center"> */}
-                        <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
-                        {/* </div> */}
+        <section>
+            <div className="container-fluid d-flex flex-wrap justify-content-center align-items-start my-4">
+                <div className="col-12 col-lg-9 d-flex flex-column">
+                    <div className="d-flex flex-wrap justify-content-center">
+                        {newsList.map((list, index) =>
+                            <div className="card col-12 col-lg-3 m-2 shadow-sm" style={{ borderRadius: '20px', minWidth: '320px' }} key={list.title}>
+                                <img src={list.cover_img} className="card-img-top" style={{ borderRadius: '20px 20px 0 0' }} alt={list.title} />
+                                <div className="card-body">
+                                    <h5 className="card-title">{t(list.title)}</h5>
+                                    {/* <p className="card-text">{t(list.remark)}</p> */}
+                                    <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
+                                    <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
-        </section>
+                    <button className="btn btn-primary mx-auto my-4" onClick={() => setPageReducer(page => page += 1)} disabled={disabled}> {t('Load More')}</button>
+
+                </div >
+
+                <EventCalendar />
+            </div >
+        </section >
     )
 }
 
@@ -89,23 +118,20 @@ const Detail = () => {
     React.useEffect(() => {
         try {
             switch (i18n.language) {
-                case 'vi':
+                case 'vn':
                     params.current = { companyId: "23", languageName: '越南文', id: id }
                     break;
-                case 'ms':
+                case 'my':
                     params.current = { companyId: "23", languageName: '马来文', id: id }
                     break;
-                case 'cn':
+                case 'ch':
                     params.current = { companyId: "23", languageName: '中文', id: id }
                     break;
-                case 'en':
-                    params.current = { companyId: "23", languageName: '英文', id: id }
-                    break;
-
                 default:
                     params.current = { companyId: "23", languageName: '英文', id: id }
                     break;
             }
+
             const details = async () => {
                 const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.details`, { params: params.current })).data
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
@@ -148,84 +174,86 @@ const Detail = () => {
 }
 
 const EventCalendar = () => {
+    const styled = useStyles();
     const { t } = useTranslation();
-    const now = new Intl.DateTimeFormat(i18n.language).format(new Date()).replaceAll('/', '-')
-    const release_time = new Intl.DateTimeFormat('zh').format(new Date()).replaceAll('/', '-')
-    // eslint-disable-next-line
+    const now = new Intl.DateTimeFormat(i18n.language, { month: '2-digit', day: '2-digit', year: 'numeric' }).format(new Date()).replaceAll('/', '-')
+    const release_time = new Intl.DateTimeFormat('zh', { month: '2-digit', day: '2-digit', year: 'numeric' }).format(new Date()).replaceAll('/', '-')
+
     const [FinanceData, setFinanceData] = React.useState([])
 
     // for ch
     const getFinanceData = async (params) => {
-        const result = await (await TOP_OPENAPI.get(`tools/?service=news.getFinanceData`, { params: params })).data
-        if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-        console.log('getFinanceData', result.data.list);
-        // setFinanceData(result.data.list.financeEvent)
+        try {
+            const result = await (await TOP_OPENAPI.get(`tools/?service=news.getFinanceData`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            setFinanceData(result.data.list.financeData)
+        } catch (error) { }
     }
 
     // for en, vi
     const getMultFinanceData = async (params) => {
-        const result = await (await TOP_OPENAPI.get(`tools/?service=news.getMultFinanceData`, { params: params })).data
-        if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-        console.log('getMultFinanceData', result.data.list);
-        // setFinanceData(result.data.list.financeEvent)
+        try {
+            const result = await (await TOP_OPENAPI.get(`tools/?service=news.getMultFinanceData`, { params: params })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            setFinanceData(result.data.list.financeData)
+        } catch (error) { }
     }
 
     React.useEffect(() => {
-        try {
-            switch (i18n.language) {
-                case 'vi':
-                    getMultFinanceData({
-                        release_time: release_time,
-                        language: 'vi'
-                    })
-                    break;
-                case 'ms':
-                    // no ms data
-                    getMultFinanceData({
-                        release_time: release_time,
-                        language: 'en'
-                    })
-                    break;
-                case 'cn':
-                    getFinanceData({
-                        release_time: release_time,
-                        source: 'jin10'
-                    })
-                    break;
-                case 'en':
-                    getMultFinanceData({
-                        release_time: release_time,
-                        language: 'en'
-                    })
-                    break;
+        switch (i18n.language) {
+            case 'vn':
+                getMultFinanceData({
+                    release_time: release_time,
+                    language: 'vi'
+                })
+                break;
+            case 'ch':
+                getFinanceData({
+                    release_time: release_time,
+                    source: 'jin10'
+                })
+                break;
 
-                default:
-                    getMultFinanceData({
-                        release_time: release_time,
-                        language: 'en'
-                    })
-                    break;
-            }
-        } catch (error) { }
+            default:
+                // no my data
+                getMultFinanceData({
+                    release_time: release_time,
+                    language: 'en'
+                })
+                break;
+        }
         // eslint-disable-next-line
     }, [i18n.language])
 
     return (
-        <section className="container p-3" style={{ background: '#F5F5F5' }}>
-            <div className="d-flex align-items-center justify-content-between">
+        <section className="container col-12 col-lg-3 rounded" style={{ background: '#F5F5F5' }}>
+            <div className="d-flex flex-column align-items-start justify-content-between">
                 <h3>{t('Event Calendar')}</h3>
                 <p className="text-secondary"><small>{now}</small></p>
             </div>
-            {FinanceData.map(list => (
-                <div key={list.name}>
-                    {list}
-                </div>
-            ))}
+            <ul className={`list-unstyled d-flex flex-column ${styled.calendarList}`}>
+                {FinanceData.slice(0, 5).map(list => (
+                    <li key={list.name} className="d-flex my-2">
+                        <div className="tag"></div>
+                        <div className="py-2 w-100 bg-white d-flex align-items-center">
+                            <div className="mx-1">
+                                {!list.time ? list.ctime.split(' ')[1] : list.time}
+                            </div>
+                            <div className="vr"></div>
+                            <div className="mx-1">
+                                <h6>{list.name}</h6>
+                                <small><i className="text-secondary">{list.country}</i></small>
+                            </div>
+                        </div>
+                    </li>
+                ))}
+            </ul>
+            {/* <Link to={(location) => `${location.pathname}/Event-Calendar`} className="btn btn-link">{t('View detail')}</Link> */}
         </section>
     )
 }
 
-const News = () => {
+const Index = () => {
     return (
         <>
             <TopBanner
@@ -233,23 +261,18 @@ const News = () => {
                 titles={["Low Cost | High Reward"]}
                 subtitles={["Start your trading journey"]} />
 
-            <div className="d-flex col-11 my-4">
-                <Router basename={'/Resources'}>
-                    <Switch>
-                        <Route exact path="/News">
-                            <Index />
-                        </Route>
-                        <Route exact path="/News/:id">
-                            <Detail />
-                        </Route>
-                    </Switch>
-                </Router>
-
-                {/* TODO: upated data */}
-                <EventCalendar />
-            </div>
+            <Router basename={'/Resources'}>
+                <Switch>
+                    <Route exact path="/News">
+                        <News />
+                    </Route>
+                    <Route exact path="/News/:id">
+                        <Detail />
+                    </Route>
+                </Switch>
+            </Router>
         </>
     )
 }
 
-export default News
+export default Index

@@ -2,8 +2,8 @@ import { makeStyles } from '@mui/styles';
 import { useTranslation } from "react-i18next";
 import hxfxglobal_logo from '../assets/images/hxfxglobal_logo.png';
 
-import applestore from 'assets/images/home/applestore.png'
-import googleplay from 'assets/images/home/googleplay.png'
+import applestore from 'assets/images/applestore.png'
+import googleplay from 'assets/images/googleplay.png'
 import email from 'assets/images/footer/email.svg'
 import tel from 'assets/images/footer/tel.svg'
 import qrcode_hxfx from 'assets/images/footer/qrcode_hxfx.png'
@@ -31,7 +31,8 @@ const navList = [
             { item: 'Forex', link: '/Products/Forex' },
             { item: 'Commodities', link: '/Products/Commodities' },
             { item: 'Indices', link: '/Products/Indices' },
-            { item: 'Calculate', link: '/Products/Calculate' }
+            // TODO: not finished
+            // { item: 'Calculate', link: '/Products/Calculate' }
         ]
     },
     {
@@ -45,7 +46,7 @@ const navList = [
         item: 'Resources',
         link: [
             { item: 'News', link: '/Resources/News' },
-            { item: 'Blog', link: '/Resources/Blog' },
+            { item: 'Blog', link: 'https://forexclusive.info/' },
             { item: 'Strategy', link: '/Resources/Strategy' },
         ]
     },
@@ -140,18 +141,30 @@ export default function Footer() {
 
                 {/* media */}
                 <div className="container d-flex flex-wrap justify-content-between align-items-center">
-                    <h6 className="my-2">{t('Download the HXFX Trade app')}</h6>
+                    <h6 className="my-2">{t('Download the FX Trade app')}</h6>
                     <div className="my-2">
-                        <img className="m-1" src={googleplay} width="126px" alt=''></img>
-                        <img className="m-1" src={applestore} width="126px" alt=''></img>
+                        <a className="qrcode-hxfx" href="https://soft.hxfxglobal.com/MT4/HXFXTrade.apk" target="_blank" rel="noreferrer">
+                            <img className="m-1" src={googleplay} width="193px" alt='googleplay' />
+                        </a>
+                        <a className="qrcode-hxfx" href="https://apps.apple.com/vn/app/id1474767285" target="_blank" rel="noreferrer">
+                            <img className="m-1" src={applestore} width="193px" alt='applestore' />
+                        </a>
                     </div>
                     <div className="my-2">
-                        <img className="mx-1" src={FB} width="36px" height="36px" alt=''></img>
-                        <img className="mx-1" src={IG} width="36px" height="36px" alt=''></img>
-                        <img className="mx-1" src={twitter} width="36px" height="36px" alt=''></img>
-                        <img className="mx-1" src={youtube} width="36px" height="36px" alt=''></img>
+                        <a href="https://www.facebook.com/HXFXGlobal/" target="_blank" rel="noreferrer">
+                            <img className="mx-1" src={FB} width="36px" height="36px" alt='facebook' />
+                        </a>
+                        <a href="https://www.instagram.com/hxfx_global/" target="_blank" rel="noreferrer">
+                            <img className="mx-1" src={IG} width="36px" height="36px" alt='instagram' />
+                        </a>
+                        <a href="https://twitter.com/HXFXGlobal" target="_blank" rel="noreferrer">
+                            <img className="mx-1" src={twitter} width="36px" height="36px" alt='twitter' />
+                        </a>
+                        <a href="https://www.youtube.com/channel/UCCZWef37yrZH1piNGEWuMww?view_as=subscriber" target="_blank" rel="noreferrer">
+                            <img className="mx-1" src={youtube} width="36px" height="36px" alt='youtube' />
+                        </a>
                     </div>
-                    <img className="my-2" src={hxfxglobal_logo} width="151px" height="32px" style={{ filter: 'contrast(0)' }} alt=''></img>
+                    <img className="my-2" src={hxfxglobal_logo} width="151px" height="32px" style={{ filter: 'contrast(0)' }} alt='www.hxfxglobal.com' />
                 </div>
 
                 <hr />
@@ -159,7 +172,6 @@ export default function Footer() {
                 {/* copyright */}
                 <div className="container d-flex justify-content-between">
                     <p><small>{t('COPYRIGHT © 2020 www.hxfxglobal.com')}</small></p>
-                    <p><small>{t('Licensed by VFSC')}</small></p>
                 </div>
             </div>
         </section>

@@ -1,15 +1,13 @@
 import React from 'react'
-// import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import Axios from 'axios'
 // import { makeStyles } from '@mui/styles';
-import { thousandsSeparator } from 'utilities'
+import { thousandsSeparator, RedirectToDemoAccount, RedirectToRealAccount } from 'utilities'
 import TopBanner from 'components/TopBanner'
 import AwardCarousel from 'components/AwardCarousel'
 import OpenAccount from 'components/OpenAccount'
 
 import topbanner from 'assets/images/about_us/topbanner.jpg'
-import certificate from 'assets/images/about_us/certificate.png'
 import part3image from 'assets/images/about_us/part3image.png'
 import earth from 'assets/images/about_us/earth.png'
 
@@ -27,15 +25,8 @@ const Section1 = () => {
     return (
         <section className="container-fluid py-5">
             <div className="container">
-                <div className="row justify-content-center align-items-center">
-                    <div className="col col-12 col-lg-6">
-                        <h2 className="fw-bold text-dark text-center">{`${t('WHO WE ARE')}`}</h2>
-                        <p className="card-text text-secondary">{`${t('For over a decade, HXFX Global has been constantly striving to provide the best secured Forex and Commodities trading platform for our clients, alongside innovative trading technology. Our products enable clients to leverage trade globally with competitive spreads and zero commission. Trusted by millions of clients worldwide, HXFX Global is authorized and regulated by VFSC (Licence number 40453).')}`}</p>
-                    </div>
-                    <div className="col col-12 col-lg-5 text-center m-2">
-                        <img src={certificate} alt="" width="100%" height="100%" />
-                    </div>
-                </div>
+                <h2 className="fw-bold text-dark text-center">{`${t('WHO WE ARE')}`}</h2>
+                <p className="card-text text-secondary">{`${t('For over a decade, HXFX Global has been constantly striving to provide the best secured Forex and Commodities trading platform for our clients, alongside innovative trading technology. Our products enable clients to leverage trade globally with competitive spreads and zero commission. Trusted by millions of clients worldwide.')}`}</p>
             </div>
         </section>
     )
@@ -54,7 +45,6 @@ const Section2 = () => {
                     <li className="text-secondary mb-3">{t("Your money and assets (for example: shares) are never merged with HXFXglobal’s own money or assets")}</li>
                     <li className="text-secondary mb-3">{t("HXFXglobal has advanced encryption transmission and dynamic encryption of your data.")}</li>
                     <li className="text-secondary mb-3">{t("HXFXglobal does not use your money for any business activities, including for hedging or investments.")}</li>
-                    <li className="text-secondary mb-3">{t("HXFXglobal is authorised and regulated by VFSC (Licence number 40453).")}</li>
                 </ul>
             </div>
         </section>
@@ -88,9 +78,9 @@ const history_context = [
     },
     {
         name: "2019 - 2020", content: [
-            'The number of users exceeded 300W',
+            'The number of users exceeded 300K',
             'Increased 24 Share (Hong Kong stocks / US stocks) product contracts',
-            'Officially launched an upgraded mobile trading APP——HXFX Trade',
+            'Officially launched an upgraded mobile trading APP——FX Trade',
             'Brand new upgrade',
             'Our glory will be continued'
         ]
@@ -159,7 +149,7 @@ const WhyChoose = () => {
     const { t } = useTranslation();
     return (
         <section className="container-fluid py-5" style={{ background: '#F1F1F1' }}>
-            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HFXF')}</h2>
+            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HXFX')}</h2>
 
             <div className="container d-flex flex-wrap justify-content-evenly">
                 {why_context.map(card =>
@@ -232,23 +222,23 @@ const OperationalData = () => {
     )
 }
 
-const About_us = () => {
-    return (
-        <>
-            <TopBanner
-                background={topbanner}
-                titles={["Trade with HXFX"]}
-                subtitles={["Your Reliable Trading Partner", "At HXFXglobal, we help investors to maximize the value of Investment and keep our clients’ finance safe."]}
-                buttons={[{ color: 'btn-secondary', text: "Open Demo Account" }, { color: 'btn-warning', text: "Open Real Account" }]} />
-            <Section1 />
-            <Section2 />
-            <History />
-            <WhyChoose />
-            <OperationalData />
-            <OpenAccount />
-            <AwardCarousel />
-        </>
-    )
-}
-
+const About_us = () => (
+    <>
+        <TopBanner
+            background={topbanner}
+            titles={["Trade with HXFX"]}
+            subtitles={["Your Reliable Trading Partner", "At HXFXglobal, we help investors to maximize the value of Investment and keep our clients’ finance safe."]}
+            buttons={[
+                { color: 'btn-secondary', text: "Open Demo Account", callback: RedirectToDemoAccount },
+                { color: 'btn-warning', text: "Open Real Account", callback: RedirectToRealAccount }
+            ]} />
+        <Section1 />
+        <Section2 />
+        <History />
+        <WhyChoose />
+        <OperationalData />
+        <OpenAccount />
+        <AwardCarousel />
+    </>
+)
 export default About_us

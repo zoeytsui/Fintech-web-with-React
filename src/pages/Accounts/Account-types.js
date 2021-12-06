@@ -1,6 +1,10 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
+import {
+    RedirectToRealAccount,
+    RedirectToDemoAccount,
+} from 'utilities'
 import TopBanner from 'components/TopBanner'
 
 import accountTypesTopbanner from 'assets/images/accounts/accountTypesTopbanner.jpg'
@@ -22,7 +26,7 @@ const BannerOverlay = () => {
     return (
         <div className="container col-9 my-4">
             <div className="card border-0">
-                <img src={topblock} className="card-img" alt="..." />
+                <img src={topblock} className="card-img" alt="Account-Types" />
                 <div className="card-img-overlay d-flex flex-column justify-content-center px-5">
                     <h1 className="card-title text-dark">{t('Transaction Cost Savings of')}</h1>
                     <h1 className="card-title text-warning">{t('40%')}</h1>
@@ -55,8 +59,8 @@ const WhyChoose = () => {
                 )}
             </div>
             <div className="container col-12 d-flex flex-wrap justify-content-center">
-                <button className="btn btn-outline-warning m-2">{t('Open Demo Account')}</button>
-                <button className="btn btn-warning text-white m-2">{t('Open Real Account')}</button>
+                <button onClick={() => RedirectToDemoAccount()} className="btn btn-outline-warning m-2">{t('Open Demo Account')}</button>
+                <button onClick={() => RedirectToRealAccount()} className="btn btn-warning text-white m-2">{t('Open Real Account')}</button>
             </div>
         </section>
     )
@@ -167,7 +171,7 @@ const AccountType = () => {
                             <p className="text-secondary">{t('Applicable Products')}</p>
                             <p className="text-secondary">{t('The platform contains all products of foreign exchange, precious metals, commodities, stocks and stock indexes.')}</p>
 
-                            <button type="button" className="w-100 btn btn-warning">{t('Create Account')}</button>
+                            <button type="button" className="w-100 btn btn-warning" onClick={() => RedirectToRealAccount()}>{t('Create Account')}</button>
                         </div>
                     </div>
                 )}
@@ -267,8 +271,8 @@ const AccountTabs = () => {
                         ).filter(tab => tab.key === activeTab)}
                     </div>
                     <div className="col col-12 col-lg-6 text-center">
-                        <h2 className="fw-bold text-dark text-center">{`${t('Upgrade your account')}`}</h2>
-                        <p className="card-text text-secondary">{`${t('Three levels of accounts that you can create according to your needs.')}`}</p>
+                        <h2 className="fw-bold text-dark text-center">{t('Upgrade your account')}</h2>
+                        <p className="card-text text-secondary">{t('Three levels of accounts that you can create according to your needs.')}</p>
                         <ul className="d-flex justify-content-between">
                             {tabs.map(tab =>
                                 <li role="button" className={`list-unstyled ${activeTab === tab.name ? 'opacity-100' : 'opacity-25'}`} onClick={() => setActiveTab(tab.name)} key={tab.name}>
@@ -378,11 +382,11 @@ const ReadyToTrade = () => {
             <div className="container py-5">
                 <div className="row justify-content-center align-items-center text-center">
                     <div className="col col-12 col-lg-6">
-                        <h2 className="fw-bold text-dark text-center">{`${t('Ready to Trade ?')}`}</h2>
-                        <p className="card-text text-secondary">{`${t('Trade with Smiler amount , open account in less than ONE minute')}`}</p>
+                        <h2 className="fw-bold text-dark text-center">{t('Ready to Trade ?')}</h2>
+                        <p className="card-text text-secondary">{t('Trade with Smiler amount , open account in less than ONE minute')}</p>
                         <div className="d-flex flex-wrap justify-content-center">
-                            <button className="btn btn-secondary text-white m-2">{t('Open Demo Account')}</button>
-                            <button className="btn btn-warning text-white m-2">{t('Open Real Account')}</button>
+                            <button onClick={() => RedirectToDemoAccount()} className="btn btn-outline-warning m-2">{t('Open Demo Account')}</button>
+                            <button onClick={() => RedirectToRealAccount()} className="btn btn-warning text-white m-2">{t('Open Real Account')}</button>
                         </div>
                     </div>
                     <div className="col col-12 col-lg-5 text-center m-2">
@@ -401,7 +405,7 @@ const AccountTypes = () => {
                 background={accountTypesTopbanner}
                 titles={["Trade with us"]}
                 subtitles={["Invest your wealth in a wide-range of trading products.", "Join the world leading HXFX Global today and trade the most popular products with ultra-low spreads."]}
-                buttons={[{ color: 'btn-warning', text: "Create Account" }]} />
+                buttons={[{ color: 'btn-warning', text: "Create Account", callback: RedirectToRealAccount }]} />
 
             <BannerOverlay />
             <WhyChoose />
