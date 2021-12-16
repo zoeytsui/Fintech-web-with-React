@@ -5,16 +5,14 @@ import { makeStyles } from '@mui/styles';
 import { BrowserRouter as Router, Route, Switch, Link, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
+import { Pagination, Stack } from '@mui/material';
+
 import TopBanner from 'components/TopBanner'
+import Loading from 'components/Loading'
 
 import strategy_topbanner from 'assets/images/resources/strategy_topbanner.png'
 
 const useStyles = makeStyles({
-    detailContent: {
-        "& img": {
-            width: '100%'
-        }
-    },
     filterList_product: {
         "& ul": {
             display: 'flex',
@@ -48,9 +46,10 @@ const SetDirect = ({ val }) => {
 }
 
 const Strategy = () => {
-    const styled = useStyles()
+    const styled = useStyles();
     const { t } = useTranslation();
     const [adList, setAdList] = React.useState([])
+    const [dataReady, setDataReady] = React.useState(false)
     const [pagination, setPagination] = React.useState(null)
     const [products, setProducts] = React.useState([])
 
@@ -111,6 +110,7 @@ const Strategy = () => {
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setPagination(result.data.count)
             setAdList(result.data.list)
+            setDataReady(true)
         } catch (error) { }
     }
 
@@ -192,7 +192,7 @@ const Strategy = () => {
                 {/* Time */}
                 <li className={`nav-item ${styled.filterList_general}`}>
                     <button className="btn btn-lg link-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Time">{t('Time')}</button>
-                    <ul className="dropdown-menu text-center" aria-labelledby="Time">
+                    <ul className="dropdown-menu text-center" aria-labelledby="Time" style={{ minWidth: '7rem' }}>
                         <li><button className="dropdown-item" onClick={() => getList({ ordertype: 'desc' })}>{t('desc')}</button></li>
                         <li><button className="dropdown-item" onClick={() => getList({ ordertype: 'asc' })}>{t('asc')}</button></li>
                     </ul>
@@ -233,11 +233,14 @@ const Strategy = () => {
                                 </div>
                             </div>
                         )
-                        : <h3 className="my-5">{t('No results')}</h3>}
+                        : dataReady
+                            ? <h3 className="my-5">{t('No results')}</h3>
+                            : <Loading />
+                    }
                 </div>
 
                 {/* Pagination */}
-                <div className="d-flex justify-content-center py-4">
+                {/* <div className="d-flex justify-content-center py-4">
                     <select aria-labelledby="Pagination" name="pagination" id="pagination" onChange={(e) => getList({ page: e.target.value })}>
                         {[...Array(parseInt(pagination / 9))].map((page, index) =>
                             <option key={index} className="pagination-list" value={index + 1}>
@@ -246,7 +249,24 @@ const Strategy = () => {
                         )}
                     </select>
                     <label className="mx-1" htmlFor="pagination">{t('of ') + parseInt(pagination / 9) + t(' pages')}</label>
-                </div>
+                </div> */}
+
+                <Stack alignItems="center" sx={{ py: 4 }}>
+                    <Pagination count={parseInt(Number(pagination) / 9)} size="small" defaultPage={1} shape="rounded"
+                        sx={{
+                            "& .MuiPaginationItem-root": {
+                                "&:hover,:target,:active": {
+                                    backgroundColor: 'transparent',
+                                    color: '#83bf4b'
+                                },
+                            },
+                            "& .Mui-selected": {
+                                backgroundColor: 'transparent !important',
+                                color: '#83bf4b'
+                            }
+                        }}
+                        onChange={(e, page) => getList({ page: page })} />
+                </Stack>
 
             </section>
         </React.Fragment >
@@ -255,7 +275,6 @@ const Strategy = () => {
 
 const StrategyDetail = () => {
     let { product } = useParams();
-    const styled = useStyles()
     const { t } = useTranslation();
     const contentRef = React.useRef(<div />)
     const [adDetails, setAdDetails] = React.useState([])
@@ -320,7 +339,7 @@ const StrategyDetail = () => {
 
             <button className="btn btn-warning mb-4">{t('Trade Now')}</button>
 
-            <div ref={contentRef} className={styled.detailContent} />
+            <div ref={contentRef} className="ref-img" />
         </section>
     )
 }

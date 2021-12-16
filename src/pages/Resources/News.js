@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Switch, Link, useParams } from 'react-r
 import { useTranslation } from "react-i18next";
 
 import TopBanner from 'components/TopBanner'
+import Loading from 'components/Loading'
 
 import news_topbanner from 'assets/images/resources/news_topbanner.jpg'
 
@@ -31,6 +32,7 @@ const News = () => {
     const [newsList, setNewsList] = React.useState([])
     const [pageReducer, setPageReducer] = React.useState(1)
     const [disabled, setDisabled] = React.useState(true)
+    const [dataReady, setDataReady] = React.useState(false)
 
     const getList = async (lang, page) => {
         try {
@@ -59,6 +61,7 @@ const News = () => {
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
 
             setNewsList(list => [...list, ...result.data.list])
+            setDataReady(true)
         }
         catch (error) { }
     }
@@ -86,17 +89,19 @@ const News = () => {
             <div className="container-fluid d-flex flex-wrap justify-content-center align-items-start my-4">
                 <div className="col-12 col-lg-9 d-flex flex-column">
                     <div className="d-flex flex-wrap justify-content-center">
-                        {newsList.map((list, index) =>
-                            <div className="card col-12 col-lg-3 m-2 shadow-sm" style={{ borderRadius: '20px', minWidth: '320px' }} key={list.title}>
-                                <img src={list.cover_img} className="card-img-top" style={{ borderRadius: '20px 20px 0 0' }} alt={list.title} />
-                                <div className="card-body">
-                                    <h5 className="card-title">{t(list.title)}</h5>
-                                    {/* <p className="card-text">{t(list.remark)}</p> */}
-                                    <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
-                                    <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
+                        {dataReady
+                            ? newsList.map((list, index) =>
+                                <div className="card col-12 col-lg-3 m-2 shadow-sm" style={{ borderRadius: '20px', minWidth: '320px' }} key={list.title}>
+                                    <img src={list.cover_img} className="card-img-top" style={{ borderRadius: '20px 20px 0 0' }} alt={list.title} />
+                                    <div className="card-body">
+                                        <h5 className="card-title">{t(list.title)}</h5>
+                                        {/* <p className="card-text">{t(list.remark)}</p> */}
+                                        <p className="card-text text-secondary"><small><i>{t(list.release_time)}</i></small></p>
+                                        <Link to={(location) => `${location.pathname}/${list.id}`} className="btn btn-link">{t('View detail')}</Link>
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            ) : <Loading />
+                        }
                     </div>
                     <button className="btn btn-primary mx-auto my-4" onClick={() => setPageReducer(page => page += 1)} disabled={disabled}> {t('Load More')}</button>
 
@@ -145,7 +150,7 @@ const Detail = () => {
         // eslint-disable-next-line
     }, [id, i18n.language])
     return (
-        <section className="px-5 mx-auto col-9">
+        <section className="container mx-auto col-12 col-lg-9 ref-img">
             <div className="my-4">
                 <Link to='/News' className="link-secondary">
                     <i className="bi bi-chevron-left mx-2" />
@@ -232,12 +237,12 @@ const EventCalendar = () => {
                 <p className="text-secondary"><small>{now}</small></p>
             </div>
             <ul className={`list-unstyled d-flex flex-column ${styled.calendarList}`}>
-                {FinanceData.slice(0, 5).map(list => (
-                    <li key={list.name} className="d-flex my-2">
+                {FinanceData.slice(0, 5).map((list, index) =>
+                    <li key={index} className="d-flex my-2">
                         <div className="tag"></div>
                         <div className="py-2 w-100 bg-white d-flex align-items-center">
                             <div className="mx-1">
-                                {!list.time ? list.ctime.split(' ')[1] : list.time}
+                                {list.time ? list.time : list.ctime.split(' ')[1]}
                             </div>
                             <div className="vr"></div>
                             <div className="mx-1">
@@ -246,9 +251,9 @@ const EventCalendar = () => {
                             </div>
                         </div>
                     </li>
-                ))}
+                )}
             </ul>
-            {/* <Link to={(location) => `${location.pathname}/Event-Calendar`} className="btn btn-link">{t('View detail')}</Link> */}
+            <a href="Calendar" className="btn btn-primary my-4">{t('View detail')}</a>
         </section>
     )
 }

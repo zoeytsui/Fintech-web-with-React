@@ -1,5 +1,6 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import StyledEngineProvider from "@mui/material/StyledEngineProvider";
 import Layout from 'layout/default';
 
 import Home from 'pages/Home';
@@ -30,30 +31,32 @@ const loadingMarkup = (
 const App = () => {
   return (
     <Suspense fallback={loadingMarkup}>
-      <Router>
-        <Layout>
-          <Switch>
-            <Route exact path='/' component={Home} />
+      <StyledEngineProvider injectFirst>
+        <Router>
+          <Layout>
+            <Switch>
+              <Route exact path='/' component={Home} />
 
-            <Route exact path='/About-us' component={about_us} />
+              <Route exact path='/About-us' component={about_us} />
 
-            <Route exact path='/Platforms' component={platforms} />
+              <Route exact path='/Platforms' component={platforms} />
 
-            <Route exact path='/Products/:id' component={products} />
-            <Route exact path='/Products/:id/Detail' component={Detail} />
+              <Route exact path='/Products/:id' component={products} />
+              <Route exact path='/Products/:id/Detail' component={Detail} />
 
-            <Route exact path='/Accounts/Account-Types' component={AccountTypes} />
-            <Route exact path='/Accounts/Promotions' component={Promotions} />
+              <Route exact path='/Accounts/Account-Types' component={AccountTypes} />
+              <Route exact path='/Accounts/Promotions' component={Promotions} />
 
-            <Route exact path='/Resources/:id' component={Resources} />
-            <Route exact path='/Resources/:id/:product' component={Resources} />
+              <Route exact path='/Resources/:id' component={Resources} />
+              <Route exact path='/Resources/:id/:product' component={Resources} />
 
-            <Route exact path='/Help' component={Help} />
+              <Route exact path='/Help' component={Help} />
 
-            <Route exact path='/register-real-account' component={register_real_account} />
-          </Switch>
-        </Layout>
-      </Router>
+              <Route exact path='/register-real-account' component={register_real_account} />
+            </Switch>
+          </Layout>
+        </Router>
+      </StyledEngineProvider>
     </Suspense>
   )
 };

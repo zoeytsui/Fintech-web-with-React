@@ -8,7 +8,7 @@ export const timeFormatter = (time) => {
 // Number formatting with thousand separator
 export const thousandsSeparator = (value) => {
     if (value === 0) return value;
-    if (!value) return '0';
+    if (!value) return '-';
     value = Number.parseFloat(value).toFixed(8);
     return new Intl.NumberFormat(i18n.language, { maximumSignificantDigits: 20 }).format(value)
 }

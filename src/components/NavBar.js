@@ -12,9 +12,10 @@ import vn_logo from '../assets/images/VN.png';
 // eslint-disable-next-line
 import cn_logo from '../assets/images/CN.png';
 
-import Account_Types_icon from '../assets/images/navbar/Account_Types_icon.png';
-import Blog_icon from '../assets/images/navbar/Blog_icon.png';
+import Calendar_icon from '../assets/images/navbar/Calendar_icon.png';
+import Announcement_icon from '../assets/images/navbar/Announcement_icon.png';
 import Calculate_icon from '../assets/images/navbar/Calculate_icon.png';
+import Account_Types_icon from '../assets/images/navbar/Account_Types_icon.png';
 import Commodities_icon from '../assets/images/navbar/Commodities_icon.png';
 import Forex_icon from '../assets/images/navbar/Forex_icon.png';
 import Indices_icon from '../assets/images/navbar/Indices_icon.png';
@@ -79,7 +80,7 @@ const navList = [
             { item: 'Commodities', link: '/Products/Commodities', src: Commodities_icon },
             { item: 'Indices', link: '/Products/Indices', src: Indices_icon },
             // TODO: not finished
-            // { item: 'Calculate', link: '/Products/Calculate', src: Calculate_icon }
+            { item: 'Calculator', link: '/Products/Calculator', src: Calculate_icon }
         ]
     },
     {
@@ -92,8 +93,9 @@ const navList = [
     {
         item: 'Resources',
         link: [
+            { item: 'Announcement', link: '/Resources/Announcement', src: Announcement_icon },
             { item: 'News', link: '/Resources/News', src: news_icon },
-            { item: 'Blog', link: 'https://forexclusive.info/', src: Blog_icon },
+            { item: 'Calendar', link: '/Resources/Calendar', src: Calendar_icon },
             { item: 'Strategy', link: '/Resources/Strategy', src: Strategy_icon },
         ]
     },
@@ -146,7 +148,7 @@ export default function NavBar() {
                         {/* ucenter and new account */}
                         <div className="d-flex">
                             <button className="btn text-primary" onClick={() => RedirectToUcenter()}>{t('Log In')}</button>
-                            <button className="btn btn-warning" onClick={() => RedirectToRealAccount()}>{t('Create Account')}</button>
+                            <button className="btn btn-warning bg-gradient" onClick={() => RedirectToRealAccount()}>{t('Create Account')}</button>
                         </div>
 
                         {/* switch language */}

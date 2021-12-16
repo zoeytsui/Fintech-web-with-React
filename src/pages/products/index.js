@@ -8,7 +8,7 @@ import {
     RedirectToUcenter
 } from 'utilities'
 
-import Calculate from './Calculate'
+import Calculator from './Calculator'
 import TopBanner from 'components/TopBanner'
 import MightBeInterested from 'components/MightBeInterested'
 import MarketPrice from 'components/MarketPrice'
@@ -245,7 +245,7 @@ const Products = () => (
                 <Route exact path="/Indices">
                     <Indices />
                 </Route>
-                <Route exact path="/Calculate" component={Calculate} />
+                <Route exact path="/Calculator" component={Calculator} />
                 <Route exact path="/Lowest-Commission" component={LowestCommission} />
             </Switch>
 

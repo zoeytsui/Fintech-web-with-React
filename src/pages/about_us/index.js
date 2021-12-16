@@ -51,41 +51,6 @@ const Section2 = () => {
     )
 }
 
-const history_context = [
-    {
-        name: "2010 - 2014", content: [
-            'Online trading terminals were launched',
-            'A professional customer service team was set up to provide professional investment Q&A services',
-            'The platform launched a news function to keep abreast of market dynamics',
-            'Official Web 2.0 was upgraded'
-        ]
-    },
-    {
-        name: "2015 - 2017", content: [
-            'The number of user exceeded 300K', 'Partnership with ACB bank and DONGA Bank',
-            'Launched the internal Testing Edition Mobile App',
-            'Officially launched the natural gas and European share index contract notice',
-            'Won the best innovation silver industry Asia Pacific Stevie Silver Award']
-    },
-    {
-        name: "2018", content: [
-            'The mobile app was officially launched',
-            'Won the "Hong Kong Most Valuable Enterprise Award"',
-            'Won the title of "ERB Talent Enterprise"',
-            'Won the "Golden Bridge Award"',
-            'Won the 2018 financial growth company in the United States'
-        ]
-    },
-    {
-        name: "2019 - 2020", content: [
-            'The number of users exceeded 300K',
-            'Increased 24 Share (Hong Kong stocks / US stocks) product contracts',
-            'Officially launched an upgraded mobile trading APP——FX Trade',
-            'Brand new upgrade',
-            'Our glory will be continued'
-        ]
-    },
-]
 
 const History = () => {
     const { t } = useTranslation();
@@ -94,6 +59,43 @@ const History = () => {
     const toggleTabs = (e, tab) => {
         setActiveTab(tab);
     }
+
+    const context = [
+        {
+            name: "2010 - 2014", content: [
+                'Online trading terminals were launched',
+                'A professional customer service team was set up to provide professional investment Q&A services',
+                'The platform launched a news function to keep abreast of market dynamics',
+                'Official Web 2.0 was upgraded'
+            ]
+        },
+        {
+            name: "2015 - 2017", content: [
+                'The number of user exceeded 300K', 'Partnership with ACB bank and DONGA Bank',
+                'Launched the internal Testing Edition Mobile App',
+                'Officially launched the natural gas and European share index contract notice',
+                'Won the best innovation silver industry Asia Pacific Stevie Silver Award']
+        },
+        {
+            name: "2018", content: [
+                'The mobile app was officially launched',
+                'Won the "Hong Kong Most Valuable Enterprise Award"',
+                'Won the title of "ERB Talent Enterprise"',
+                'Won the "Golden Bridge Award"',
+                'Won the 2018 financial growth company in the United States'
+            ]
+        },
+        {
+            name: "2019 - 2020", content: [
+                'The number of users exceeded 300K',
+                'Increased 24 Share (Hong Kong stocks / US stocks) product contracts',
+                'Officially launched an upgraded mobile trading APP——FX Trade',
+                'Brand new upgrade',
+                'Our glory will be continued'
+            ]
+        },
+    ]
+
     return (
         <section className="container-fluid">
             <h2 className="fw-bold py-5 text-dark text-center">{`${t('HISTORY & MIILESTONES OF HXFX GLOBAL')}`}</h2>
@@ -105,19 +107,19 @@ const History = () => {
                     <div className="col col-12 col-lg-6">
 
                         <ul className={`nav nav-tabs my-3 text-secondary`}>
-                            {history_context.map(tab => (
+                            {context.map(tab => (
                                 <li className={`mx-3 nav-item`} onClick={e => toggleTabs(e, tab.name)} role="button" key={tab.name}>
                                     {t(tab.name)}
                                 </li>
                             ))}
                         </ul>
 
-                        {history_context.map(tab => (
+                        {context.map(tab => (
                             tab.name === activeTab
-                                ? <div className={`container`} id={tab.name} key={tab.name}>
-                                    <h2>{tab.name}</h2>
+                                ? <div className={`container text-white shadow p-5`} style={{ background: '#83bf4b', borderRadius: '50px' }} id={tab.name} key={tab.name}>
+                                    <h4>{tab.name}</h4>
                                     <div data-aos="fade-left">
-                                        <ul className={`list-group text-secondary`}>
+                                        <ul className={`list-group`}>
                                             {tab.content.map(p =>
                                                 <li className="mb-3" key={p}>{t(p)}</li>
                                             )}

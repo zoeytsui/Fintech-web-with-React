@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import i18n from 'i18next'
 import { useTranslation } from "react-i18next";
 import { timeFormatter } from 'utilities'
+
+import Loading from 'components/Loading'
 import TopBanner from 'components/TopBanner'
 import OpenAccount from 'components/OpenAccount'
 import AwardCarousel from 'components/AwardCarousel'
@@ -12,6 +14,7 @@ import { TOP_OPENAPI } from 'api';
 const PromoCard = () => {
     const { t } = useTranslation();
     const [cards, cardsSet] = useState([]);
+    const [dataReady, setDataReady] = useState(false)
 
     const getActivity = async (lang) => {
         try {
@@ -38,6 +41,7 @@ const PromoCard = () => {
             const result = await TOP_OPENAPI.get(`/hx/?service=ActivitySet.getActivity`, { params: { ...params } })
             if (result.data.ret !== 200) return console.error(result.data)
             cardsSet(result.data.data.list)
+            setDataReady(true)
         } catch (error) { }
     }
 
@@ -72,18 +76,20 @@ const PromoCard = () => {
     return (
         <div className="container-fluid py-5" style={{ background: '#F1F1F1' }}>
             <div className="d-flex flex-wrap justify-content-center">
-                {cards.map(card =>
-                    <div className="feature-card card col-12 col-lg-3 m-3 p-3" key={card.id}>
-                        <div className="d-flex flex-column align-items-start text-left" key={card.id}>
-                            <img src={card.content.list_image} style={{ borderRadius: '10px' }} width="100%" alt={card.content.name} />
-                            <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title m-2">{card.content.name}</h5>
-                            <p className="text-secondary mx-2 my-0">{t('Event available period:')}</p>
-                            <p className="text-secondary mx-2 my-0">{timeFormatter(card.start_time) + ' - ' + timeFormatter(card.end_time)}</p>
-                            <p className="text-danger m-2">{t('Countdown') + countdown(card.end_time)}</p>
-                        </div>
-                        <a className="btn btn-warning text-white m-2" role="button" href={card.content.url}>{t('Join Promotion')}</a>
-                    </div>
-                )}
+                {dataReady
+                    ? cards.map(card =>
+                        <div className="feature-card card col-12 col-lg-3 m-3 p-3" key={card.id}>
+                            <div className="d-flex flex-column align-items-start text-left" key={card.id}>
+                                <img src={card.content.list_image} style={{ borderRadius: '10px' }} width="100%" alt={card.content.name} />
+                                <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title m-2">{card.content.name}</h5>
+                                <p className="text-secondary mx-2 my-0">{t('Event available period:')}</p>
+                                <p className="text-secondary mx-2 my-0">{timeFormatter(card.start_time) + ' - ' + timeFormatter(card.end_time)}</p>
+                                <p className="text-danger m-2">{t('Countdown') + countdown(card.end_time)}</p>
+                            </div>
+                            <a className="btn btn-warning text-white m-2" role="button" href={card.content.url}>{t('Join Promotion')}</a>
+                        </div>)
+                    : <Loading />
+                }
             </div>
         </div>
     )

@@ -31,8 +31,7 @@ const navList = [
             { item: 'Forex', link: '/Products/Forex' },
             { item: 'Commodities', link: '/Products/Commodities' },
             { item: 'Indices', link: '/Products/Indices' },
-            // TODO: not finished
-            // { item: 'Calculate', link: '/Products/Calculate' }
+            { item: 'Calculator', link: '/Products/Calculator' }
         ]
     },
     {
@@ -45,8 +44,9 @@ const navList = [
     {
         item: 'Resources',
         link: [
+            { item: 'Announcement', link: '/Resources/Announcement' },
             { item: 'News', link: '/Resources/News' },
-            { item: 'Blog', link: 'https://forexclusive.info/' },
+            { item: 'Calendar', link: '/Resources/Calendar' },
             { item: 'Strategy', link: '/Resources/Strategy' },
         ]
     },
