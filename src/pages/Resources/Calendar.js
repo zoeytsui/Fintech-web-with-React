@@ -13,6 +13,7 @@ import { Checkbox, FormGroup, FormControlLabel, FormControl, FormLabel } from '@
 
 import TopBanner from 'components/TopBanner'
 import Loading from 'components/Loading'
+import OpenAccountSimple from 'components/OpenAccountSimple'
 
 import calendar_topbanner from 'assets/images/resources/calendar_topbanner.png'
 
@@ -110,7 +111,6 @@ const Calendar = () => {
         try {
             const result = await (await TOP_OPENAPI.get(`tools/?service=news.getFinanceData`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-            setFinanceData(result.data.list.financeData)
             // eslint-disable-next-line
             result.data.list.financeData.map(list => {
                 switch (list.importanceLevel) {
@@ -127,8 +127,9 @@ const Calendar = () => {
                 }
                 setCountryList(val => [...val, ...[list.country]])
             })
+            setFinanceData(result.data.list.financeData)
             setDataReady(true)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     // for en, vi
@@ -139,7 +140,7 @@ const Calendar = () => {
             setFinanceData(result.data.list.financeData)
             result.data.list.financeData.map(list => setCountryList(val => [...val, ...[list.country]]))
             setDataReady(true)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     const combineApi = () => {
@@ -188,6 +189,47 @@ const Calendar = () => {
                 e.target.checked
                     ? tr.style.display = ''
                     : tr.style.display = 'none'
+            }
+        });
+    }
+
+    const toggleImpact = (e) => {
+        // eslint-disable-next-line
+        Array.from(document.getElementById('CalendarTable').querySelectorAll(`tr`)).map(tr => {
+            switch (true) {
+                case e.target.value === '低' || e.target.value === 'low':
+                    // eslint-disable-next-line
+                    Array.from(tr.querySelectorAll('svg')).filter(svg => svg.id === "lowSvg").map(td => {
+                        if (td.parentElement.parentElement === tr) {
+                            e.target.checked
+                                ? tr.style.display = ''
+                                : tr.style.display = 'none'
+                        }
+                    })
+                    break;
+                case e.target.value === '中' || e.target.value === 'medium':
+                    // eslint-disable-next-line
+                    Array.from(tr.querySelectorAll('svg')).filter(svg => svg.id === "mediumSvg").map(td => {
+                        if (td.parentElement.parentElement === tr) {
+                            e.target.checked
+                                ? tr.style.display = ''
+                                : tr.style.display = 'none'
+                        }
+                    })
+                    break;
+                case e.target.value === '高' || e.target.value === 'high':
+                    // eslint-disable-next-line
+                    Array.from(tr.querySelectorAll('svg')).filter(svg => svg.id === "highSvg").map(td => {
+                        if (td.parentElement.parentElement === tr) {
+                            e.target.checked
+                                ? tr.style.display = ''
+                                : tr.style.display = 'none'
+                        }
+                    })
+                    break;
+
+                default:
+                    break;
             }
         });
     }
@@ -265,16 +307,16 @@ const Calendar = () => {
                                         <div className="card-header bg-light" style={{ borderRadius: '0 0 40px 40px' }}>
                                             <FormLabel component="legend" className="text-secondary"><small>{t('Impact')}</small></FormLabel>
                                             <FormGroup id="filterList" sx={{ justifyContent: 'space-between' }} >
-                                                {impactList.map(key =>
+                                                {impactList.map((key, index) =>
                                                     <FormControlLabel
                                                         key={key}
                                                         value={key}
                                                         control={<Checkbox
                                                             defaultChecked
                                                             icon={<Circle color="transparent" />}
-                                                            checkedIcon={<Circle color="#83bf4b" />}
+                                                            checkedIcon={index === 0 ? <Circle color="#B3E585" /> : index === 1 ? <Circle color="#81C444" /> : <Circle color="#478E05" />}
                                                         />}
-                                                        onChange={(e) => toggleSelection(e)}
+                                                        onChange={(e) => toggleImpact(e)}
                                                         label={key}
                                                         labelPlacement="start"
                                                     />
@@ -313,28 +355,25 @@ const Calendar = () => {
                                             </td>
                                             <td>{list.name}</td>
                                             <td>
-                                                {list.star || list.importanceLevel}
-                                            </td>
-                                            {/* <td>
                                                 {list.star === 'low' || list.importanceLevel === '低'
-                                                    ? <svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
+                                                    ? <svg xmlns="http://www.w3.org/2000/svg" id="lowSvg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
                                                         <circle cx="8" cy="8" r="7" stroke="#23383A" fill={'#B3E585'} />
                                                         <circle cx="24" cy="8" r="7" stroke="#23383A" fill={'transparent'} />
                                                         <circle cx="40" cy="8" r="7" stroke="#23383A" fill={'transparent'} />
                                                     </svg>
                                                     : list.star === 'medium' || list.importanceLevel === '中'
-                                                        ? <svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
+                                                        ? <svg xmlns="http://www.w3.org/2000/svg" id="mediumSvg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
                                                             <circle cx="8" cy="8" r="7" stroke="#23383A" fill={'#B3E585'} />
                                                             <circle cx="24" cy="8" r="7" stroke="#23383A" fill={'#81C444'} />
                                                             <circle cx="40" cy="8" r="7" stroke="#23383A" fill={'transparent'} />
                                                         </svg>
-                                                        : <svg xmlns="http://www.w3.org/2000/svg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
+                                                        : <svg xmlns="http://www.w3.org/2000/svg" id="highSvg" width="48" height="16" className="bi bi-circle-fill" viewBox="0 0 48 16">
                                                             <circle cx="8" cy="8" r="7" stroke="#23383A" fill={'#B3E585'} />
                                                             <circle cx="24" cy="8" r="7" stroke="#23383A" fill={'#81C444'} />
                                                             <circle cx="40" cy="8" r="7" stroke="#23383A" fill={'#478E05'} />
                                                         </svg>
                                                 }
-                                            </td> */}
+                                            </td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -346,6 +385,8 @@ const Calendar = () => {
                     }
                 </div>
             </div>
+
+            <OpenAccountSimple />
         </>
     )
 }

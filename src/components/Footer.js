@@ -1,4 +1,5 @@
 import { makeStyles } from '@mui/styles';
+import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import hxfxglobal_logo from '../assets/images/hxfxglobal_logo.png';
 
@@ -64,7 +65,7 @@ export default function Footer() {
                     {navList.map(li =>
                         !Array.isArray(li.link)
                             ? <div className="col" key={li.item}>
-                                <a className={classes.aLink} href={li.link} id={li.item}>{t(li.item)}</a>
+                                <Link onClick={() => window.scrollTo(0, 0)} className={classes.aLink} to={li.link} id={li.item}>{t(li.item)}</Link>
                             </div>
                             : <div className="col" key={li.item}>
                                 <a className={classes.aLink} href='/' id={li.item}>
@@ -74,9 +75,9 @@ export default function Footer() {
                                     {li.link.map(drop_li =>
                                         <div className="col" key={drop_li.item}>
                                             <small>
-                                                <a className={classes.aLink} href={drop_li.link}>
+                                                <Link onClick={() => window.scrollTo(0, 0)} className={classes.aLink} to={drop_li.link}>
                                                     {t(drop_li.item)}
-                                                </a>
+                                                </Link>
                                             </small>
                                         </div>
                                     )}
@@ -93,7 +94,9 @@ export default function Footer() {
 
                     <div className="d-flex align-items-center">
                         <img className="mx-2" src={email} width="20px" height="16px" alt=''></img>
-                        <address className="m-0">{t('Email:cs@hxfxglobal.com')}</address>
+                        <address className="m-0">Email:
+                            <a className='text-secondary' style={{ textDecoration: 'none' }} href="mailto:cs@hxfxglobal.com">cs@hxfxglobal.com</a>
+                        </address>
                     </div>
 
                     <div className="row flex-wrap">
@@ -111,7 +114,7 @@ export default function Footer() {
                         </div>
 
                         <div className="col col-12 col-lg-2 col-md-4 my-4">
-                            <p className="m-1">{t('Zalo')}</p>
+                            <p className="m-1">Zalo</p>
                             <p className="m-1"><small>{`(${t('Vietnam')})`}</small></p>
                             <img className="mx-2" src={qrcode_hxfx} width="110px" height="110px" alt=''></img>
                         </div>
@@ -124,13 +127,13 @@ export default function Footer() {
                             <ul className="m-1" style={{ listStyle: 'none' }}>
                                 <li>1800819320</li>
                                 <li>Phone position closing hotline</li>
-                                <li>MA：+60-1800819625 (Fees required) </li>
+                                <li>MA: +60-1800819625 (Fees required) </li>
                                 <li>Whatsapp: 1800819320</li>
                             </ul>
                         </div>
 
                         <div className="col col-12 col-lg-2 col-md-4 my-4">
-                            <p className="m-1">{t('Whatsapp')}</p>
+                            <p className="m-1">Whatsapp</p>
                             <p className="m-1"><small>{`(${t('Malaysia')})`}</small></p>
                             <img className="mx-2" src={qrcode_whatsapp} width="110px" height="110px" alt=''></img>
                         </div>
@@ -171,7 +174,7 @@ export default function Footer() {
 
                 {/* copyright */}
                 <div className="container d-flex justify-content-between">
-                    <p><small>{t('COPYRIGHT © 2020 www.hxfxglobal.com')}</small></p>
+                    <p><small>COPYRIGHT © 2020 www.hxfxglobal.com</small></p>
                 </div>
             </div>
         </section>

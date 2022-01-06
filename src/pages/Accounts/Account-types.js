@@ -23,13 +23,18 @@ import StandardAccountBTN from 'assets/images/accounts/StandardAccountBTN.png'
 
 const BannerOverlay = () => {
     const { t } = useTranslation()
+    React.useEffect(() => {
+        let ele = document.getElementById('TransactionText');
+        if (ele.innerHTML.includes('40%')) {
+            ele.innerHTML = ele.innerHTML.replace('40%', "<span class='fs-1 text-warning'>40%</span>")
+        }
+    })
     return (
         <div className="container col-9 my-4">
             <div className="card border-0">
                 <img src={topblock} className="card-img" alt="Account-Types" />
                 <div className="card-img-overlay d-flex flex-column justify-content-center px-5">
-                    <h1 className="card-title text-dark">{t('Transaction Cost Savings of')}</h1>
-                    <h1 className="card-title text-warning">{t('40%')}</h1>
+                    <h2 id='TransactionText' className="card-title text-dark">{t("Transaction Cost Saving of 40%")}</h2>
                 </div>
             </div>
         </div>
@@ -106,10 +111,10 @@ const AccountType = () => {
             Leverage_up: '1-500',
         },
         {
-            name: 'Standard account',
+            name: "Standard Account",
             name_color: '#CC8888',
             pros: 'Reduced transaction costs 30%',
-            descrition: 'Suitable for experienced customers, hope to reach the peak of foreign exchange, precious metals and other',
+            descrition: 'Suitable for experienced customers, hope to reach the peak of foreign exchange, precious metals and other markets.',
             Minimum_deposit: '200',
             Minimum_floating_spread: '1.3',
             Order_quantity: '0.01-50',
@@ -117,11 +122,11 @@ const AccountType = () => {
         },
         {
             rebate: true,
-            tag: 'Lifetime Vaild',
-            name: 'Senior account',
+            tag: 'Lifetime Valid',
+            name: 'Premium Account',
             name_color: '#83BF4B',
             pros: 'Reduced transaction costs 40%',
-            descrition: 'Suitable for experienced customers, hope to reach the peak of foreign exchange, precious metals and other markets.',
+            descrition: "Suitable for beginners who are just beginning to trade in foreign exchange, precious metals and other markets.",
             Minimum_deposit: '2000',
             Minimum_floating_spread: '1.1',
             Order_quantity: '0.01-100',
@@ -138,7 +143,7 @@ const AccountType = () => {
                                 ? <RebateTag content={
                                     <div style={{ textAlign: 'center', color: '#fff' }}>
                                         <small>
-                                            {`${t('Rebate')} $5 per lot`}
+                                            {`${t('Rebate')} $5 ${t("per lot")}`}
                                             <h5 style={{ color: '#FDF641', margin: 0 }}>$1500</h5>
                                             <span>{`${t('Deposit')} $3000`}</span>
                                         </small>
@@ -155,7 +160,7 @@ const AccountType = () => {
                                 <h3><span className="h6">$</span>{type.Minimum_deposit}</h3>
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
-                                <div>{t('Minimum floating spread')}</div>
+                                <div>{t("Minimum floating spreed")}</div>
                                 <h3>{type.Minimum_floating_spread}</h3>
                             </div>
                             <div className="d-flex justify-content-between align-items-center">
@@ -169,7 +174,7 @@ const AccountType = () => {
                             <hr />
 
                             <p className="text-secondary">{t('Applicable Products')}</p>
-                            <p className="text-secondary">{t('The platform contains all products of foreign exchange, precious metals, commodities, stocks and stock indexes.')}</p>
+                            <p className="text-secondary">{t("The platform contains all products of foreign exchange, precious metals, commodities, stocks and stock indiexes.")}</p>
 
                             <button type="button" className="w-100 btn btn-warning" onClick={() => RedirectToRealAccount()}>{t('Create Account')}</button>
                         </div>
@@ -216,7 +221,7 @@ const AccountTabs = () => {
             icon: MiniAccountBTN,
             Minimum_deposit: '50',
             Reduced_transaction_costs: '30%',
-            features: ['Complete account opening', 'Accumulated transactions reach 1 lot or deposit $200', 'Approved', 'Congratulations ！ Completing the upgrade']
+            features: ['Complete account opening', "Accumulated transaction reach 1 lot or deposit $200", 'Approved', "Congratulation! Completeing the upgrade"]
         },
         {
             name: 'Standard Account',
@@ -224,7 +229,7 @@ const AccountTabs = () => {
             icon: StandardAccountBTN,
             Minimum_deposit: '200',
             Reduced_transaction_costs: '30%',
-            features: ['Complete account opening', ['1. Cumulative transactions ≥100 lots or', '2. Accumulated deposit of 2000 USD'], 'Approved', 'Congratulations ！ Completing the upgrade']
+            features: ['Complete account opening', ["Cumulative transactions ≥ 100 lots or", "Accumulated deposit of 200 USD"], 'Approved', "Congratulation! Completeing the upgrade"]
         },
         {
             name: 'Senior Account',
@@ -232,22 +237,22 @@ const AccountTabs = () => {
             icon: SeniorAccountBTN,
             Minimum_deposit: '2000',
             Reduced_transaction_costs: '40%',
-            features: ['Upgrade to premium account', 'Enjoy trading privileges for lifetime']
+            features: ['Upgrade to premium account', "Enjoying trading privileges for lifetime"]
         },
     ]
     return (
         <section className="container-fluid py-5" style={{ background: '#F1F1F1' }}>
             <div className="container">
-                <div className="row justify-content-center align-items-center">
-                    <div className="col col-12 col-lg-5 m-2">
+                <div className="row flex-wrap justify-content-center align-items-center">
+                    <div className="col col-12 col-lg-6 m-2">
                         {tabs.map(tab =>
-                            <div className="card animate__animated shadow-lg" style={{ borderRadius: '20px', border: 0 }} key={tab.name}>
+                            <div className="card shadow-lg mx-auto" style={{ borderRadius: '20px', border: 0, maxWidth: '451px' }} key={tab.name}>
                                 <div className="card-header text-white px-5 py-4" style={{ backgroundColor: tab.name_color, borderRadius: '20px 20px 0 0' }}>
-                                    <h2 style={{ color: '#E9F2F2' }}>{tab.name}</h2>
+                                    <h2 style={{ color: '#E9F2F2' }}>{t(tab.name)}</h2>
                                     <div className="d-flex justify-content-between">
                                         {/* <div className="d-flex justify-content-between align-items-center"> */}
                                         <div>
-                                            <div>{t('Minimum floating spread')}</div>
+                                            <div>{t("Minimum floating spreed")}</div>
                                             <h2>{tab.Minimum_deposit}</h2>
                                         </div>
                                         <div>
@@ -260,8 +265,8 @@ const AccountTabs = () => {
                                     <ol className="list-number-black p-0">
                                         {tab.features.map(li =>
                                             Array.isArray(li)
-                                                // ? <li><span>{t(li[0])}</span>< br />{t(li[1])}</li>
-                                                ? <li key={li}>{li.map(p => <p key={p}>{p}</p>)}</li>
+                                                ? <li key={li}>{t(li[0]) + ' ' + t(li[1])}</li>
+                                                // ? <li key={li}>{li.map(p => <p key={p}>{t(p)}</p>)}</li>
                                                 : <li key={li}>{t(li)}</li>
                                         )}
                                     </ol>
@@ -270,14 +275,14 @@ const AccountTabs = () => {
                             </div>
                         ).filter(tab => tab.key === activeTab)}
                     </div>
-                    <div className="col col-12 col-lg-6 text-center">
-                        <h2 className="fw-bold text-dark text-center">{t('Upgrade your account')}</h2>
+                    <div className="col col-12 col-lg-5 text-center">
+                        <h2 className="fw-bold text-dark text-center my-4">{t('Upgrade your account')}</h2>
                         <p className="card-text text-secondary">{t('Three levels of accounts that you can create according to your needs.')}</p>
                         <ul className="d-flex justify-content-between">
                             {tabs.map(tab =>
                                 <li role="button" className={`list-unstyled ${activeTab === tab.name ? 'opacity-100' : 'opacity-25'}`} onClick={() => setActiveTab(tab.name)} key={tab.name}>
                                     <img src={tab.icon} alt={tab.name} width="100%" />
-                                    <h5 className="text-primary">{tab.name}</h5>
+                                    <h5 className="text-primary">{t(tab.name)}</h5>
                                 </li>
                             )}
                         </ul>
@@ -294,7 +299,7 @@ const SvgChart = ({ tab, color }) => {
     return (
         <>
             {
-                [<svg key="Mini Account" xmlns="http://www.w3.org/2000/svg" width="383.723" height="214.5" viewBox="0 0 383.723 214.5">
+                [<svg key="Mini Account" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 383.723 214.5">
                     <defs>
                         <linearGradient id="linear-gradient-Mini" x1="0.5" y1="1.109" x2="0.5" gradientUnits="objectBoundingBox">
                             <stop offset="0" stopColor="#fff" stopOpacity="0" />
@@ -319,7 +324,7 @@ const SvgChart = ({ tab, color }) => {
                         <text id="Upgrade-2" data-name="Upgrade" transform="translate(506 3630.061)" fill="#fff" fontSize="18" fontFamily="Exo2-Bold" fontWeight="700"><tspan x="0" y="0">{t('Upgrade')}</tspan></text>
                     </g>
                 </svg>,
-                <svg key="Standard Account" xmlns="http://www.w3.org/2000/svg" width="384.1" height="214.5" viewBox="0 0 384.1 214.5">
+                <svg key="Standard Account" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 384.1 214.5">
                     <defs>
                         <linearGradient id="linear-gradient-Standard" x1="0.5" y1="1.109" x2="0.5" gradientUnits="objectBoundingBox">
                             <stop offset="0" stopColor="#fff" stopOpacity="0" />
@@ -345,7 +350,7 @@ const SvgChart = ({ tab, color }) => {
                         <text id="Upgrade-2" data-name="Upgrade" transform="translate(679.753 3522.708)" fill="#fff" fontSize="18" fontFamily="Exo2-Bold" fontWeight="700"><tspan x="0" y="0">{t('Upgrade')}</tspan></text>
                     </g>
                 </svg>,
-                <svg key="Senior Account" xmlns="http://www.w3.org/2000/svg" width="383" height="214.5" viewBox="0 0 383 214.5">
+                <svg key="Senior Account" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 383 214.5">
                     <defs>
                         <linearGradient id="linear-gradient" x1="0.5" y1="1.109" x2="0.5" gradientUnits="objectBoundingBox">
                             <stop offset="0" stopColor="#fff" stopOpacity="0" />
@@ -382,8 +387,8 @@ const ReadyToTrade = () => {
             <div className="container py-5">
                 <div className="row justify-content-center align-items-center text-center">
                     <div className="col col-12 col-lg-6">
-                        <h2 className="fw-bold text-dark text-center">{t('Ready to Trade ?')}</h2>
-                        <p className="card-text text-secondary">{t('Trade with Smiler amount , open account in less than ONE minute')}</p>
+                        <h2 className="fw-bold text-dark text-center">{t("Ready to Trade?")}</h2>
+                        <p className="card-text text-secondary">{t("Trade with Smaller amount, open account in less than ONE minute")}</p>
                         <div className="d-flex flex-wrap justify-content-center">
                             <button onClick={() => RedirectToDemoAccount()} className="btn btn-outline-warning m-2">{t('Open Demo Account')}</button>
                             <button onClick={() => RedirectToRealAccount()} className="btn btn-warning text-white m-2">{t('Open Real Account')}</button>
@@ -404,7 +409,7 @@ const AccountTypes = () => {
             <TopBanner
                 background={accountTypesTopbanner}
                 titles={["Trade with us"]}
-                subtitles={["Invest your wealth in a wide-range of trading products.", "Join the world leading HXFX Global today and trade the most popular products with ultra-low spreads."]}
+                subtitles={["Invest your wealth in a wide-range of trading product.", "Join the world leading HXFX Global today and trade the most popular products eith ultra-low spreads."]}
                 buttons={[{ color: 'btn-warning', text: "Create Account", callback: RedirectToRealAccount }]} />
 
             <BannerOverlay />

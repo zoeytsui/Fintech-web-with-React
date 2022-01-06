@@ -2,13 +2,13 @@ import React from 'react'
 import i18n from "i18next";
 import { TOP_OPENAPI } from 'api';
 import { useTranslation } from "react-i18next";
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 
 import { Pagination, Stack } from '@mui/material';
 
 import Loading from 'components/Loading'
 import TopBanner from 'components/TopBanner'
-import OpenAccount from 'components/OpenAccount'
+import OpenAccountSimple from 'components/OpenAccountSimple'
 import AwardCarousel from 'components/AwardCarousel'
 
 import Announcement_topbanner from 'assets/images/resources/Announcement_topbanner.png'
@@ -41,7 +41,7 @@ const webNoticeList = async (params, callback) => {
         const result = await (await TOP_OPENAPI.get(`tools/?service=Pushsystem.webNoticeList`, { params: params })).data
         if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
         callback(result.data)
-    } catch (error) { }
+    } catch (error) {}
 }
 
 const Announcement = () => {
@@ -138,7 +138,7 @@ const Index = () => (
             </Switch>
         </Router>
 
-        <OpenAccount />
+        <OpenAccountSimple />
         <AwardCarousel />
     </>
 )

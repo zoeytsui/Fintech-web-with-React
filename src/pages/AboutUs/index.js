@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
-import Axios from 'axios'
-// import { makeStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 import { thousandsSeparator, RedirectToDemoAccount, RedirectToRealAccount } from 'utilities'
 import TopBanner from 'components/TopBanner'
 import AwardCarousel from 'components/AwardCarousel'
@@ -19,14 +18,26 @@ import secure_1 from 'assets/images/icons/secure_1.png'
 import twentyFour_1 from 'assets/images/icons/twentyFour_1.png'
 import money_quick_1 from 'assets/images/icons/money_quick_1.png'
 
+import { OPENAPI } from 'api';
+
+const useStyled = makeStyles({
+    historyTab: {
+        "&.active": {
+            fontWeight: 'bold',
+            color: '#83bf4b',
+            fontSize: '24px'
+        }
+    }
+})
+
 // Section1
 const Section1 = () => {
     const { t } = useTranslation();
     return (
         <section className="container-fluid py-5">
             <div className="container">
-                <h2 className="fw-bold text-dark text-center">{`${t('WHO WE ARE')}`}</h2>
-                <p className="card-text text-secondary">{`${t('For over a decade, HXFX Global has been constantly striving to provide the best secured Forex and Commodities trading platform for our clients, alongside innovative trading technology. Our products enable clients to leverage trade globally with competitive spreads and zero commission. Trusted by millions of clients worldwide.')}`}</p>
+                <h2 className="fw-bold text-dark text-center">{t('Who we are')}</h2>
+                <p className="card-text text-secondary">{t("For over a decade, HXFX Global has been constantly striving to provide the best secured Forex and Commodities trading platform for our clients, alongside innovative trading technology. Our products enable clients to leverage trade globally with competitive spreads and zero commission. Trusted by millions of clients worldwide.")}</p>
             </div>
         </section>
     )
@@ -39,10 +50,10 @@ const Section2 = () => {
         <section className="container-fluid" style={{ background: '#F1F1F1' }}>
             <div className="container py-5 col-12 col-lg-6">
                 <h2 className="fw-bold text-dark text-center">{t('How we protect your funds')}</h2>
-                <h5 className="my-4 text-primary">{t('One of the fundamental concerns of online traders is the safety of their funds and we are dedicated to keep our clients’ funds secured as follows:')}</h5>
+                <h5 className="my-4 text-primary">{t("One of the fundamental concerns of online traders is the safety of their funds and we are dedicated to keep our clients' funds secured as follows:")}</h5>
                 <ul className={`list-group list-tick`}>
                     <li className="text-secondary mb-3">{t("All of your money is held in segregated client bank (independent trust) accounts at regulated banks.")}</li>
-                    <li className="text-secondary mb-3">{t("Your money and assets (for example: shares) are never merged with HXFXglobal’s own money or assets")}</li>
+                    <li className="text-secondary mb-3">{t("Your money and assets (for example: shares) are never merged with HXFXglobal's own money or assets")}</li>
                     <li className="text-secondary mb-3">{t("HXFXglobal has advanced encryption transmission and dynamic encryption of your data.")}</li>
                     <li className="text-secondary mb-3">{t("HXFXglobal does not use your money for any business activities, including for hedging or investments.")}</li>
                 </ul>
@@ -53,63 +64,68 @@ const Section2 = () => {
 
 
 const History = () => {
+    const styled = useStyled()
     const { t } = useTranslation();
     const [activeTab, setActiveTab] = React.useState("2015 - 2017");
 
     const toggleTabs = (e, tab) => {
+        // eslint-disable-next-line
+        Array.from(document.querySelectorAll('#history-tabs > li')).map(li => {
+            li.classList.remove('active')
+        })
+        e.target.classList.add('active')
         setActiveTab(tab);
     }
 
     const context = [
         {
             name: "2010 - 2014", content: [
-                'Online trading terminals were launched',
-                'A professional customer service team was set up to provide professional investment Q&A services',
-                'The platform launched a news function to keep abreast of market dynamics',
-                'Official Web 2.0 was upgraded'
+                'HXFX Global Group was founded',
+                "Online trading terminals were launched",
+                "A professional customer service team was set up to provide professional investment Q&A services",
+                "The platform launched a news function to keep abreast of market dynamics"
             ]
         },
         {
             name: "2015 - 2017", content: [
-                'The number of user exceeded 300K', 'Partnership with ACB bank and DONGA Bank',
+                "The number of user exceeded 300K",
+                'Partnership with ACB bank and DONGA Bank',
                 'Launched the internal Testing Edition Mobile App',
-                'Officially launched the natural gas and European share index contract notice',
+                "Officially launched the natural gas and European share index contract notice",
                 'Won the best innovation silver industry Asia Pacific Stevie Silver Award']
         },
         {
             name: "2018", content: [
-                'The mobile app was officially launched',
-                'Won the "Hong Kong Most Valuable Enterprise Award"',
-                'Won the title of "ERB Talent Enterprise"',
-                'Won the "Golden Bridge Award"',
-                'Won the 2018 financial growth company in the United States'
+                "Mobile app Officially launched",
+                "Won \"HK most valuable Enterprise Award\"",
+                "Won \"ERB Talent Enterprise\"",
+                "Won \"Global Bridge Award\"",
+                "Won 2018 financial growth company in the United States"
             ]
         },
         {
             name: "2019 - 2020", content: [
-                'The number of users exceeded 300K',
-                'Increased 24 Share (Hong Kong stocks / US stocks) product contracts',
-                'Officially launched an upgraded mobile trading APP——FX Trade',
-                'Brand new upgrade',
-                'Our glory will be continued'
+                'Number of users Exceeded 300k',
+                "Increased 24 Share (Hong Kong stocks / US stocks) product contracts",
+                "Officially launched an upgraded mobile trading APP——FX Trade",
+                "Brand new upgrade"
             ]
         },
     ]
 
     return (
         <section className="container-fluid">
-            <h2 className="fw-bold py-5 text-dark text-center">{`${t('HISTORY & MIILESTONES OF HXFX GLOBAL')}`}</h2>
+            <h2 className="fw-bold py-5 text-dark text-center">{t('History & Milestines of HXFX Global')}</h2>
             <div className="container mb-5">
                 <div className="row justify-content-center align-items-center">
                     <div className="col col-12 col-lg-6 text-center">
                         <img src={part3image} alt="" width="100%" height="100%" />
                     </div>
                     <div className="col col-12 col-lg-6">
-
-                        <ul className={`nav nav-tabs my-3 text-secondary`}>
+                        <ul className={`nav nav-tabs my-3 text-secondary align-items-end`} id="history-tabs">
                             {context.map(tab => (
-                                <li className={`mx-3 nav-item`} onClick={e => toggleTabs(e, tab.name)} role="button" key={tab.name}>
-                                    {t(tab.name)}
+                                <li className={`mx-3 nav-item ${activeTab === tab.name ? `${styled.historyTab} active` : ''}`} onClick={e => toggleTabs(e, tab.name)} role="button" key={tab.name}>
+                                    {tab.name}
                                 </li>
                             ))}
                         </ul>
@@ -119,7 +135,7 @@ const History = () => {
                                 ? <div className={`container text-white shadow p-5`} style={{ background: '#83bf4b', borderRadius: '50px' }} id={tab.name} key={tab.name}>
                                     <h4>{tab.name}</h4>
                                     <div data-aos="fade-left">
-                                        <ul className={`list-group`}>
+                                        <ul className={`list - group`}>
                                             {tab.content.map(p =>
                                                 <li className="mb-3" key={p}>{t(p)}</li>
                                             )}
@@ -151,7 +167,7 @@ const WhyChoose = () => {
     const { t } = useTranslation();
     return (
         <section className="container-fluid py-5" style={{ background: '#F1F1F1' }}>
-            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HXFX')}</h2>
+            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose FX')}</h2>
 
             <div className="container d-flex flex-wrap justify-content-evenly">
                 {why_context.map(card =>
@@ -174,12 +190,14 @@ const OperationalData = () => {
         minHeight: '166px'
     }
 
-    React.useEffect(() => {
-        const getOperational = async () => {
-            const result = await (await Axios.get(`${process.env.REACT_APP_OPENAPI_HOST}/tools/?service=Operationaldata.getOperational`)).data
+    const getOperational = async () => {
+        try {
+            const result = await (await OPENAPI.get('/tools/?service=Operationaldata.getOperational')).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setDataObj(result.data[0])
-        }
+        } catch (error) {}
+    }
+    React.useEffect(() => {
         getOperational()
     }, [])
 
@@ -224,12 +242,12 @@ const OperationalData = () => {
     )
 }
 
-const About_us = () => (
+const AboutUs = () => (
     <>
         <TopBanner
             background={topbanner}
-            titles={["Trade with HXFX"]}
-            subtitles={["Your Reliable Trading Partner", "At HXFXglobal, we help investors to maximize the value of Investment and keep our clients’ finance safe."]}
+            titles={["Trade with FX"]}
+            subtitles={["Your Reliable Trading Partner", "At HXFXglobal, we help investors to maximize the value of investment and keep out clients' finance safe."]}
             buttons={[
                 { color: 'btn-secondary', text: "Open Demo Account", callback: RedirectToDemoAccount },
                 { color: 'btn-warning', text: "Open Real Account", callback: RedirectToRealAccount }
@@ -243,4 +261,4 @@ const About_us = () => (
         <AwardCarousel />
     </>
 )
-export default About_us
+export default AboutUs

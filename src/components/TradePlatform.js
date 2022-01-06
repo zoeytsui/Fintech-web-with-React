@@ -33,7 +33,7 @@ const context = {
         },
         {
             name: "FX Trade",
-            img: { src: phone_2, width: "100%", height: "100%" },
+            img: { src: phone_2, width: "100%", height: "100%", styled: { maxWidth: '451px' } },
             features: [
                 'Tailor-made for professional investors',
                 'Order execution speed in millisecond level',
@@ -64,8 +64,8 @@ const TradePlatform = () => {
                 <h5 className="fw-bold my-3 text-primary">{t(context.subtitle)}</h5>
 
                 <ul className={`nav tab-slider--tabs my-3 ${activeTab === "MT4" ? "slide" : ""}`}>
-                    <li className={`tab-slider--trigger ${activeTab === "MT4" ? "active" : ""}`} onClick={e => toggleTabs(e, context.tabs[0].name)}>{t(context.tabs[0].name)}</li>
-                    <li className={`tab-slider--trigger ${activeTab === "FX Trade" ? "active" : ""}`} onClick={e => toggleTabs(e, context.tabs[1].name)}>{t(context.tabs[1].name)}</li>
+                    <li className={`tab-slider--trigger ${activeTab === "MT4" ? "active" : ""}`} onClick={e => toggleTabs(e, context.tabs[0].name)}>{context.tabs[0].name}</li>
+                    <li className={`tab-slider--trigger ${activeTab === "FX Trade" ? "active" : ""}`} onClick={e => toggleTabs(e, context.tabs[1].name)}>{context.tabs[1].name}</li>
                 </ul>
 
                 {context.tabs.map(tab => (
@@ -73,7 +73,7 @@ const TradePlatform = () => {
                         ? <div className={`container`} id={tab.name} key={tab.name}>
                             <div className="row justify-content-center align-items-center">
                                 <div data-aos="fade-right" className="col col-12 col-lg-6 text-center">
-                                    <img src={tab.img.src} width={tab.img.width} height={tab.img.height} alt={t(context.title)}></img>
+                                    <img src={tab.img.src} width={tab.img.width} height={tab.img.height} style={tab.img.styled} alt={t(context.title)}></img>
                                 </div>
                                 <div data-aos="fade-left" className="col col-12 col-lg-6">
                                     <ul className={`list-group text-secondary list-tick`}>

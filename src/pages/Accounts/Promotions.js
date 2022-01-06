@@ -42,7 +42,7 @@ const PromoCard = () => {
             if (result.data.ret !== 200) return console.error(result.data)
             cardsSet(result.data.data.list)
             setDataReady(true)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     useEffect(() => {

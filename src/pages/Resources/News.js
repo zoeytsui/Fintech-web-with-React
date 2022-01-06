@@ -2,7 +2,7 @@ import React from 'react'
 import i18n from "i18next";
 import { TOP_OPENAPI } from 'api';
 import { makeStyles } from '@mui/styles';
-import { BrowserRouter as Router, Route, Switch, Link, useParams } from 'react-router-dom';
+import { Link, HashRouter as Router, Route, Switch, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
 import TopBanner from 'components/TopBanner'
@@ -36,7 +36,7 @@ const News = () => {
 
     const getList = async (lang, page) => {
         try {
-            const params = {
+            let params = {
                 companyId: "23",
                 utmTerminal: 'app',
                 url: "news-en",
@@ -63,7 +63,7 @@ const News = () => {
             setNewsList(list => [...list, ...result.data.list])
             setDataReady(true)
         }
-        catch (error) { }
+        catch (error) {}
     }
     React.useEffect(() => {
         getList(i18n.language, pageReducer)
@@ -113,40 +113,43 @@ const News = () => {
     )
 }
 
-const Detail = () => {
+const NewsDetail = () => {
     let { id } = useParams();
     const { t } = useTranslation();
-    const params = React.useRef()
     const contentRef = React.useRef(<div />)
     const [adDetails, setAdDetails] = React.useState([])
+    const [dataReady, setDataReady] = React.useState(false)
 
-    React.useEffect(() => {
+    const details = async (lang) => {
         try {
-            switch (i18n.language) {
+            let params = {
+                companyId: "23",
+                id: id
+            }
+            switch (lang) {
                 case 'vn':
-                    params.current = { companyId: "23", languageName: '越南文', id: id }
+                    params.languageName = '越南文'
                     break;
                 case 'my':
-                    params.current = { companyId: "23", languageName: '马来文', id: id }
+                    params.languageName = '马来文'
                     break;
                 case 'ch':
-                    params.current = { companyId: "23", languageName: '中文', id: id }
+                    params.languageName = '中文'
                     break;
                 default:
-                    params.current = { companyId: "23", languageName: '英文', id: id }
+                    params.languageName = '英文'
                     break;
             }
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.details`, { params: { ...params } })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            setAdDetails(result.data.detail)
+            setDataReady(true)
+            contentRef.current.innerHTML = result.data.detail.content
+        } catch (error) {}
+    }
 
-            const details = async () => {
-                const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.details`, { params: params.current })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                setAdDetails(result.data.detail)
-                contentRef.current.innerHTML = result.data.detail.content
-            }
-            details()
-
-
-        } catch (error) { }
+    React.useEffect(() => {
+        details(i18n.language)
         // eslint-disable-next-line
     }, [id, i18n.language])
     return (
@@ -157,23 +160,27 @@ const Detail = () => {
                     {t('Back')}
                 </Link>
             </div>
+            {dataReady
+                ? <>
+                    <img src={adDetails.cover_img} alt={adDetails.title} />
 
-            <img src={adDetails.cover_img} alt={adDetails.title} />
+                    <h2>{adDetails.title}</h2>
 
-            <h2>{adDetails.title}</h2>
+                    <div className="d-flex mt-4">
+                        <p className="card-subtitle mb-3 text-secondary">
+                            <i className="bi-clock mx-2" style={{ color: '#B2B2B2' }} />
+                            <small>{adDetails.release_time}</small>
+                        </p>
+                        <p className="card-subtitle mx-2 mb-3 text-secondary">
+                            <i className="bi-eye mx-2" style={{ color: '#B2B2B2' }} />
+                            <small>{adDetails.pviews_base}</small>
+                        </p>
+                    </div>
 
-            <div className="d-flex mt-4">
-                <p className="card-subtitle mb-3 text-secondary">
-                    <i className="bi-clock mx-2" style={{ color: '#B2B2B2' }} />
-                    <small>{adDetails.release_time}</small>
-                </p>
-                <p className="card-subtitle mx-2 mb-3 text-secondary">
-                    <i className="bi-eye mx-2" style={{ color: '#B2B2B2' }} />
-                    <small>{adDetails.pviews_base}</small>
-                </p>
-            </div>
-
-            <div className="text-secondary" ref={contentRef} />
+                    <div className="text-secondary" ref={contentRef} />
+                </>
+                : <Loading />
+            }
         </section>
     )
 }
@@ -192,7 +199,7 @@ const EventCalendar = () => {
             const result = await (await TOP_OPENAPI.get(`tools/?service=news.getFinanceData`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setFinanceData(result.data.list.financeData)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     // for en, vi
@@ -201,7 +208,7 @@ const EventCalendar = () => {
             const result = await (await TOP_OPENAPI.get(`tools/?service=news.getMultFinanceData`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setFinanceData(result.data.list.financeData)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     React.useEffect(() => {
@@ -253,7 +260,7 @@ const EventCalendar = () => {
                     </li>
                 )}
             </ul>
-            <a href="Calendar" className="btn btn-primary my-4">{t('View detail')}</a>
+            <Link to="/Calendar" className="btn btn-primary my-4">{t('View detail')}</Link>
         </section>
     )
 }
@@ -268,12 +275,8 @@ const Index = () => {
 
             <Router basename={'/Resources'}>
                 <Switch>
-                    <Route exact path="/News">
-                        <News />
-                    </Route>
-                    <Route exact path="/News/:id">
-                        <Detail />
-                    </Route>
+                    <Route exact path="/News" component={News} />
+                    <Route exact path="/News/:id" component={NewsDetail} />
                 </Switch>
             </Router>
         </>

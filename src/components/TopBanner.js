@@ -1,19 +1,23 @@
 import React from 'react'
+import { makeStyles } from '@mui/styles';
 import { useTranslation } from "react-i18next";
 import PropTypes from 'prop-types'
 
-const TopBanner = ({ background = '', titles = [], subtitles = [], buttons = [] }) => {
+const TopBanner = ({ background = '', titles = [], subtitles = [], buttons = [], styled = {} }) => {
     const { t } = useTranslation();
-    const useStyles = {
-        backgroundImage: `url(${background})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center',
-        backgroundSize: 'cover',
-        height: '638px'
-    }
+    const useStyles = makeStyles({
+        root: {
+            backgroundImage: `url(${background})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            height: '638px',
+            ...styled
+        }
+    })()
 
     return (
-        <div className="d-flex align-items-center" style={useStyles}>
+        <div className={`d-flex align-items-center ${useStyles.root}`}>
             <div className="container text-white">
                 {titles.map(title =>
                     <h1 className="fw-bold text-white" key={title}>{t(title)}</h1>

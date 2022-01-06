@@ -1,12 +1,8 @@
-import React from 'react'
-import { useTranslation } from "react-i18next";
-
 const Loading = () => {
-    const { t } = useTranslation();
     return (
-        <div className="d-flex justify-content-center">
+        <div className="d-flex justify-content-center m-5">
             <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">{t('Loading')}...</span>
+                <span className="visually-hidden">Loading...</span>
             </div>
         </div>
     )

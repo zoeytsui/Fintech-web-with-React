@@ -103,7 +103,7 @@ const context = {
         {
             icon: section1_img2,
             title: 'Versatile',
-            content: 'One account, multiple platforms. HXFX global is available in both PC and mobile with millisecond order execution speed and user interface tailor-made for professional investors.'
+            content: "One account, multiple platforms. HXFX Global is available in both PC and mobile with millisecond order execution speed and user interface tailor-made for professional investors."
         },
         {
             icon: section1_img3,
@@ -123,12 +123,12 @@ const context = {
         {
             icon: section1_img6,
             title: 'Reliable',
-            content: 'HXFX GLOBAL owns the most stringent regulatory license in the industry and was awarded in numerous world-class financial awards.'
+            content: "HXFX Global owns the most stringent regulatory license in the industry and was awarded in numerous world-class financial awards."
         }],
     },
     Section2: {
         title: 'Trade 40+ major products at ease',
-        subtitle: 'Join millions of investor to trade with HXFX Gloabl. Pick anything to start with.',
+        subtitle: "Join millions of investor to trade with FX Gloabl. Pick anything to start with.",
         features: [
             'Two-way trading, both buy and sell can be profitable',
             'Hedgeable risk, no limited on rise and drop',
@@ -160,7 +160,7 @@ const HomepageBanner = () => {
             const result = await (await TOP_OPENAPI.get(`/hx/?service=Ad.getAbroList`, { params: { ...params } })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setAdList(result.data[0].list)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     const trans_lang = (lang) => {
@@ -237,13 +237,12 @@ const Section1 = () => {
 // Section2
 const Section2 = () => {
     const tabs = [
-        // { label: 'Popular' },
-        { label: 'Fores' },
+        { label: 'Forex' },
         { label: 'Commodities' },
         { label: 'Indices' },
     ]
     const { t } = useTranslation();
-    const [activeTab, setActiveTab] = useState('Fores')
+    const [activeTab, setActiveTab] = useState('Forex')
     return (
         <section className="container-fluid" style={{ background: '#F1F1F1' }}>
             <div className="container py-5">
@@ -252,7 +251,7 @@ const Section2 = () => {
                         <h2 className="fw-bold text-dark pt-4">{t(context.Section2.title)}</h2>
                         <h5 className="fw-bold text-primary">{t(context.Section2.subtitle)}</h5>
                         <ul className="list-group list-tick" style={{ listStylePosition: 'inside' }}>
-                            {context.Section2.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}><span>{t(feature)}</span></li>)}
+                            {context.Section2.features.map((feature, index) => <li className="text-secondary mb-3" key={index}><span>{t(feature)}</span></li>)}
                         </ul>
                     </div>
 
@@ -324,21 +323,21 @@ const Section3 = () => {
                     <h5 className="fw-bold mb-3 text-primary">{t('Simple, Clear, Impressive Available for iOS and Android devices.')}</h5>
                     {/* list */}
                     <ol className="list-group mb-3 list-number-primary">
-                        {Section3.features.map((feature, index) => <li className="text-secondary mb-3" key={t(index)}>{t(feature)}</li>)}
+                        {Section3.features.map((feature, index) => <li className="text-secondary mb-3" key={index}>{t(feature)}</li>)}
                     </ol>
                     {/* input field */}
                     <form action="/" method="post" target="_blank">
                         <div className="input-group mb-4 p-2" style={{ background: '#F3F6FA', borderRadius: '10px' }}>
                             <button className="dropdown-toggle" style={{ border: 0, background: 'transparent' }} id="code" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img className="px-2" src={Section3.codeOptions.find(cur => cur.value === i18n.language).src} alt="" />
-                                {t(`${Section3.codeOptions.find(cur => cur.value === i18n.language).code}`)}
+                                {Section3.codeOptions.find(cur => cur.value === i18n.language).code}
                             </button>
 
                             <ul className={`dropdown-menu`} aria-labelledby="code">
                                 {Section3.codeOptions.map((option) =>
                                     <li key={option.value} className="dropdown-item text-dark" onClick={() => changeCode(option.code)}>
                                         <img className="p-2" src={option.src} alt="" />
-                                        {t(option.code)}
+                                        {option.code}
                                     </li>
                                 )}
                             </ul>

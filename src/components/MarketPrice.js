@@ -38,34 +38,39 @@ const Row = ({ row }) => {
 const MarketPrice = ({ id = '' }) => {
     const { t } = useTranslation();
     const [queryList, setQueryList] = React.useState([])
-    React.useEffect(() => {
-        const params = {
-            companyId: 23,
-            waihui_zone: 'EURUSD,GBPUSD,USDJPY,USDCAD,AUDUSD,GBPUSD', // Forex
-            futurespetroleum_zone: "XAUUSD,XAGUSD,USOil,UKOil,SOYBEAN", // Commodities
-            futuresindex_zone: 'SP500,TECH100,DJ30,GER30,JPN225' // Indices
-        }
+
+    const params = {
+        companyId: 23,
+        waihui_zone: 'EURUSD,GBPUSD,USDJPY,USDCAD,AUDUSD,GBPUSD', // Forex
+        futurespetroleum_zone: "XAUUSD,XAGUSD,USOil,UKOil,SOYBEAN", // Commodities
+        futuresindex_zone: 'SP500,TECH100,DJ30,GER30,JPN225' // Indices
+    }
+    const marketprice = async () => {
         try {
-            const marketprice = async () => {
-                const result = await (await OPENAPI.post(`tools/?service=MarketNew.marketprice`, { ...params })).data
-                if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
-                switch (id) {
-                    case 'Forex':
-                        setQueryList(result.data.waihui_zone)
-                        break;
-                    case 'Commodity':
-                        setQueryList(result.data.futurespetroleum_zone)
-                        break;
-                    case 'Index':
-                        setQueryList(result.data.futuresindex_zone)
-                        break;
-                    default:
-                        setQueryList(result.data.waihui_zone)
-                        break;
-                }
+            const result = await (await OPENAPI.get(`/tools/?service=MarketNew.marketprice`, { params: { ...params } })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+            switch (id) {
+                case 'Forex':
+                    setQueryList(result.data.waihui_zone)
+                    break;
+                case 'Commodities':
+                    setQueryList(result.data.futurespetroleum_zone)
+                    break;
+                case 'Indices':
+                    setQueryList(result.data.futuresindex_zone)
+                    break;
+                default:
+                    setQueryList(result.data.waihui_zone)
+                    break;
             }
+        } catch (error) {}
+    }
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
             marketprice()
-        } catch (error) { }
+        }, 1000);
+        return () => clearTimeout(timer);
     })
     return (
 

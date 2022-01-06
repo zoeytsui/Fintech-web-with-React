@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Link, HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
 import {
@@ -12,7 +12,6 @@ import Calculator from './Calculator'
 import TopBanner from 'components/TopBanner'
 import MightBeInterested from 'components/MightBeInterested'
 import MarketPrice from 'components/MarketPrice'
-// import FeatureCard from 'components/FeatureCard'
 import TradePlatform from 'components/TradePlatform'
 import OpenAccount from 'components/OpenAccount'
 import AwardCarousel from 'components/AwardCarousel'
@@ -41,26 +40,28 @@ const FeatureCard = () => {
     })
 
     return (
-        <section className="container d-flex flex-wrap justify-content-center py-4" style={{ position: 'relative', top: '-10%' }}>
-            <div className="feature-card card col-12 col-lg-3 m-3">
-                <div className="card-body">
-                    <img src={rate_decrease_1} alt="" />
-                    <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Lowest Commission Up to USD 0')}</h5>
-                    <a href='/Products/Lowest-Commission' type="button" className="btn btn-outline-primary">{t('Details')}</a>
+        <section className="container-fluid">
+            <div className="container d-flex flex-wrap justify-content-center py-4">
+                <div className="feature-card card col-12 col-lg-3 m-3" style={{ minWidth: '350px' }}>
+                    <div className="card-body">
+                        <img src={rate_decrease_1} alt="" />
+                        <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t("Lowest Commission to 0 USD")}</h5>
+                        <Link to='/Lowest-Commission' type="button" className="btn btn-outline-primary">{t('Details')}</Link>
+                    </div>
                 </div>
-            </div>
-            <div className="feature-card card col-12 col-lg-3 m-3">
-                <div className="card-body">
-                    <img src={coins_decrease_1} alt="" />
-                    <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Low Spreads Starting from 1.4 pips')}</h5>
-                    <button type="button" onClick={() => RedirectToRealAccount()} className="btn btn-outline-secondary">{t('Open Demo Account')}</button>
+                <div className="feature-card card col-12 col-lg-3 m-3" style={{ minWidth: '350px' }}>
+                    <div className="card-body">
+                        <img src={coins_decrease_1} alt="" />
+                        <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t("Starting from 1.4 pips")}</h5>
+                        <button type="button" onClick={() => RedirectToRealAccount()} className="btn btn-outline-secondary">{t('Open Demo Account')}</button>
+                    </div>
                 </div>
-            </div>
-            <div className="feature-card card col-12 col-lg-3 m-3">
-                <div className="card-body">
-                    <img src={balance_1} alt="" />
-                    <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t('Small Capital Profit Leverage 1 :200')}</h5>
-                    <a href={`${window.location.pathname}/Detail`} type="button" className={`${useStyles.outlineBtn} btn btn-outline-primary`}>{t('Details')}</a>
+                <div className="feature-card card col-12 col-lg-3 m-3" style={{ minWidth: '350px' }}>
+                    <div className="card-body">
+                        <img src={balance_1} alt="" />
+                        <h5 style={{ fontFamily: 'Exo2-ExtraBold' }}>{t("Leverage 1:200")}</h5>
+                        <Link to={(location) => `${location.pathname}/Detail`} type="button" className={`${useStyles.outlineBtn} btn btn-outline-primary`}>{t('Details')}</Link>
+                    </div>
                 </div>
             </div>
         </section>
@@ -75,9 +76,9 @@ const ProductTable = ({ title, id }) => {
 
             <MarketPrice id={id} />
 
-            <a href={`${window.location.pathname}/Detail`} className="btn btn-primary text-white mt-5">
+            <Link to={(location) => `${location.pathname}/Detail`} className="btn btn-primary text-white mt-5">
                 {t('Contract details')}
-            </a>
+            </Link>
         </section>
     )
 }
@@ -87,7 +88,7 @@ const Forex = () => (
         <TopBanner
             background={Forextopbanner}
             titles={["Forex Trading"]}
-            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX Global."]}
             buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
         <ProductTable title="Currency Pair" id="Forex" />
@@ -100,10 +101,10 @@ const Commodities = () => (
         <TopBanner
             background={commodity_topbanner}
             titles={["Commodity Trading"]}
-            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX Global."]}
             buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
-        <ProductTable title="Commodity" id="Commodity" />
+        <ProductTable title="Commodity" id="Commodities" />
         <WhyChoose />
         <MightBeInterested />
     </>
@@ -113,10 +114,10 @@ const Indices = () => (
         <TopBanner
             background={Stockindexitopbanner}
             titles={["Stock Index"]}
-            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX GLOBAL."]}
+            subtitles={["Explore the world’s hottest trading products and explore endless investment opportunities with HXFX Global."]}
             buttons={[{ color: 'btn-warning', text: "Trade Now", callback: RedirectToUcenter }]} />
         <FeatureCard />
-        <ProductTable title="Index" id="Index" />
+        <ProductTable title="Index" id="Indices" />
         <WhyChoose />
         <MightBeInterested />
     </>
@@ -145,7 +146,7 @@ const LowestCommission = () => {
             <TopBanner
                 background={lowest_commission_topbanner}
                 titles={["Lowest Commission Forex Broker"]}
-                subtitles={["Create and account today and enjoy trading with 0 commission"]}
+                subtitles={["Create an account today and enjoy trading with 0 commission"]}
                 buttons={[
                     { color: 'btn-secondary', text: "Open Demo Account", callback: RedirectToDemoAccount },
                     { color: 'btn-warning', text: "Open Real Account", callback: RedirectToRealAccount }]} />
@@ -161,7 +162,7 @@ const LowestCommission = () => {
                                 <div className="col col-12 col-md-9">
                                     <div className="card-body">
                                         <h5 className="card-title">{t('No Intermediaries')}</h5>
-                                        <p className="card-text text-secondary">{t('Trading on the HXFX Platform, without an IB (Introducing Broker) intermediary, so that customers can enjoy the lowest price offers with the best service.')}</p>
+                                        <p className="card-text text-secondary">{t("Trading on the FX Plaform, without an IB (Introducing Broker) intermediary, so that customers can enjoy the lowest price offers with the best service.")}</p>
                                     </div>
                                 </div>
                             </div>
@@ -177,7 +178,7 @@ const LowestCommission = () => {
                                 <div className="col col-12 col-md-9">
                                     <div className="card-body">
                                         <h5 className="card-title">{t('Regulated')}</h5>
-                                        <p className="card-text text-secondary">{t('HXFX is regulated by Authorities such as Vanuatu Financial Services Commission.')}</p>
+                                        <p className="card-text text-secondary">{t("FX is regulated by Authorities such as Vanuatu Financial Services Commission.")}</p>
                                     </div>
                                 </div>
                             </div>
@@ -193,7 +194,7 @@ const LowestCommission = () => {
                                 <div className="col col-12 col-md-9">
                                     <div className="card-body">
                                         <h5 className="card-title">{t('Platform Independent')}</h5>
-                                        <p className="card-text text-secondary">{t('FX Trade was developed by HXFX itself by adjusting the needs and trading patterns of customers.')}</p>
+                                        <p className="card-text text-secondary">{t("FX Trade was developed by FX itself by adjusting the needs and trading patterns of customers.")}</p>
                                     </div>
                                 </div>
                             </div>
@@ -217,11 +218,11 @@ const WhyChoose = () => {
     const { t } = useTranslation();
     return (
         <section className="container text-center py-5">
-            <h2 className="fw-bold text-dark text-center mb-5">{t('Why Choose HXFX')}</h2>
+            <h2 className="fw-bold text-dark text-center mb-5">{t("Why Choose FX")}</h2>
 
-            <div className="container col-12 d-flex flex-wrap justify-content-evenly">
+            <div className="row flex-wrap justify-content-evenly">
                 {why_context.map(card =>
-                    <div className="feature-card card d-flex align-items-center text-center col-3 p-4 m-2" key={t(card.title)} style={{ width: '300px' }}>
+                    <div className="feature-card card align-items-center text-center p-4 m-2" key={t(card.title)} style={{ width: '300px' }}>
                         <img src={card.icon} align="center" width="138px" alt={card.title} />
                         <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title mx-2">{`${t(card.title)}`}</h5>
                     </div>

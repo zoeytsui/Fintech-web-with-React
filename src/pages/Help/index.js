@@ -148,7 +148,7 @@ const Help = () => {
             const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getTopList`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setFilterList(result.data)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     // 常见问题搜索
@@ -181,7 +181,7 @@ const Help = () => {
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setFilterList(result.data.list)
             toggleSearchField()
-        } catch (error) { }
+        } catch (error) {}
     }
 
     const toggleSearchField = () => {
@@ -245,14 +245,19 @@ const Help = () => {
                         <ul id="filterList" className={`${styled.filterList} collapse bg-white list-unstyled p-3 rounded dropdown-menu scrollbar`}>
 
                             {searchInput.current !== null && searchInput.current.value !== ''
-                                ? <h6 className="text-dark">{filterList.length + t(" results found for ") + searchInput.current.value}</h6>
+                                ? <h6 className="text-dark">{filterList.length + ` ${t("results found for")} ` + searchInput.current.value}</h6>
                                 : <h6 className="text-dark">{t("Everyone's asking:")}</h6>}
 
                             <li><hr className="dropdown-divider" /></li>
 
                             {filterList.map(list =>
                                 <li key={list.id}>
-                                    <a className="btn" onClick={() => toggleTabs({ id: list.id, question: list.question, answer: list.answer })} href="#FAQ">{list.question}</a>
+                                    <button
+                                        className="btn link-dark"
+                                        onClick={() => {
+                                            toggleTabs({ id: list.id, question: list.question, answer: list.answer });
+                                            document.getElementById('FAQ').scrollIntoView()
+                                        }} >{list.question}</button>
                                 </li>
                             )}
                         </ul>
@@ -283,7 +288,9 @@ const Help = () => {
                                             {list.list
                                                 ? list.list.map(ques =>
                                                     <li key={ques.id} className={`${styled.quesNav} my-3`}>
-                                                        <button onClick={() => toggleTabs({ id: ques.id, question: ques.question, answer: ques.answer })} className="link-secondary">
+                                                        <button
+                                                            className="link-secondary"
+                                                            onClick={() => toggleTabs({ id: ques.id, question: ques.question, answer: ques.answer })}>
                                                             {ques.question}
                                                         </button>
                                                     </li>
@@ -322,7 +329,7 @@ const FeatureCard = () => {
             {features.map(card =>
                 <div className="feature-card card d-flex align-items-center text-center col-6 col-lg-3 m-3 p-2" key={t(card.title)}>
                     <img src={card.icon} align="center" width="138px" alt={card.title} />
-                    <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title text-dark mx-2">{`${t(card.title)}`}</h5>
+                    <h5 style={{ fontFamily: "Exo2-ExtraBold" }} className="card-title text-dark mx-2">{t(card.title)}</h5>
                 </div>
             )}
         </div>

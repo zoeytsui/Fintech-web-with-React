@@ -2,7 +2,7 @@ import React from 'react'
 import i18n from "i18next";
 import { TOP_OPENAPI } from 'api';
 import { makeStyles } from '@mui/styles';
-import { BrowserRouter as Router, Route, Switch, Link, useParams } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, Link, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
 import { Pagination, Stack } from '@mui/material';
@@ -110,8 +110,9 @@ const Strategy = () => {
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setPagination(result.data.count)
             setAdList(result.data.list)
+            console.log('result.data.list', result.data.list);
             setDataReady(true)
-        } catch (error) { }
+        } catch (error) {}
     }
 
     React.useEffect(() => {
@@ -278,6 +279,7 @@ const StrategyDetail = () => {
     const { t } = useTranslation();
     const contentRef = React.useRef(<div />)
     const [adDetails, setAdDetails] = React.useState([])
+    const [dataReady, setDataReady] = React.useState(false)
 
     const getDetails = async () => {
         try {
@@ -302,8 +304,9 @@ const StrategyDetail = () => {
             const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.details`, { params: { ...params } })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setAdDetails(result.data.detail)
+            setDataReady(true)
             contentRef.current.innerHTML = result.data.detail.content
-        } catch (error) { }
+        } catch (error) {}
     }
 
     React.useEffect(() => {
@@ -319,27 +322,32 @@ const StrategyDetail = () => {
                 </Link>
             </div>
 
-            <h2>{adDetails.title}</h2>
+            {dataReady
+                ?
+                <>
+                    <h2>{adDetails.title}</h2>
 
-            <div className="d-flex align-items-center badge rounded-pill bg-light">
-                <h5 className="m-2 card-title text-dark">{adDetails.product}</h5>
-                <SetDirect val={adDetails.direct} />
-            </div>
+                    <div className="d-flex align-items-center badge rounded-pill bg-light">
+                        <h5 className="m-2 card-title text-dark">{adDetails.product}</h5>
+                        <SetDirect val={adDetails.direct} />
+                    </div>
 
-            <div className="d-flex mt-4">
-                <p className="card-subtitle mb-3 text-secondary">
-                    <i className="bi-clock mx-2" style={{ color: '#B2B2B2' }} />
-                    <small>{adDetails.release_time}</small>
-                </p>
-                <p className="card-subtitle mx-2 mb-3 text-secondary">
-                    <i className="bi-eye mx-2" style={{ color: '#B2B2B2' }} />
-                    <small>{adDetails.pviews_base}</small>
-                </p>
-            </div>
+                    <div className="d-flex mt-4">
+                        <p className="card-subtitle mb-3 text-secondary">
+                            <i className="bi-clock mx-2" style={{ color: '#B2B2B2' }} />
+                            <small>{adDetails.release_time}</small>
+                        </p>
+                        <p className="card-subtitle mx-2 mb-3 text-secondary">
+                            <i className="bi-eye mx-2" style={{ color: '#B2B2B2' }} />
+                            <small>{adDetails.pviews_base}</small>
+                        </p>
+                    </div>
 
-            <button className="btn btn-warning mb-4">{t('Trade Now')}</button>
+                    <button className="btn btn-warning mb-4">{t('Trade Now')}</button>
 
-            <div ref={contentRef} className="ref-img" />
+                    <div ref={contentRef} className="ref-img" />
+                </>
+                : <Loading />}
         </section>
     )
 }

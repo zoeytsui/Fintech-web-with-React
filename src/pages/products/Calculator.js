@@ -31,83 +31,140 @@ const useStyles = makeStyles({
     }
 })
 
-
 const Calculator = () => {
     const classes = useStyles();
     const { t } = useTranslation();
-    const [tradingType, setTradingType] = React.useState('商品');
-    const [depositType, setDepositType] = React.useState('XAUUSD');
-    const [profitType, setProfitType] = React.useState('買入');
-    const [interestType, setInterestType] = React.useState('商品');
+    const [tradingType, setTradingType] = React.useState('Product');
+    const [depositType, setDepositType] = React.useState('Product');
+    const [profitType, setProfitType] = React.useState('Product');
+    const [interestType, setInterestType] = React.useState('Product');
     const [result, setResult] = React.useState(0)
 
-    console.log(json);
+    const getResult = (calculator) => {
+        let arr, obj, openPrice, closingPrice, TradeVolume, DaysHolding, OpeningPositionDirection;
+        switch (calculator) {
+            case 'Swap Calculator':
+                obj = json['Swap Calculator'].find(list => list['Product Type'] === document.getElementById('Swap-Product-Type').value)
+                openPrice = document.getElementById('Swap-Open-Price').value
+                TradeVolume = document.getElementById('Swap-Trade-Volume').value
+                DaysHolding = document.getElementById('Swap-Day-s-Holding').value
+                OpeningPositionDirection = document.getElementById('Swap-Opening-Position-Direction').value
 
-    const getResult = () => {
-        let obj = json['點值計算器'].find(list => list['交易產品'] === document.getElementById('Point-Value-Trading-Product').value)
-        return setResult(obj['合約大小(每手)'] * obj['Point'] * obj['pip/point'])
+                if (OpeningPositionDirection === 'Buy') {
+                    // 交易手數 * 合約大小(每手) * 開倉價格 * 利息(買入) / 100 / 360 * 持有天數
+                    return setResult((TradeVolume * obj['Order Size(Lot)'] * openPrice * obj['Interest(Buy)'] / 100 / 360 * DaysHolding).toFixed(2))
+                } else {
+                    // 交易手數 * 合約大小(每手) * 開倉價格 * 利息(賣出) / 100 / 360 * 持有天數
+                    return setResult((TradeVolume * obj['Order Size(Lot)'] * openPrice * obj['Interest(Sell)'] / 100 / 360 * DaysHolding).toFixed(2))
+                }
+
+            case 'Profit Loss Calculator':
+                obj = json['Profit Loss Calculator'].find(list => list['Product Type'] === document.getElementById('Profit-Product-Type').value)
+                openPrice = document.getElementById('Profit-Open-Price').value
+                closingPrice = document.getElementById('Profit-Closing-Price').value
+                TradeVolume = document.getElementById('Profit-Trade-Volume').value
+                OpeningPositionDirection = document.getElementById('Profit-Opening-Position-Direction').value
+
+                if (OpeningPositionDirection === 'Buy') {
+                    // (平倉價-開倉價)*交易手數*合約大小
+                    return setResult(((closingPrice - openPrice) * TradeVolume * obj['Order Size(Lot)']).toFixed(2))
+                } else {
+                    // (開倉價-平倉價)*交易手數*合約大小
+                    return setResult(((openPrice - closingPrice) * TradeVolume * obj['Order Size(Lot)']).toFixed(2))
+                }
+
+            case 'Margin Calculator':
+                arr = json['Margin Calculator'].filter(list => list['Product Type'] === document.getElementById('Margin-Product-Type').value)
+                TradeVolume = Number(document.getElementById('Margin-Trade-Volume').value)
+
+                let Hierarchy = arr.filter(list => TradeVolume >= Number(list['Minimum Lot']) && TradeVolume <= Number(list['Maximum Lot']))[0]['Margin Hierarchy']
+
+                switch (Hierarchy) {
+                    case "Second Rank":
+                        // 第一層手數上限 * 第一層初始保證金 + ( 交易手數 -  第一層手數上限 * 第二層初始保證金)
+                        return setResult((arr[0]['Maximum Lot'] * arr[0]['Initial Margin']) + ((TradeVolume - arr[0]['Maximum Lot']) * arr[1]['Initial Margin']))
+                    case "Third Rank":
+                        // 第一層手數上限 * 第一層初始保證金 + ( ( 第二層手數上限 - 第一層手數上限 ) * 第二層初始保證金) + ( 交易手數 -  第二層手數上限 * 第三層初始保證金)
+                        return setResult((arr[0]['Maximum Lot'] * arr[0]['Initial Margin']) + ((arr[1]['Maximum Lot'] - arr[0]['Maximum Lot']) * arr[1]['Initial Margin']) + ((TradeVolume - arr[1]['Maximum Lot']) * arr[2]['Initial Margin']))
+                    case "Fourth Rank":
+                        // 第一層手數上限 * 第一層初始保證金 + ( ( 第二層手數上限 - 第一層手數上限 ) * 第二層初始保證金) + ( ( 第三層手數上限 - 第二層手數上限 ) * 第三層初始保證金) + ( 交易手數 -  第三層手數上限 * 第四層初始保證金)
+                        return setResult((arr[0]['Maximum Lot'] * arr[0]['Initial Margin']) + ((arr[1]['Maximum Lot'] - arr[0]['Maximum Lot']) * arr[1]['Initial Margin']) + ((arr[2]['Maximum Lot'] - arr[1]['Maximum Lot']) * arr[2]['Initial Margin']) + ((TradeVolume - arr[2]['Maximum Lot']) * arr[3]['Initial Margin']))
+
+                    default:
+                        // 交易手數 * 初始保證金
+                        return setResult(TradeVolume * arr[0]['Initial Margin'])
+                }
+
+            default:
+                obj = json['Pip Value Calculator'].find(list => list['Product Type'] === document.getElementById('Pip-Value-Trading-Product').value)
+                TradeVolume = Number(document.getElementById('Pip-Value-Trading-Amount').value)
+
+                // 合約大小(每手) * Point * pip/point * 交易手數
+                if ((obj['Order Size(Lot)'] * obj['Point'] * obj['pip/point'] * TradeVolume) < 1) {
+                    return setResult(1)
+                } else return setResult(obj['Order Size(Lot)'] * obj['Point'] * obj['pip/point'] * TradeVolume)
+        }
     }
 
     return (
         <>
             <TopBanner
                 background={calculatetopbanner}
-                titles={["Trading Calculate"]} />
+                titles={["Trading Calculator"]} />
 
             <div className="container col-12 col-lg-9 p-4">
                 <div className={`${classes.calculateCard} card p-4`}>
                     <ul className="nav nav-fill">
                         <li className="nav-item mx-2">
-                            <button className="nav-link btn btn-warning active" id="Point-Value-tab" data-bs-toggle="tab" data-bs-target="#Point-Value" type="button" role="tab" aria-controls="Point-Value" aria-selected="true">{t('Point Value')}</button>
+                            <button className="nav-link btn btn-warning active" id="Pip-Value-tab" onClick={() => setResult(0)} data-bs-toggle="tab" data-bs-target="#Pip-Value" type="button" role="tab" aria-controls="Pip-Value" aria-selected="true">{t('Pip Value')}</button>
                         </li>
                         <li className="nav-item mx-2">
-                            <button className="nav-link btn btn-warning" id="Deposit-tab" data-bs-toggle="tab" data-bs-target="#Deposit" type="button" role="tab" aria-controls="Deposit" aria-selected="true">{t('Deposit')}</button>
+                            <button className="nav-link btn btn-warning" id="Margin-tab" onClick={() => setResult(0)} data-bs-toggle="tab" data-bs-target="#Margin" type="button" role="tab" aria-controls="Margin" aria-selected="true">{t('Deposit')}</button>
                         </li>
                         <li className="nav-item mx-2">
-                            <button className="nav-link btn btn-warning" id="Profit-tab" data-bs-toggle="tab" data-bs-target="#Profit" type="button" role="tab" aria-controls="Profit" aria-selected="true">{t('Profit')}</button>
+                            <button className="nav-link btn btn-warning" id="Profit-tab" onClick={() => setResult(0)} data-bs-toggle="tab" data-bs-target="#Profit" type="button" role="tab" aria-controls="Profit" aria-selected="true">{t('Profit')}</button>
                         </li>
                         <li className="nav-item mx-2">
-                            <button className="nav-link btn btn-warning" id="Interest-tab" data-bs-toggle="tab" data-bs-target="#Interest" type="button" role="tab" aria-controls="Interest" aria-selected="true">{t('Interest')}</button>
+                            <button className="nav-link btn btn-warning" id="Swap-Calculator-tab" onClick={() => setResult(0)} data-bs-toggle="tab" data-bs-target="#Swap-Calculator" type="button" role="tab" aria-controls="Swap-Calculator" aria-selected="true">{t('Interest')}</button>
                         </li>
                     </ul>
 
                     <div className="tab-content" id="myTabContent">
-
-                        {/* Point Value */}
-                        <div className="tab-pane fade show active" id="Point-Value" role="tabpanel" aria-labelledby="Point-Value-tab">
+                        {/* Pip Value Calculator */}
+                        <div className="tab-pane fade show active" id="Pip-Value" role="tabpanel" aria-labelledby="Pip-Value-tab">
                             <div className="row align-items-start my-4">
                                 <div className="col">
-                                    <label htmlFor="Point-Value-Trading-Type">{t('Trading Type')}</label>
-                                    <select className="form-select" aria-label="Point-Value-Trading-Type" id="Point-Value-Trading-Type" onChange={(e) => setTradingType(e.target.value)}>
-                                        {Array.from(new Set(json['點值計算器'].map(list => list['交易類別']))).map(list =>
+                                    <label htmlFor="Pip-Value-Trading-Type">{t('Trading Type')}</label>
+                                    <select className="form-select" aria-label="Pip-Value-Trading-Type" id="Pip-Value-Trading-Type" onChange={(e) => setTradingType(e.target.value)}>
+                                        {Array.from(new Set(json['Pip Value Calculator'].map(list => list['Transaction Type']))).map(list =>
                                             <option key={list} value={t(list)}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="Point-Value-Trading-Product">{t('Trading Product')}</label>
-                                    <select className="form-select" aria-label="Point-Value-Trading-Product" id="Point-Value-Trading-Product">
-                                        {json['點值計算器'].filter(list => list['交易類別'] === tradingType).map(list =>
-                                            <option key={list['交易產品']} value={t(list['交易產品'])}>{list['交易產品']}</option>
+                                    <label htmlFor="Pip-Value-Trading-Product">{t('Trading Product')}</label>
+                                    <select className="form-select" aria-label="Pip-Value-Trading-Product" id="Pip-Value-Trading-Product">
+                                        {json['Pip Value Calculator'].filter(list => list['Transaction Type'] === tradingType).map(list =>
+                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="Point-Value-Trading-Amount">{t('Trading Amount')}</label>
-                                    <input type="number" id="Point-Value-Trading-Amount" className="form-control" placeholder="0.01" min="0.01" max="100"></input>
-                                    <div id="AmountHelp" className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                    <label htmlFor="Pip-Value-Trading-Amount">{t('Trading Amount')}</label>
+                                    <input type="number" id="Pip-Value-Trading-Amount" className="form-control" defaultValue="0.01" min="0.01" max="100"></input>
+                                    <div className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
                                 </div>
 
                                 <div className="col my-auto">
-                                    <button className="btn btn-primary" onClick={() => getResult()}>{t('Calculate')}</button>
+                                    <button className="btn btn-primary" onClick={() => getResult('Pip Value Calculator')}>{t('Calculate')}</button>
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-3">
-                                    <label htmlFor="Point Value">{t('Point Value')}</label>
+                                    <label htmlFor="Pip Value">{t('Pip Value')}</label>
                                     <input className="form-control form-control-lg" type="number" value={result} readOnly style={{ backgroundColor: '#fff' }} />
                                 </div>
                                 <div className="col-3 mt-auto">
@@ -116,41 +173,41 @@ const Calculator = () => {
                             </div>
                         </div>
 
-                        {/* Deposit */}
-                        <div className="tab-pane fade" id="Deposit" role="tabpanel" aria-labelledby="Deposit-tab">
+                        {/* Margin Calculator */}
+                        <div className="tab-pane fade" id="Margin" role="tabpanel" aria-labelledby="Margin-tab">
                             <div className="row align-items-start my-4">
                                 <div className="col">
-                                    <label htmlFor="產品">{t('產品')}</label>
-                                    <select className="form-select" aria-label="產品" id="產品" onChange={(e) => setDepositType(e.target.value)}>
-                                        {Array.from(new Set(json['保證金計算器'].map(list => list['產品']))).map(list =>
+                                    <label htmlFor="Margin-Transaction-Type">{t('Transaction Type')}</label>
+                                    <select className="form-select" aria-label="Margin-Transaction-Type" id="Margin-Transaction-Type" onChange={(e) => setDepositType(e.target.value)}>
+                                        {Array.from(new Set(json['Margin Calculator'].map(list => list['Transaction Type']))).map(list =>
                                             <option key={list} value={t(list)}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="層數">{t('層數')}</label>
-                                    <select className="form-select" aria-label="層數" id="層數">
-                                        {json['保證金計算器'].filter(list => list['產品'] === depositType).map(list =>
-                                            <option key={list['層數']} value={t(list['層數'])}>{list['層數']}</option>
+                                    <label htmlFor="Margin-Product-Type">{t('Product Type')}</label>
+                                    <select className="form-select" aria-label="Product Type" id="Margin-Product-Type">
+                                        {Array.from(new Set(json['Margin Calculator'].filter(list => list['Transaction Type'] === depositType).map(list => list['Product Type']))).map(list =>
+                                            <option key={list} value={list}>{list}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="Trading Amount">{t('Trading Amount')}</label>
-                                    <input type="number" id="Trading Amount" className="form-control" placeholder="0.01" min="0.01" max="100"></input>
-                                    <div id="AmountHelp" className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                    <label htmlFor="Margin-Trade-Volume">{t('Trade Volume')}</label>
+                                    <input type="number" id="Margin-Trade-Volume" className="form-control" defaultValue="0.01" min="0.01" max="100"></input>
+                                    <div className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
                                 </div>
 
                                 <div className="col my-auto">
-                                    <button className="btn btn-primary" onClick={() => getResult()}>{t('Calculate')}</button>
+                                    <button className="btn btn-primary" onClick={() => getResult('Margin Calculator')}>{t('Calculate')}</button>
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-3">
-                                    <label htmlFor="Point Value">{t('所需保證金')}</label>
+                                    <label htmlFor="Pip Value">{t('Margin Required')}</label>
                                     <input className="form-control form-control-lg" type="number" value={result} readOnly style={{ backgroundColor: '#fff' }} />
                                 </div>
                                 <div className="col-3 mt-auto">
@@ -159,41 +216,62 @@ const Calculator = () => {
                             </div>
                         </div>
 
-                        {/* Profit */}
+                        {/* Profit Loss Calculator */}
                         <div className="tab-pane fade" id="Profit" role="tabpanel" aria-labelledby="Profit-tab">
                             <div className="row align-items-start my-4">
                                 <div className="col">
-                                    <label htmlFor="交易類別">{t('交易類別')}</label>
-                                    <select className="form-select" aria-label="交易類別" id="交易類別" onChange={(e) => setProfitType(e.target.value)}>
-                                        {Array.from(new Set(json['盈虧計算'].map(list => list['交易類別']))).map(list =>
+                                    <label htmlFor="Transaction Type">{t('Transaction Type')}</label>
+                                    <select className="form-select" aria-label="Transaction Type" id="Transaction Type" onChange={(e) => setProfitType(e.target.value)}>
+                                        {Array.from(new Set(json['Profit Loss Calculator'].map(list => list['Transaction Type']))).map(list =>
                                             <option key={list} value={t(list)}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
 
+
                                 <div className="col">
-                                    <label htmlFor="交易方向">{t('交易方向')}</label>
-                                    <select className="form-select" aria-label="交易方向" id="交易方向">
-                                        {json['盈虧計算'].filter(list => list['產品'] === profitType).map(list =>
-                                            <option key={list['層數']} value={t(list['層數'])}>{list['層數']}</option>
+                                    <label htmlFor="Profit-Product-Type">{t('Trading Product')}</label>
+                                    <select className="form-select" aria-label="Profit-Product-Type" id="Profit-Product-Type">
+                                        {json['Profit Loss Calculator'].filter(list => list['Transaction Type'] === profitType).map(list =>
+                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="Trading Amount">{t('Trading Amount')}</label>
-                                    <input type="number" id="Trading Amount" className="form-control" placeholder="0.01" min="0.01" max="100"></input>
-                                    <div id="AmountHelp" className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                    <label htmlFor="Profit-Opening-Position-Direction">{t('Opening Position Direction')}</label>
+                                    <select className="form-select" aria-label="Profit-Opening-Position-Direction" id="Profit-Opening-Position-Direction">
+                                        <option value={t('Buy')}>{t('Buy')}</option>
+                                        <option value={t('Sell')}>{t('Sell')}</option>
+                                    </select>
                                 </div>
+                            </div>
 
+                            <div className="row align-items-start my-4">
+                                <div className="col">
+                                    <label htmlFor="Profit-Open-Price">{t('Open Price')}</label>
+                                    <input type="number" id="Profit-Open-Price" className="form-control" defaultValue="1"></input>
+                                </div>
+                                <div className="col">
+                                    <label htmlFor="Profit-Closing-Price">{t('Closing Price')}</label>
+                                    <input type="number" id="Profit-Closing-Price" className="form-control" defaultValue="1"></input>
+                                </div>
+                                <div className="col">
+                                    <label htmlFor="Profit-Trade-Volume">{t('Trading Volume')}</label>
+                                    <input type="number" id="Profit-Trade-Volume" className="form-control" defaultValue="0.01" min="0.01" max="100"></input>
+                                    <div className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                </div>
+                            </div>
+
+                            <div className="row align-items-start my-4">
                                 <div className="col my-auto">
-                                    <button className="btn btn-primary" onClick={() => getResult()}>{t('Calculate')}</button>
+                                    <button className="btn btn-primary" onClick={() => getResult('Profit Loss Calculator')}>{t('Calculate')}</button>
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-3">
-                                    <label htmlFor="Point Value">{t('Point Value')}</label>
+                                    <label>{t('Profit Earned')}</label>
                                     <input className="form-control form-control-lg" type="number" value={result} readOnly style={{ backgroundColor: '#fff' }} />
                                 </div>
                                 <div className="col-3 mt-auto">
@@ -202,41 +280,66 @@ const Calculator = () => {
                             </div>
                         </div>
 
-                        {/* Interest */}
-                        <div className="tab-pane fade" id="Interest" role="tabpanel" aria-labelledby="Interest-tab">
+                        {/* Swap Calculator */}
+                        <div className="tab-pane fade" id="Swap-Calculator" role="tabpanel" aria-labelledby="Swap-Calculator-tab">
                             <div className="row align-items-start my-4">
                                 <div className="col">
-                                    <label htmlFor="交易類別">{t('交易類別')}</label>
-                                    <select className="form-select" aria-label="交易類別" id="交易類別" onChange={(e) => setInterestType(e.target.value)}>
-                                        {Array.from(new Set(json['過夜利息計算器'].map(list => list['交易類別']))).map(list =>
+                                    <label htmlFor="Swap-Transaction-Type">{t('Transaction Type')}</label>
+                                    <select className="form-select" aria-label="Swap-Transaction-Type" id="Swap-Transaction-Type" onChange={(e) => setInterestType(e.target.value)}>
+                                        {Array.from(new Set(json['Swap Calculator'].map(list => list['Transaction Type']))).map(list =>
                                             <option key={list} value={t(list)}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="交易產品">{t('交易產品')}</label>
-                                    <select className="form-select" aria-label="交易產品" id="交易產品">
-                                        {json['過夜利息計算器'].filter(list => list['交易類別'] === interestType).map(list =>
-                                            <option key={list['交易產品']} value={t(list['交易產品'])}>{list['交易產品']}</option>
+                                    <label htmlFor="Swap-Product-Type">{t('Product Type')}</label>
+                                    <select className="form-select" aria-label="Product Type" id="Swap-Product-Type">
+                                        {json['Swap Calculator'].filter(list => list['Transaction Type'] === interestType).map(list =>
+                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
 
                                 <div className="col">
-                                    <label htmlFor="Trading Amount">{t('Trading Amount')}</label>
-                                    <input type="number" id="Trading Amount" className="form-control" placeholder="0.01" min="0.01" max="100"></input>
-                                    <div id="AmountHelp" className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                    <label htmlFor="Swap-Opening-Position-Direction">{t('Opening Position Direction')}</label>
+                                    <select className="form-select" aria-label="Swap-Opening-Position-Direction" id="Swap-Opening-Position-Direction">
+                                        <option value={t('Buy')}>{t('Buy')}</option>
+                                        <option value={t('Sell')}>{t('Sell')}</option>
+                                    </select>
                                 </div>
 
+                            </div>
+
+                            <div className="row align-items-start my-4">
+                                <div className="col">
+                                    <label htmlFor="Swap-Open-Price">{t('Open Price')}</label>
+                                    <input type="number" id="Swap-Open-Price" className="form-control" defaultValue="1"></input>
+                                </div>
+
+                                <div className="col">
+                                    <label htmlFor="Swap-Trade-Volume">{t('Trade Volume')}</label>
+                                    <input type="number" id="Swap-Trade-Volume" className="form-control" defaultValue="0.01" min="0.01" max="100"></input>
+                                    <div className="form-text"><small>{t('Please enter 0.01 to 100 value')}</small></div>
+                                </div>
+
+                                <div className="col">
+                                    <label htmlFor="Swap-Day-s-Holding">{t('Day(s) Holding')}</label>
+                                    <input type="number" id="Swap-Day-s-Holding" className="form-control" defaultValue="1" min="1" max="360"></input>
+                                    <div className="form-text"><small>{t('Please enter 1 to 360 value')}</small></div>
+                                </div>
+
+                            </div>
+
+                            <div className="row align-items-start my-4">
                                 <div className="col my-auto">
-                                    <button className="btn btn-primary" onClick={() => getResult()}>{t('Calculate')}</button>
+                                    <button className="btn btn-primary" onClick={() => getResult('Swap Calculator')}>{t('Calculate')}</button>
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-3">
-                                    <label htmlFor="Point Value">{t('Point Value')}</label>
+                                    <label>{t('Swap')}</label>
                                     <input className="form-control form-control-lg" type="number" value={result} readOnly style={{ backgroundColor: '#fff' }} />
                                 </div>
                                 <div className="col-3 mt-auto">

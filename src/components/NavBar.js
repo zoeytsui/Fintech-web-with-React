@@ -1,5 +1,6 @@
 import React from "react";
 import i18n from 'i18next'
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import { useTranslation } from "react-i18next";
 import { RedirectToUcenter, RedirectToRealAccount } from 'utilities'
@@ -33,7 +34,7 @@ const useStyles = makeStyles({
         }
     },
     dropdownListImg: {
-        filter: 'grayscale(1)'
+        filter: 'contrast(0%)'
     },
 })
 
@@ -79,7 +80,6 @@ const navList = [
             { item: 'Forex', link: '/Products/Forex', src: Forex_icon },
             { item: 'Commodities', link: '/Products/Commodities', src: Commodities_icon },
             { item: 'Indices', link: '/Products/Indices', src: Indices_icon },
-            // TODO: not finished
             { item: 'Calculator', link: '/Products/Calculator', src: Calculate_icon }
         ]
     },
@@ -108,8 +108,6 @@ export default function NavBar() {
 
     return (
         <React.Fragment>
-            {/* <GlobalStyles styles={{ ul: { margin: 0, padding: 0, listStyle: 'none' } }} /> */}
-            {/* <CssBaseline /> */}
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
                     <a href="/">
@@ -131,16 +129,16 @@ export default function NavBar() {
                                         <ul className={`dropdown-menu ${classes.dropdownList}`} aria-labelledby={li.item}>
                                             {li.link.map(drop_li =>
                                                 <li key={drop_li.item}>
-                                                    <a className="dropdown-item" href={drop_li.link}>
+                                                    <Link className="dropdown-item" to={drop_li.link}>
                                                         <img className={`navbar-brand ${classes.dropdownListImg}`} src={drop_li.src} alt={drop_li.item} />
                                                         {t(drop_li.item)}
-                                                    </a>
+                                                    </Link>
                                                 </li>
                                             )}
                                         </ul>
                                     </li>
                                     : <li className={` nav-item`} key={li.item}>
-                                        <a className="nav-link text-primary" aria-current="page" href={li.link}>{t(li.item)}</a>
+                                        <Link className="nav-link text-primary" aria-current="page" to={li.link}>{t(li.item)}</Link>
                                     </li>
                             )}
                         </ul>
@@ -155,7 +153,7 @@ export default function NavBar() {
                         <div className="dropdown">
                             <button className={`btn dropdown-toggle ${classes.langList}`} id="langList" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img className="navbar-brand" src={langList.find(cur => cur.code === i18n.language).src} alt="" />
-                                {t(`${langList.find(cur => cur.code === i18n.language).name}`)}
+                                {langList.find(cur => cur.code === i18n.language).name}
                             </button>
 
                             <ul className={`dropdown-menu dropdown-menu-lg-end ${classes.dropdownList}`} aria-labelledby="langList">
@@ -163,7 +161,7 @@ export default function NavBar() {
                                     <li key={lang.code}>
                                         <button className="dropdown-item" onClick={() => i18n.changeLanguage(lang.code)}>
                                             <img className="navbar-brand" src={lang.src} alt="" />
-                                            {t(lang.name)}
+                                            {lang.name}
                                         </button>
                                     </li>
                                 )}

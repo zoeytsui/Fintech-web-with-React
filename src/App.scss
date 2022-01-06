@@ -168,10 +168,10 @@ h6 {
     filter: grayscale(1);
   }
   // &-button-prev {
-  // left: -15px;
+  //   left: -15px;
   // }
   // &-button-next {
-  // right: -15px;
+  //   right: -15px;
   // }
   // &-wrapper {
   // width: 90%;
@@ -299,6 +299,25 @@ h6 {
   }
   &-mt4 {
     @include qrcode(url(./assets/images/qrcode_mt4.png));
+  }
+}
+
+.overlaySection {
+  height: 200px;
+  .overlayContainer {
+    position: absolute;
+    top: 45%;
+    left: calc(100% / 15);
+  }
+}
+@media screen and (max-width: 1024px) {
+  .overlaySection {
+    height: 100%;
+    .overlayContainer {
+      position: relative;
+      top: 0;
+      left: 0;
+    }
   }
 }
 

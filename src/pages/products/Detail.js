@@ -1,6 +1,5 @@
 import React from 'react'
 import { useTranslation } from "react-i18next";
-import Axios from 'axios';
 import i18n from 'i18next'
 import { makeStyles } from '@mui/styles';
 import { draggableTable } from 'utilities'
@@ -9,6 +8,8 @@ import TopBanner from 'components/TopBanner'
 import Loading from 'components/Loading'
 
 import Stockindexitopbanner from 'assets/images/products/Stockindexitopbanner.jpg'
+
+import { TOP_OPENAPI } from 'api';
 
 const ContractList = ({ product }) => {
     const { t } = useTranslation()
@@ -80,22 +81,41 @@ const ContractList = ({ product }) => {
                 break;
         }
 
-        const params = {
-            companyId: 23,
-            type: type.current,
-            lang: i18n.language
-        }
-        try {
-            const getContractList = async () => {
-                const result = await (await Axios.get(`${process.env.REACT_APP_TOP_OPENAPI_HOST}/hx/?service=Contract.getContractList`, { params: { ...params } })).data
+        const getContractList = async () => {
+            try {
+                let lang;
+
+                switch (i18n.language) {
+                    case 'vn':
+                        lang = 'vi'
+                        break;
+                    case 'ch':
+                        lang = 'zh-TW' // no zh-CN data currently
+                        break;
+                    case 'my':
+                        lang = 'ms'
+                        break;
+
+                    default:
+                        lang = 'en'
+                        break;
+                }
+                const params = {
+                    companyId: 23,
+                    type: type.current,
+                    lang: lang // zh-TW/zh-CN/vi/ms/en
+                }
+
+                const result = await (await TOP_OPENAPI.get('/hx/?service=Contract.getContractList', { params: { ...params } })).data
                 if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
                 setContractList(result.data)
                 setDataReady(true)
                 draggableTable('Trade Condition')
-            }
-            getContractList()
-        } catch (error) { }
-    }, [product])
+            } catch (error) {}
+        }
+        getContractList()
+        // eslint-disable-next-line
+    }, [product, i18n.language])
 
     return (
         <div className={`container-fluid p-4`}>
@@ -241,7 +261,7 @@ const ContractList = ({ product }) => {
     )
 }
 
-const detail = (props) => {
+const ProductsDetail = (props) => {
     return (
         <>
             <TopBanner
@@ -253,4 +273,4 @@ const detail = (props) => {
     )
 }
 
-export default detail
+export default ProductsDetail

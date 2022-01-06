@@ -35,15 +35,15 @@ const useStyles = makeStyles({
 // AwardCarousel
 const AwardCarousel_context = {
     title: 'An award-winning service provider',
-    subtitle: 'For over 10 years, HXFX Global has been providing our clients the best service and been recognised as one of the best in the industry.',
+    subtitle: "For over 10 years, HXFX Global has been providing our clients the best service and been recognised as one of the best in the industry.",
     awards: [
-        { src: Best_the_golden, capture: 'Golden Bridge Awards -2018 Financial Growth Enterprise “Gold Award”' },
-        { src: stevie_winner_2017, capture: 'Best innovation in the financial industry Asia Pacific Stevie Silver Award' },
-        { src: best_financial, capture: 'Best foreign exchange investment Service Platform' },
-        { src: best_foreign, capture: 'Best financial services Grand prize' },
-        { src: best_mobile, capture: 'Best financial services Grand prize' },
-        { src: Most_foreign, capture: 'Best financial services Grand prize' },
-        { src: Most_growth_brokers, capture: 'Best financial services Grand prize' },
+        { src: Best_the_golden, capture: "Golden Bridge Awards -2018 Financial Growth Enterprise \"Gold Award\"" },
+        { src: stevie_winner_2017, capture: "Best innovation in the financial industry Asia Pacific Stevie Silver Award" },
+        { src: best_financial, capture: "Best foreign exchange investment Service Platform" },
+        { src: best_foreign, capture: "Anugerah \"Golden Bridge\"" },
+        { src: best_mobile, capture: "Best mobile transaction Platform organization" },
+        { src: Most_foreign, capture: "Most trustworthy Foreign exchange trading platform" },
+        { src: Most_growth_brokers, capture: "Most growth brokers" },
     ]
 }
 const AwardCarousel = () => {
@@ -90,8 +90,8 @@ const AwardCarousel = () => {
                 className={`text-secondary col-9 py-4`}>
                 {AwardCarousel_context.awards.map((award, index) =>
                     <SwiperSlide className="d-flex flex-column align-items-center mt-2" key={index}>
-                        <img className={classes.awardImg} src={award.src} alt={award.capture} />
-                        <p><small>{award.capture}</small></p>
+                        <img className={classes.awardImg} src={award.src} alt={t(award.capture)} />
+                        <p><small>{t(award.capture)}</small></p>
                     </SwiperSlide>
                 )}
             </Swiper>
