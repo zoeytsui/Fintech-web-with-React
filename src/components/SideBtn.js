@@ -46,17 +46,18 @@ export const SideBtn = () => {
             style={{ opacity: `${show}` }}
         >
             {/* cs button */}
-            <div>
+            <button className='btn'
+                onClick={() => window.location.href = 'https://gvsv.chatport.space:5120/index/index/home?refer=https%3A%2F%2Fwww.hxfxglobal.com%2Fch%2F&last_address=%E5%B0%88%E6%A5%AD%E7%B7%9A%E4%B8%8A%E5%A4%96%E5%8C%AF%E4%BA%A4%E6%98%93%E5%B9%B3%E8%87%BA%20|%20HXFX&login=&utm_group=&utm_source=OW4&utm_medium=website&utm_campaign=&utm_terminal=&uagent=Mozilla%2F5.0%20(Windows%20NT%2010.0%3B%20Win64%3B%20x64)%20AppleWebKit%2F537.36%20(KHTML%2C%20like%20Gecko)%20Chrome%2F96.0.4664.110%20Safari%2F537.36&se=&vister_type=V&lang=zh-tw&company_id=51'}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="82" height="81" viewBox="0 0 82 81">
                     <g transform="translate(0.296)">
                         <ellipse fill="#83bf4b" cx="41" cy="40.5" rx="41" ry="40.5" transform="translate(-0.296 0)" />
                         <path fill="#fff" d="M230.647,1746.106H215.075a10.776,10.776,0,0,0-10.776,10.775V1771.5a2.572,2.572,0,0,0,2.731,2.584h23.618a10.777,10.777,0,0,0,10.776-10.776v-6.422A10.776,10.776,0,0,0,230.647,1746.106Zm-5.24,20.041H212.144a1.826,1.826,0,1,1,0-3.653h13.262a1.826,1.826,0,1,1,0,3.653Zm8.24-8.454h-21.5a1.827,1.827,0,1,1,0-3.654h21.5a1.827,1.827,0,1,1,0,3.654Z" transform="translate(-182.157 -1719.389)" />
                     </g>
                 </svg>
-            </div>
+            </button>
 
             {/* go top button */}
-            <div onClick={goTop}>
+            <button className='btn' onClick={goTop}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="82" height="81" viewBox="0 0 82 81"><g transform="translate(0.296 -0.408)">
                     <ellipse fill="#959595" opacity="0.546" cx="41" cy="40.5" rx="41" ry="40.5" transform="translate(-0.296 0.408)" />
                     <g transform="translate(21.504 21.504)">
@@ -65,7 +66,7 @@ export const SideBtn = () => {
                     </g>
                 </g>
                 </svg>
-            </div>
+            </button>
         </div>
     )
 }

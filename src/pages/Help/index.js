@@ -61,6 +61,7 @@ const Help = () => {
     const { t } = useTranslation();
 
     // response from Question.getList
+    const [QuestionType, setQuestionType] = React.useState([])
     const [QuestionList, setQuestionList] = React.useState([])
     // set active tabs
     const [QuestionDetail, setQuestionDetail] = React.useState({})
@@ -91,6 +92,7 @@ const Help = () => {
             const result = await (await TOP_OPENAPI.get(`/hx/?service=Question.getQuestionType`, { params: params })).data
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             if (result.data[0] !== undefined) {
+                setQuestionType(result.data)
 
                 await result.data.map(item =>
                     getList(item.id, (data) => {
@@ -227,11 +229,8 @@ const Help = () => {
 
                     {/* Search bar */}
                     <div className={`container col-9 ${styled.SearchBar}`}>
-
                         <div className="input-group">
-
                             <input autoFocus type="text" className="form-control" ref={searchInput} onClick={toggleSearchField} onChange={(e) => searchItems(e.target.value)} disabled={disabled} placeholder={t('Enter Your Question')} aria-label={t('Enter Your Question')} aria-describedby="button-search" />
-
                             <button className={`btn btn-primary ${styled.searchBtn}`} type="button" onClick={() => getSearchList(i18n.language)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 26 26">
                                     <g transform="translate(-1514 -1528)">
@@ -242,14 +241,27 @@ const Help = () => {
                             </button>
                         </div>
 
-                        <ul id="filterList" className={`${styled.filterList} collapse bg-white list-unstyled p-3 rounded dropdown-menu scrollbar`}>
+                        <div className="d-flex justify-content-between mt-5">
+                            {QuestionType.map((x, i) =>
+                                <button key={i}
+                                    className='btn link-light text-white'
+                                    onClick={() => document.getElementById('FAQ').scrollIntoView()}>
+                                    {x.title}
+                                </button>
+                            )}
+                            <button
+                                className='btn link-light text-white'
+                                onClick={() => document.getElementById('Video Tutorials').scrollIntoView()}>
+                                {t('Video Tutorials')}
+                            </button>
+                        </div>
 
+                        <ul id="filterList" className={`${styled.filterList} collapse bg-white list-unstyled p-3 rounded dropdown-menu scrollbar`}>
                             {searchInput.current !== null && searchInput.current.value !== ''
                                 ? <h6 className="text-dark">{filterList.length + ` ${t("results found for")} ` + searchInput.current.value}</h6>
                                 : <h6 className="text-dark">{t("Everyone's asking:")}</h6>}
 
                             <li><hr className="dropdown-divider" /></li>
-
                             {filterList.map(list =>
                                 <li key={list.id}>
                                     <button
@@ -261,9 +273,7 @@ const Help = () => {
                                 </li>
                             )}
                         </ul>
-
                     </div >
-
                 </div>
             </div>
 
@@ -277,14 +287,13 @@ const Help = () => {
                         {QuestionList.map((list, index) =>
                             <div key={list.id} className="accordion-item">
                                 <div className="accordion-item">
-                                    <h2 className="accordion-header" id={list.id}>
+                                    <h2 className="accordion-header" id={list.title}>
                                         <button className={`accordion-button ${index === 0 ? '' : 'collapsed'}`} type="button" data-bs-toggle="collapse" data-bs-target={'#' + (list.title).replaceAll(' ', '-')} aria-expanded="false" aria-controls={list.title.replaceAll(' ', '-')}>
                                             {list.title}
                                         </button>
                                     </h2>
                                     <div id={list.title.replaceAll(' ', '-')} className={`accordion-collapse collapse ${index === 0 ? 'show' : ''}`} aria-labelledby={list.id} data-bs-parent="#FAQList">
                                         <ul className="accordion-body list-unstyled" style={{ background: "#F5F5F5" }}>
-
                                             {list.list
                                                 ? list.list.map(ques =>
                                                     <li key={ques.id} className={`${styled.quesNav} my-3`}>
@@ -363,7 +372,7 @@ const VideoTutorial = () => {
     }]
 
     return (
-        <div className="row mx-auto flex-wrap justify-content-center text-center py-5" style={{ background: "#F1F1F1" }}>
+        <div id="Video Tutorials" className="row mx-auto flex-wrap justify-content-center text-center py-5" style={{ background: "#F1F1F1" }}>
             <h2 className="fw-bold text-dark">{t('Video Tutorials')}</h2>
             <p className="card-text text-secondary">{t('How to open a HXFX Global account?')}</p>
 

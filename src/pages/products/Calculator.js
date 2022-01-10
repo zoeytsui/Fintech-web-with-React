@@ -137,7 +137,7 @@ const Calculator = () => {
                                     <label htmlFor="Pip-Value-Trading-Type">{t('Trading Type')}</label>
                                     <select className="form-select" aria-label="Pip-Value-Trading-Type" id="Pip-Value-Trading-Type" onChange={(e) => setTradingType(e.target.value)}>
                                         {Array.from(new Set(json['Pip Value Calculator'].map(list => list['Transaction Type']))).map(list =>
-                                            <option key={list} value={t(list)}>{t(list)}</option>
+                                            <option key={list} value={list}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
@@ -146,7 +146,7 @@ const Calculator = () => {
                                     <label htmlFor="Pip-Value-Trading-Product">{t('Trading Product')}</label>
                                     <select className="form-select" aria-label="Pip-Value-Trading-Product" id="Pip-Value-Trading-Product">
                                         {json['Pip Value Calculator'].filter(list => list['Transaction Type'] === tradingType).map(list =>
-                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
+                                            <option key={list['Product Type']} value={list['Product Type']}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
@@ -180,7 +180,7 @@ const Calculator = () => {
                                     <label htmlFor="Margin-Transaction-Type">{t('Transaction Type')}</label>
                                     <select className="form-select" aria-label="Margin-Transaction-Type" id="Margin-Transaction-Type" onChange={(e) => setDepositType(e.target.value)}>
                                         {Array.from(new Set(json['Margin Calculator'].map(list => list['Transaction Type']))).map(list =>
-                                            <option key={list} value={t(list)}>{t(list)}</option>
+                                            <option key={list} value={list}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
@@ -223,7 +223,7 @@ const Calculator = () => {
                                     <label htmlFor="Transaction Type">{t('Transaction Type')}</label>
                                     <select className="form-select" aria-label="Transaction Type" id="Transaction Type" onChange={(e) => setProfitType(e.target.value)}>
                                         {Array.from(new Set(json['Profit Loss Calculator'].map(list => list['Transaction Type']))).map(list =>
-                                            <option key={list} value={t(list)}>{t(list)}</option>
+                                            <option key={list} value={list}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
@@ -233,7 +233,7 @@ const Calculator = () => {
                                     <label htmlFor="Profit-Product-Type">{t('Trading Product')}</label>
                                     <select className="form-select" aria-label="Profit-Product-Type" id="Profit-Product-Type">
                                         {json['Profit Loss Calculator'].filter(list => list['Transaction Type'] === profitType).map(list =>
-                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
+                                            <option key={list['Product Type']} value={list['Product Type']}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
@@ -241,8 +241,8 @@ const Calculator = () => {
                                 <div className="col">
                                     <label htmlFor="Profit-Opening-Position-Direction">{t('Opening Position Direction')}</label>
                                     <select className="form-select" aria-label="Profit-Opening-Position-Direction" id="Profit-Opening-Position-Direction">
-                                        <option value={t('Buy')}>{t('Buy')}</option>
-                                        <option value={t('Sell')}>{t('Sell')}</option>
+                                        <option value={'Buy'}>{t('Buy')}</option>
+                                        <option value={'Sell'}>{t('Sell')}</option>
                                     </select>
                                 </div>
                             </div>
@@ -287,7 +287,7 @@ const Calculator = () => {
                                     <label htmlFor="Swap-Transaction-Type">{t('Transaction Type')}</label>
                                     <select className="form-select" aria-label="Swap-Transaction-Type" id="Swap-Transaction-Type" onChange={(e) => setInterestType(e.target.value)}>
                                         {Array.from(new Set(json['Swap Calculator'].map(list => list['Transaction Type']))).map(list =>
-                                            <option key={list} value={t(list)}>{t(list)}</option>
+                                            <option key={list} value={list}>{t(list)}</option>
                                         )}
                                     </select>
                                 </div>
@@ -296,7 +296,7 @@ const Calculator = () => {
                                     <label htmlFor="Swap-Product-Type">{t('Product Type')}</label>
                                     <select className="form-select" aria-label="Product Type" id="Swap-Product-Type">
                                         {json['Swap Calculator'].filter(list => list['Transaction Type'] === interestType).map(list =>
-                                            <option key={list['Product Type']} value={t(list['Product Type'])}>{list['Product Type']}</option>
+                                            <option key={list['Product Type']} value={list['Product Type']}>{list['Product Type']}</option>
                                         )}
                                     </select>
                                 </div>
@@ -304,8 +304,8 @@ const Calculator = () => {
                                 <div className="col">
                                     <label htmlFor="Swap-Opening-Position-Direction">{t('Opening Position Direction')}</label>
                                     <select className="form-select" aria-label="Swap-Opening-Position-Direction" id="Swap-Opening-Position-Direction">
-                                        <option value={t('Buy')}>{t('Buy')}</option>
-                                        <option value={t('Sell')}>{t('Sell')}</option>
+                                        <option value={'Buy'}>{t('Buy')}</option>
+                                        <option value={'Sell'}>{t('Sell')}</option>
                                     </select>
                                 </div>
 

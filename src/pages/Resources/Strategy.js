@@ -52,6 +52,9 @@ const Strategy = () => {
     const [dataReady, setDataReady] = React.useState(false)
     const [pagination, setPagination] = React.useState(null)
     const [products, setProducts] = React.useState([])
+    const [direction, setDirecion] = React.useState('')
+    const [ordertype, setOrdertype] = React.useState('desc')
+    const [order, setOrder] = React.useState('topweigh')
 
     const toggleButton = (id) => {
         let element = document.getElementById(id)
@@ -88,6 +91,9 @@ const Strategy = () => {
                 ...params,
                 companyId: '23',
                 utmTerminal: 'all',
+                direct: direction,
+                ordertype: ordertype,
+                order: order,
                 page: params !== undefined ? params.page : 1,
                 pageSize: 9
             }
@@ -118,7 +124,7 @@ const Strategy = () => {
     React.useEffect(() => {
         getList()
         // eslint-disable-next-line
-    }, [i18n.language])
+    }, [i18n.language, direction, ordertype])
     return (
         <React.Fragment>
             <TopBanner
@@ -184,9 +190,9 @@ const Strategy = () => {
                 <li className={`nav-item ${styled.filterList_general}`}>
                     <button className="btn btn-lg link-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Direction">{t('Direction')}</button>
                     <ul className="dropdown-menu text-center" aria-labelledby="Direction">
-                        <li><button className="dropdown-item" onClick={() => getList({ direct: '3' })}>{t('Bullish')}</button></li>
-                        <li><button className="dropdown-item" onClick={() => getList({ direct: '2' })}>{t('Bearish')}</button></li>
-                        <li><button className="dropdown-item" onClick={() => getList({ direct: '1' })}> {t('No direction')}</button></li>
+                        <li><button className="dropdown-item" onClick={() => setDirecion('3')}>{t('Bullish')}</button></li>
+                        <li><button className="dropdown-item" onClick={() => setDirecion('2')}>{t('Bearish')}</button></li>
+                        <li><button className="dropdown-item" onClick={() => setDirecion('1')}> {t('No direction')}</button></li>
                     </ul>
                 </li >
 
@@ -194,14 +200,14 @@ const Strategy = () => {
                 <li className={`nav-item ${styled.filterList_general}`}>
                     <button className="btn btn-lg link-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" id="Time">{t('Time')}</button>
                     <ul className="dropdown-menu text-center" aria-labelledby="Time" style={{ minWidth: '7rem' }}>
-                        <li><button className="dropdown-item" onClick={() => getList({ ordertype: 'desc' })}>{t('desc')}</button></li>
-                        <li><button className="dropdown-item" onClick={() => getList({ ordertype: 'asc' })}>{t('asc')}</button></li>
+                        <li><button className="dropdown-item" onClick={() => setOrdertype('desc')}>{t('desc')}</button></li>
+                        <li><button className="dropdown-item" onClick={() => setOrdertype('asc')}>{t('asc')}</button></li>
                     </ul>
                 </li>
 
                 {/* Read */}
                 <li className="nav-item">
-                    <button className="btn btn-lg link-secondary" onClick={() => getList({ order: 'pviews' })}>{t('Read')}</button>
+                    <button className="btn btn-lg link-secondary" onClick={() => setOrder('pviews')}>{t('Read')}</button>
                 </li>
             </ul >
 

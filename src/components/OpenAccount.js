@@ -13,6 +13,30 @@ import payment_icon from 'assets/images/paymenticon_white.png'
 
 const OpenAccount = () => {
     const { t } = useTranslation();
+    const [time, setTime] = React.useState(0)
+
+    const animated = {
+        opacity: '25%',
+        transition: 'opacity .5s ease'
+    }
+    React.useEffect(() => {
+        let steps = Array.from(document.getElementById('openaccount-steps').children);
+        (async () => {
+            try {
+                if (time >= 5) {
+                    steps.map(ele => ele.style.opacity = '25%')
+                    setTime(0)
+                }
+
+                steps[time].style.opacity = '100%'
+
+                await new Promise(res => setTimeout(() => {
+                    res(setTime(val => val += 1))
+                }, 2000))
+
+            } catch (error) {}
+        })()
+    })
     return (
         <section className="container-fluid" style={{ background: 'linear-gradient(90deg, #60A720 0%, #83BF4B 35%, #A6E26E 100%)' }}>
             <div className={`container py-4`}>
@@ -21,22 +45,22 @@ const OpenAccount = () => {
                     <div className="col col-12 col-lg-8">
                         <h3 className="fw-bold my-3 text-center">{t('Open an account for free now')}</h3>
                         <h5 className="fw-bold my-3 text-center">{t('30 seconds to have an account')}</h5>
-                        <div className="d-flex justify-content-center align-items-center flex-wrap text-center my-4">
-                            <div className="col-12 col-md-2">
+                        <div id="openaccount-steps" className="d-flex flex-wrap justify-content-center align-items-center text-center my-4">
+                            <div className="col-12 col-md-2" style={{ ...animated }}>
                                 <img src={step1} width="100%" style={{ maxWidth: '142px' }} alt="" />
                                 <p className='my-2'>{t('Open an account for free')}</p>
                             </div>
 
-                            <hr className="col-1" style={{ border: '2px solid #fff', borderRadius: '20px', opacity: '100' }} />
+                            <hr className="col-1" style={{ ...animated, border: '2px solid #fff', borderRadius: '20px' }} />
 
-                            <div className="mx-2 col-12 col-md-2">
+                            <div className="mx-2 col-12 col-md-2" style={{ ...animated }}>
                                 <img src={step2} width="100%" style={{ maxWidth: '142px' }} alt="" />
                                 <p className='my-2'>{t('Top up your account')}</p>
                             </div>
 
-                            <hr className="col-1" style={{ border: '2px solid #fff', borderRadius: '20px', opacity: '100' }} />
+                            <hr className="col-1" style={{ ...animated, border: '2px solid #fff', borderRadius: '20px' }} />
 
-                            <div className="mx-2 col-12 col-md-2">
+                            <div className="mx-2 col-12 col-md-2" style={{ ...animated }}>
                                 <img src={step3} width="100%" style={{ maxWidth: '142px' }} alt="" />
                                 <p className='my-2'>{t('Start trading')}</p>
                             </div>
