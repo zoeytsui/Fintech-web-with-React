@@ -116,7 +116,6 @@ const Strategy = () => {
             if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
             setPagination(result.data.count)
             setAdList(result.data.list)
-            console.log('result.data.list', result.data.list);
             setDataReady(true)
         } catch (error) {}
     }

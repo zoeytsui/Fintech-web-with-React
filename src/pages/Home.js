@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 import { makeStyles } from '@mui/styles';
 import { TOP_OPENAPI } from 'api';
+import i18n from "i18next";
 
 import TopBanner from 'components/TopBanner'
 import MarketPrice from 'components/MarketPrice'
 import TradePlatform from 'components/TradePlatform'
 import AwardCarousel from 'components/AwardCarousel'
 import OpenAccount from 'components/OpenAccount'
+import Loading from 'components/Loading';
 
 import phone_1 from 'assets/images/home/phone_1.png'
 
@@ -27,9 +30,6 @@ import step1 from 'assets/images/home/step1.png'
 import step2 from 'assets/images/home/step2.png'
 import step3 from 'assets/images/home/step3.png'
 
-import article_img1 from 'assets/images/home/image1.png'
-import article_img2 from 'assets/images/home/image2.png'
-import article_img3 from 'assets/images/home/image3.png'
 import article_mover from 'assets/images/home/article_mover.png'
 
 // Import Swiper React components
@@ -58,6 +58,9 @@ const useStyles = makeStyles({
             transform: 'scale(1.05)',
             borderBottom: '4px solid #60A720'
         }
+    },
+    homeSwiper: {
+        "& .swiper-wrapper": { alignItems: 'center' }
     },
     articleCard: {
         '& .card': {
@@ -204,7 +207,6 @@ const HomepageBanner = () => {
     )
 }
 
-// Section1
 const Section1 = () => {
     const classes = useStyles();
     const { t } = useTranslation();
@@ -234,7 +236,6 @@ const Section1 = () => {
     )
 }
 
-// Section2
 const Section2 = () => {
     const tabs = [
         { label: 'Forex' },
@@ -273,7 +274,6 @@ const Section2 = () => {
     )
 }
 
-// Section3
 const Section3 = () => {
     const { t, i18n } = useTranslation();
 
@@ -354,71 +354,109 @@ const Section3 = () => {
 
 // CardCarousel
 const ArticleCarousel = () => {
-    const context = [
-        { src: article_img1, title: 'ESG Performance Breakdown by E, S, and G', date: 'June 11, 2021' },
-        { src: article_img2, title: 'How to Install Ta-Lib in Python', date: 'June 11, 2021' },
-        { src: article_img3, title: 'How to Install Ta-Lib in Python', date: 'June 11, 2021' }
-    ]
-    const classes = useStyles();
     const { t } = useTranslation();
+    const classes = useStyles();
+    const [newsList, setNewsList] = useState([])
+    const [dataReady, setDataReady] = useState(false)
+    const getList = async () => {
+        try {
+            let params = {
+                companyId: "23",
+                utmTerminal: 'app',
+                url: "news-en",
+                page: 1,
+                pageSize: 9,
+            }
+
+            switch (i18n.language) {
+                case 'vn':
+                    params.url = "news-vn"
+                    break;
+                case 'ch':
+                    params.url = "news-cn"
+                    break;
+
+                default:
+                    params.url = "news-en" // no my data
+                    break;
+            }
+
+            const result = await (await TOP_OPENAPI.get(`/hx/?service=Advisory.getList`, { params: { ...params } })).data
+            if (result.ret !== 200) return console.error(`${result.ret}: ${result.msg}`)
+
+            setNewsList(list => [...list, ...result.data.list])
+            setDataReady(true)
+        }
+        catch (error) {}
+    }
+    useEffect(() => {
+        getList()
+        // eslint-disable-next-line
+    }, [i18n.language])
+
+    // clear cache
+    useEffect(() => {
+        setNewsList([])
+        // eslint-disable-next-line
+    }, [i18n.language])
     return (
         <section className="container-fluid" style={{ backgroundColor: '#F1F1F1' }}>
-            <Swiper
-                // cssMode={true}
-                slidesPerGroup={1}
-                slidesPerView={3}
-                // spaceBetween={30}
-                loop={true}
-                // navigation={true}
-                pagination={{ "clickable": true }}
-                autoplay={{
-                    "delay": 3000,
-                    "disableOnInteraction": false
-                }}
-                breakpoints={{
-                    "320": {
-                        "slidesPerView": 1,
-                        "spaceBetween": 20
-                    },
-                    "375": {
-                        "slidesPerView": 1,
-                        "spaceBetween": 20
-                    },
-                    "425": {
-                        "slidesPerView": 1,
-                        "spaceBetween": 20
-                    },
-                    "768": {
-                        "slidesPerView": 2,
-                        "spaceBetween": 40
-                    },
-                    "1024": {
-                        "slidesPerView": 3,
-                        "spaceBetween": 50
-                    }
-                }}
-                className={`text-secondary py-4 col-9`}>
-                {context.map((article, index) =>
-                    <SwiperSlide className="d-flex flex-column align-items-center my-4" key={index}>
-                        <div className={`${classes.articleCard}`}>
-                            <div className={`card border-0 shadow-sm`}>
-                                <img src={article.src} className="card-img-top p-2" alt={article.title} />
-                                <div className="card-body py-0">
-                                    <h6 className="card-subtitle text-secondary"><small>{`${t(article.date)}`}</small></h6>
-                                    <h6 className="card-title text-dark"><small>{`${t(article.title)}`}</small></h6>
+            {dataReady
+                ? <Swiper
+                    slidesPerGroup={1}
+                    slidesPerView={3}
+                    loop={true}
+                    pagination={{ "clickable": true }}
+                    // autoplay={{
+                    //     "delay": 3000,
+                    //     "disableOnInteraction": false
+                    // }}
+                    breakpoints={{
+                        "320": {
+                            "slidesPerView": 1,
+                            "spaceBetween": 20
+                        },
+                        "375": {
+                            "slidesPerView": 1,
+                            "spaceBetween": 20
+                        },
+                        "425": {
+                            "slidesPerView": 1,
+                            "spaceBetween": 20
+                        },
+                        "768": {
+                            "slidesPerView": 2,
+                            "spaceBetween": 40
+                        },
+                        "1024": {
+                            "slidesPerView": 3,
+                            "spaceBetween": 50
+                        }
+                    }}
+                    className={`text-secondary py-4 col-9 ${classes.homeSwiper}`}>
+                    {newsList.map((article, index) =>
+                        <SwiperSlide className="d-flex flex-column align-items-center my-4" key={index}>
+                            <div className={classes.articleCard}>
+                                <div className={`card border-0 shadow-sm`}>
+                                    <img src={article.cover_img} className="card-img-top p-3" alt={article.title} />
+                                    <div className="card-body d-flex flex-column justify-content-center">
+                                        <p className="card-subtitle text-secondary fs-6"><small>{article.mtime.split(' ')[0]}</small></p>
+                                        <h5 className="card-title text-dark"><small>{article.title}</small></h5>
+                                    </div>
+                                </div>
+                                <div className={`overlay card text-white`}>
+                                    <div className="card-body d-flex flex-column align-items-center justify-content-center">
+                                        <p className="card-subtitle fs-6"><small>{article.mtime.split(' ')[0]}</small></p>
+                                        <h6 className="card-title">{article.title}</h6>
+                                        <Link to={`/Resources/News/${article.id}`} className="btn btn-warning text-white">{t('Read More')}</Link>
+                                    </div>
                                 </div>
                             </div>
-                            <div className={`overlay card text-white`}>
-                                <div className="card-body d-flex flex-column align-items-center justify-content-center">
-                                    <h6 className="card-subtitle"><small>{`${t(article.date)}`}</small></h6>
-                                    <p className="card-title">{`${t(article.title)}`}</p>
-                                    <button className="btn btn-warning text-white">{`${t('Read More')}`}</button>
-                                </div>
-                            </div>
-                        </div>
-                    </SwiperSlide>
-                )}
-            </Swiper>
+                        </SwiperSlide>
+                    )}
+                </Swiper>
+                : <Loading />
+            }
         </section>
     )
 }

@@ -110,9 +110,9 @@ export default function NavBar() {
         <React.Fragment>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className="container-fluid">
-                    <a href="/">
+                    <Link to="/">
                         <img className="navbar-brand" src={hxfxglobal_logo} alt="" />
-                    </a>
+                    </Link>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span className="navbar-toggler-icon"></span>
                     </button>
